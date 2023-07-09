@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabular Daaaaata Example</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Country</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in tabular_data %}
+                <tr>
+                    <td>{{ row.Name }}</td>
+                    <td>{{ row.Age }}</td>
+                    <td>{{ row.Country }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="myDataTable" class="display">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Season Start</th>
+            <th>Season End</th>
+            <th>League</th>
+            <th>Champion</th>
+            <th>BR ID</th>
+            <th>Champion BR ID</th>
+            <th>MVP BR ID</th>
+            <th>ROY BR ID</th>
+            <th>Scoring Leader BR ID</th>
+            <th>Rebounding Leader BR ID</th>
+            <th>Assists Leader BR ID</th>
+            <th>Winshares Leader BR ID</th>
+            <th>Scoring Leader Points</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    <script>
+        
+        var x = [{"0":1,"1":2022,"2":2023,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2023","12":null,"13":null,"14":null,"15":null,"16":"tatumja01","17":"sabondo01","18":"youngtr01","19":"jokicni01","20":2225},{"0":2,"1":2021,"2":2022,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2022","12":null,"13":"GSW","14":"jokicni01","15":"barnesc01","16":"youngtr01","17":"jokicni01","18":"youngtr01","19":"jokicni01","20":2155},{"0":3,"1":2020,"2":2021,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2021","12":null,"13":"MIL","14":"jokicni01","15":"ballla01","16":"curryst01","17":"goberru01","18":"westbru01","19":"jokicni01","20":2015},{"0":4,"1":2019,"2":2020,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2020","12":null,"13":"LAL","14":"antetgi01","15":"moranja01","16":"hardeja01","17":"goberru01","18":"jamesle01","19":"hardeja01","20":2335},{"0":5,"1":2018,"2":2019,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2019","12":null,"13":"TOR","14":"antetgi01","15":"doncilu01","16":"hardeja01","17":"drumman01","18":"westbru01","19":"hardeja01","20":2818},{"0":6,"1":2017,"2":2018,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2018","12":null,"13":"GSW","14":"hardeja01","15":"simmobe01","16":"jamesle01","17":"drumman01","18":"westbru01","19":"hardeja01","20":2251},{"0":7,"1":2016,"2":2017,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2017","12":null,"13":"GSW","14":"westbru01","15":"brogdma01","16":"westbru01","17":"drumman01","18":"hardeja01","19":"hardeja01","20":2558},{"0":8,"1":2015,"2":2016,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2016","12":null,"13":"CLE","14":"curryst01","15":"townska01","16":"hardeja01","17":"drumman01","18":"rondora01","19":"curryst01","20":2376},{"0":9,"1":2014,"2":2015,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2015","12":null,"13":"GSW","14":"curryst01","15":"wiggian01","16":"hardeja01","17":"jordade01","18":"paulch01","19":"hardeja01","20":2217},{"0":10,"1":2013,"2":2014,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2014","12":null,"13":"SAS","14":"duranke01","15":"cartemi01","16":"duranke01","17":"jordade01","18":"walljo01","19":"duranke01","20":2593},{"0":11,"1":2012,"2":2013,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2013","12":null,"13":"MIA","14":"jamesle01","15":"lillada01","16":"duranke01","17":"asikom01","18":"vasqugr01","19":"jamesle01","20":2280},{"0":12,"1":2011,"2":2012,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2012","12":null,"13":"MIA","14":"jamesle01","15":"irvinky01","16":"duranke01","17":"howardw01","18":"nashst01","19":"jamesle01","20":1850},{"0":13,"1":2010,"2":2011,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2011","12":null,"13":"DAL","14":"rosede01","15":"griffbl01","16":"duranke01","17":"loveke01","18":"nashst01","19":"jamesle01","20":2161},{"0":14,"1":2009,"2":2010,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2010","12":null,"13":"LAL","14":"jamesle01","15":"evansty01","16":"duranke01","17":"howardw01","18":"nashst01","19":"jamesle01","20":2472},{"0":15,"1":2008,"2":2009,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2009","12":null,"13":"LAL","14":"jamesle01","15":"rosede01","16":"wadedw01","17":"howardw01","18":"paulch01","19":"jamesle01","20":2386},{"0":16,"1":2007,"2":2008,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2008","12":null,"13":"BOS","14":"bryanko01","15":"duranke01","16":"bryanko01","17":"howardw01","18":"paulch01","19":"paulch01","20":2323},{"0":17,"1":2006,"2":2007,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2007","12":null,"13":"SAS","14":"nowitdi01","15":"roybr01","16":"bryanko01","17":"howardw01","18":"nashst01","19":"nowitdi01","20":2430},{"0":18,"1":2005,"2":2006,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2006","12":null,"13":"MIA","14":"nashst01","15":"paulch01","16":"bryanko01","17":"howardw01","18":"nashst01","19":"nowitdi01","20":2832},{"0":19,"1":2004,"2":2005,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2005","12":null,"13":"SAS","14":"nashst01","15":"okafoem01","16":"iversal01","17":"garneke01","18":"nashst01","19":"garneke01","20":2302},{"0":20,"1":2003,"2":2004,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2004","12":null,"13":"DET","14":"garneke01","15":"jamesle01","16":"garneke01","17":"garneke01","18":"marbust01","19":"garneke01","20":1987},{"0":21,"1":2002,"2":2003,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2003","12":null,"13":"SAS","14":"duncati01","15":"stoudam01","16":"bryanko01","17":"wallabe01","18":"kiddja01","19":"duncati01","20":2461},{"0":22,"1":2001,"2":2002,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2002","12":null,"13":"LAL","14":"duncati01","15":"gasolpa01","16":"piercpa01","17":"duncati01","18":"millean02","19":"duncati01","20":2144},{"0":23,"1":2000,"2":2001,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2001","12":null,"13":"LAL","14":"iversal01","15":"millemi01","16":"stackje01","17":"wallabe01","18":"kiddja01","19":"onealsh01","20":2380},{"0":24,"1":1999,"2":1900,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_2000","12":null,"13":"LAL","14":"onealsh01","15":"brandel01","16":"onealsh01","17":"mutomdi01","18":"paytoga01","19":"onealsh01","20":2344},{"0":25,"1":1998,"2":1999,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1999","12":null,"13":"SAS","14":"malonka01","15":"cartevi01","16":"onealsh01","17":"mutomdi01","18":"kiddja01","19":"malonka01","20":1289},{"0":26,"1":1997,"2":1998,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1998","12":null,"13":"CHI","14":"jordami01","15":"duncati01","16":"jordami01","17":"rodmade01","18":"stricro02","19":"malonka01","20":2357},{"0":27,"1":1996,"2":1997,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1997","12":null,"13":"CHI","14":"malonka01","15":"iversal01","16":"jordami01","17":"mutomdi01","18":"jacksma01","19":"jordami01","20":2431},{"0":28,"1":1995,"2":1996,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1996","12":null,"13":"CHI","14":"jordami01","15":"stoudda01","16":"jordami01","17":"robinda01","18":"stockjo01","19":"jordami01","20":2491},{"0":29,"1":1994,"2":1995,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1995","12":null,"13":"HOU","14":"robinda01","15":"hillgr01","16":"onealsh01","17":"mutomdi01","18":"stockjo01","19":"robinda01","20":2315},{"0":30,"1":1993,"2":1994,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1994","12":null,"13":"HOU","14":"olajuha01","15":"webbech01","16":"robinda01","17":"rodmade01","18":"stockjo01","19":"robinda01","20":2383},{"0":31,"1":1992,"2":1993,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1993","12":null,"13":"CHI","14":"barklch01","15":"onealsh01","16":"jordami01","17":"rodmade01","18":"stockjo01","19":"jordami01","20":2541},{"0":32,"1":1991,"2":1992,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1992","12":null,"13":"CHI","14":"jordami01","15":"johnsla02","16":"jordami01","17":"rodmade01","18":"stockjo01","19":"jordami01","20":2404},{"0":33,"1":1990,"2":1991,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1991","12":null,"13":"CHI","14":"jordami01","15":"colemde01","16":"jordami01","17":"robinda01","18":"stockjo01","19":"jordami01","20":2580},{"0":34,"1":1989,"2":1990,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1990","12":null,"13":"DET","14":"johnsma02","15":"robinda01","16":"jordami01","17":"olajuha01","18":"stockjo01","19":"jordami01","20":2753},{"0":35,"1":1988,"2":1989,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1989","12":null,"13":"DET","14":"johnsma02","15":"richmmi01","16":"jordami01","17":"olajuha01","18":"stockjo01","19":"jordami01","20":2633},{"0":36,"1":1987,"2":1988,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1988","12":null,"13":"LAL","14":"jordami01","15":"jacksma01","16":"jordami01","17":"oaklech01","18":"stockjo01","19":"jordami01","20":2868},{"0":37,"1":1986,"2":1987,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1987","12":null,"13":"LAL","14":"johnsma02","15":"persoch01","16":"jordami01","17":"oaklech01","18":"johnsma02","19":"jordami01","20":3041},{"0":38,"1":1985,"2":1986,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1986","12":null,"13":"BOS","14":"birdla01","15":"ewingpa01","16":"englial01","17":"laimbbi01","18":"johnsma02","19":"birdla01","20":2414},{"0":39,"1":1984,"2":1985,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1985","12":null,"13":"LAL","14":"birdla01","15":"jordami01","16":"jordami01","17":"malonmo01","18":"thomais01","19":"birdla01","20":2313},{"0":40,"1":1983,"2":1984,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1984","12":null,"13":"BOS","14":"birdla01","15":"sampsra01","16":"dantlad01","17":"laimbbi01","18":"nixonno01","19":"dantlad01","20":2418},{"0":41,"1":1982,"2":1983,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1983","12":null,"13":"PHI","14":"malonmo01","15":"cummite01","16":"englial01","17":"malonmo01","18":"johnsma02","19":"malonmo01","20":2326},{"0":42,"1":1981,"2":1982,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1982","12":null,"13":"LAL","14":"malonmo01","15":"willibu01","16":"gervige01","17":"malonmo01","18":"moorejo01","19":"malonmo01","20":2551},{"0":43,"1":1980,"2":1981,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1981","12":null,"13":"BOS","14":"ervinju01","15":"griffda01","16":"dantlad01","17":"malonmo01","18":"porteke01","19":"abdulka01","20":2452},{"0":44,"1":1979,"2":1980,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1980","12":null,"13":"LAL","14":"abdulka01","15":"birdla01","16":"gervige01","17":"natersw01","18":"richami01","19":"abdulka01","20":2585},{"0":45,"1":1978,"2":1979,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1979","12":null,"13":"SEA","14":"malonmo01","15":"fordph01","16":"gervige01","17":"malonmo01","18":"porteke01","19":"abdulka01","20":2365},{"0":46,"1":1977,"2":1978,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1978","12":null,"13":"WSB","14":"waltobi01","15":"daviswa03","16":"gervige01","17":"robintr01","18":"porteke01","19":"thompda01","20":2232},{"0":47,"1":1976,"2":1977,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1977","12":null,"13":"POR","14":"abdulka01","15":"dantlad01","16":"maravpe01","17":"abdulka01","18":"busedo01","19":"abdulka01","20":2273},{"0":48,"1":1975,"2":1976,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1976","12":null,"13":"BOS","14":"abdulka01","15":"adamsal01","16":"mcadobo01","17":"abdulka01","18":"wattssl01","19":"abdulka01","20":2427},{"0":49,"1":1975,"2":1976,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1976","12":null,"13":"NYA","14":"ervinju01","15":"thompda01","16":"ervinju01","17":"gilmoar01","18":"busedo01","19":"ervinju01","20":2462},{"0":50,"1":1974,"2":1975,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1975","12":null,"13":"GSW","14":"mcadobo01","15":"wilkeja01","16":"mcadobo01","17":"mcadobo01","18":"porteke01","19":"mcadobo01","20":2831},{"0":51,"1":1974,"2":1975,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1975","12":null,"13":"KEN","14":"ervinju01","15":"barnema01","16":"mcginge01","17":"gilmoar01","18":"willich02","19":"ervinju01","20":2353},{"0":52,"1":1973,"2":1974,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1974","12":null,"13":"BOS","14":"abdulka01","15":"digreer01","16":"mcadobo01","17":"hayesel01","18":"digreer01","19":"abdulka01","20":2261},{"0":53,"1":1973,"2":1974,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1974","12":null,"13":"NYA","14":"ervinju01","15":"natersw01","16":"ervinju01","17":"gilmoar01","18":"smithal01","19":"ervinju01","20":2299},{"0":54,"1":1972,"2":1973,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1973","12":null,"13":"NYK","14":"cowenda01","15":"mcadobo01","16":"architi01","17":"chambwi01","18":"architi01","19":"abdulka01","20":2719},{"0":55,"1":1972,"2":1973,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1973","12":null,"13":"INA","14":"cunnibi01","15":"taylobr01","16":"isselda01","17":"gilmoar01","18":"willich02","19":"gilmoar01","20":2292},{"0":56,"1":1971,"2":1972,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1972","12":null,"13":"LAL","14":"abdulka01","15":"wickssi01","16":"abdulka01","17":"chambwi01","18":"wilkele01","19":"abdulka01","20":2822},{"0":57,"1":1971,"2":1972,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1972","12":null,"13":"INA","14":"gilmoar01","15":"gilmoar01","16":"isselda01","17":"gilmoar01","18":"melchbi01","19":"gilmoar01","20":2538},{"0":58,"1":1970,"2":1971,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1971","12":null,"13":"MIL","14":"abdulka01","15":"cowenda01","16":"abdulka01","17":"chambwi01","18":"vanlino01","19":"abdulka01","20":2596},{"0":59,"1":1970,"2":1971,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1971","12":null,"13":"UTS","14":"danieme01","15":"isselda01","16":"isselda01","17":"danieme01","18":"melchbi01","19":"beatyze01","20":2480},{"0":60,"1":1969,"2":1970,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1970","12":null,"13":"NYK","14":"reedwi01","15":"abdulka01","16":"abdulka01","17":"hayesel01","18":"wilkele01","19":"westje01","20":2361},{"0":61,"1":1969,"2":1970,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1970","12":null,"13":"INA","14":"haywosp01","15":"haywosp01","16":"haywosp01","17":"haywosp01","18":"brownla01","19":"haywosp01","20":2519},{"0":62,"1":1968,"2":1969,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1969","12":null,"13":"BOS","14":"unselwe01","15":"unselwe01","16":"hayesel01","17":"chambwi01","18":"roberos01","19":"reedwi01","20":2327},{"0":63,"1":1968,"2":1969,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1969","12":null,"13":"OAK","14":"danieme01","15":"jabalwa01","16":"jonesla01","17":"danieme01","18":"brownla01","19":"jonesji01","20":2133},{"0":64,"1":1967,"2":1968,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1968","12":null,"13":"BOS","14":"chambwi01","15":"monroea01","16":"bingda01","17":"chambwi01","18":"chambwi01","19":"chambwi01","20":2142},{"0":65,"1":1967,"2":1968,"3":"ABA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"ABA_1968","12":null,"13":"PTP","14":"hawkico01","15":"danieme01","16":"moedo01","17":"danieme01","18":"brownla01","19":"hawkico01","20":1884},{"0":66,"1":1966,"2":1967,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1967","12":null,"13":"PHI","14":"chambwi01","15":"bingda01","16":"barryri01","17":"chambwi01","18":"rodgegu01","19":"chambwi01","20":2775},{"0":67,"1":1965,"2":1966,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1966","12":null,"13":"BOS","14":"chambwi01","15":"barryri01","16":"chambwi01","17":"chambwi01","18":"roberos01","19":"chambwi01","20":2649},{"0":68,"1":1964,"2":1965,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1965","12":null,"13":"BOS","14":"russebi01","15":"reedwi01","16":"chambwi01","17":"russebi01","18":"roberos01","19":"roberos01","20":2534},{"0":69,"1":1963,"2":1964,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1964","12":null,"13":"BOS","14":"roberos01","15":"lucasje01","16":"chambwi01","17":"russebi01","18":"roberos01","19":"chambwi01","20":2948},{"0":70,"1":1962,"2":1963,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1963","12":null,"13":"BOS","14":"russebi01","15":"dischte01","16":"chambwi01","17":"chambwi01","18":"rodgegu01","19":"chambwi01","20":3586},{"0":71,"1":1961,"2":1962,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1962","12":null,"13":"BOS","14":"russebi01","15":"bellawa01","16":"chambwi01","17":"chambwi01","18":"roberos01","19":"chambwi01","20":4029},{"0":72,"1":1960,"2":1961,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1961","12":null,"13":"BOS","14":"russebi01","15":"roberos01","16":"chambwi01","17":"chambwi01","18":"roberos01","19":"chambwi01","20":3033},{"0":73,"1":1959,"2":1960,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1960","12":null,"13":"BOS","14":"chambwi01","15":"chambwi01","16":"chambwi01","17":"chambwi01","18":"cousybo01","19":"chambwi01","20":2707},{"0":74,"1":1958,"2":1959,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1959","12":null,"13":"BOS","14":"pettibo01","15":"bayloel01","16":"pettibo01","17":"russebi01","18":"cousybo01","19":"pettibo01","20":2105},{"0":75,"1":1957,"2":1958,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1958","12":null,"13":"STL","14":"russebi01","15":"sauldwo01","16":"yardlge01","17":"russebi01","18":"cousybo01","19":"schaydo01","20":2001},{"0":76,"1":1956,"2":1957,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1957","12":null,"13":"BOS","14":"cousybo01","15":"heinsto01","16":"arizipa01","17":"stokema01","18":"cousybo01","19":"johnsne01","20":1817},{"0":77,"1":1955,"2":1956,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1956","12":null,"13":"PHW","14":"pettibo01","15":"stokema01","16":"pettibo01","17":"pettibo01","18":"cousybo01","19":"johnsne01","20":1849},{"0":78,"1":1954,"2":1955,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1955","12":null,"13":"SYR","14":null,"15":"pettibo01","16":"johnsne01","17":"johnsne01","18":"cousybo01","19":"johnsne01","20":1631},{"0":79,"1":1953,"2":1954,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1954","12":null,"13":"MNL","14":null,"15":"felixra01","16":"johnsne01","17":"gallaha01","18":"cousybo01","19":"johnsne01","20":1759},{"0":80,"1":1952,"2":1953,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1953","12":null,"13":"MNL","14":null,"15":"meinemo01","16":"johnsne01","17":"mikange01","18":"cousybo01","19":"johnsne01","20":1564},{"0":81,"1":1951,"2":1952,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1952","12":null,"13":"MNL","14":null,"15":"hutchme01","16":"arizipa01","17":"foustla01","18":"phillan01","19":"arizipa01","20":1674},{"0":82,"1":1950,"2":1951,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1951","12":null,"13":"ROC","14":null,"15":"arizipa01","16":"mikange01","17":"schaydo01","18":"phillan01","19":"mikange01","20":1932},{"0":83,"1":1949,"2":1950,"3":"NBA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"NBA_1950","12":null,"13":"MNL","14":null,"15":"grozaal01","16":"mikange01","17":null,"18":"mcguidi01","19":"mikange01","20":1865},{"0":84,"1":1948,"2":1949,"3":"BAA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"BAA_1949","12":null,"13":"MNL","14":null,"15":"shannho01","16":"mikange01","17":null,"18":"daviebo01","19":"mikange01","20":1698},{"0":85,"1":1947,"2":1948,"3":"BAA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"BAA_1948","12":null,"13":"BLB","14":null,"15":"hoffmpa01","16":"zasloma01","17":null,"18":"dallmho01","19":"feeribo01","20":1007},{"0":86,"1":1946,"2":1947,"3":"BAA","4":null,"5":null,"6":null,"7":null,"8":null,"9":null,"10":null,"11":"BAA_1947","12":null,"13":"PHW","14":null,"15":null,"16":"fulksjo01","17":null,"18":"calveer01","19":"feeribo01","20":1389}];
+        // function tester(url='/api/stats') {
+        //     $.ajax({
+        //         url: url,
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             console.log(data);
+        //             x=data;
+        //         },
+        //         failure: function(data) {
+        //             alert('Got an error dude');
+        //         }
+        //     });
+        // }
+        $(document).ready(function () {
+            var x = [{
+                "id": 1,
+                "season_start": 2022,
+                "season_end": 2023,
+                "league": "NBA",
+                "champion": null,
+                "br_id": "NBA_2023",
+                "champion_br_id": null,
+                "mvp_br_id": null,
+                "roy_br_id": null,
+                "scoring_leader_br_id": "tatumja01",
+                "rebounding_leader_br_id": "sabondo01",
+                "assists_leader_br_id": "youngtr01",
+                "winshares_leader_br_id": "jokicni01",
+                "scoring_leader_points": 2225
+            }, {
+                "id": 2,
+                "season_start": 2021,
+                "season_end": 2022,
+                "league": "NBA",
+                "champion": null,
+                "br_id": "NBA_2022",
+                "champion_br_id": "GSW",
+                "mvp_br_id": "jokicni01",
+                "roy_br_id": "barnesc01",
+                "scoring_leader_br_id": "youngtr01",
+                "rebounding_leader_br_id": "jokicni01",
+                "assists_leader_br_id": "youngtr01",
+                "winshares_leader_br_id": "jokicni01",
+                "scoring_leader_points": 2155
+            }, {
+                "id": 3,
+                "season_start": 2020,
+                "season_end": 2021,
+                "league": "NBA",
+                "champion": null,
+                "br_id": "NBA_2021",
+                "champion_br_id": "MIL",
+                "mvp_br_id": "jokicni01",
+                "roy_br_id": "ballla01",
+                "scoring_leader_br_id": "curryst01",
+                "rebounding_leader_br_id": "goberru01",
+                "assists_leader_br_id": "westbru01",
+                "winshares_leader_br_id": "jokicni01",
+                "scoring_leader_points": 2015
+            }, {
+                "id": 4,
+                "season_start": 2019,
+                "season_end": 2020,
+                "league": "NBA",
+                "champion": null,
+                "br_id": "NBA_2020",
+                "champion_br_id": "LAL",
+                "mvp_br_id": "antetgi01",
+                "roy_br_id": "moranja01",
+                "scoring_leader_br_id": "hardeja01",
+                "rebounding_leader_br_id": "goberru01",
+                "assists_leader_br_id": "jamesle01",
+                "winshares_leader_br_id": "hardeja01",
+                "scoring_leader_points": 2335
+            }, {
+                "id": 5,
+                "season_start": 2018,
+                "season_end": 2019,
+                "league": "NBA",
+                "champion": null,
+                "br_id": "NBA_2019",
+                "champion_br_id": "TOR",
+                "mvp_br_id": "antetgi01",
+                "roy_br_id": "doncilu01",
+                "scoring_leader_br_id": "hardeja01",
+                "rebounding_leader_br_id": "drumman01",
+                "assists_leader_br_id": "westbru01",
+                "winshares_leader_br_id": "hardeja01",
+                "scoring_leader_points": 2818
+            }];
+
+            table = $('#myDataTable').DataTable({
+                data: x,
+                columns: [
+                { data: 'id' },
+                { data: 'season_start' },
+                { data: 'season_end' },
+                { data: 'league' },
+                { data: 'champion' },
+                { data: 'br_id' },
+                { data: 'champion_br_id' },
+                { data: 'mvp_br_id' },
+                { data: 'roy_br_id' },
+                { data: 'scoring_leader_br_id' },
+                { data: 'rebounding_leader_br_id' },
+                { data: 'assists_leader_br_id' },
+                { data: 'winshares_leader_br_id' },
+                { data: 'scoring_leader_points' }
+                ]
+            });
+        })
+        
+    </script>
+</body>
+</html>

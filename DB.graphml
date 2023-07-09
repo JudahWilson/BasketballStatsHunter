@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Created by yFiles for HTML 2.6-EAP8-->
+<graphml xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml.html/2.0/ygraphml.xsd " xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:demostyle2="http://www.yworks.com/yFilesHTML/demos/FlatDemoStyle/2.0" xmlns:demostyle="http://www.yworks.com/yFilesHTML/demos/FlatDemoStyle/1.0" xmlns:icon-style="http://www.yworks.com/yed-live/icon-style/1.0" xmlns:bpmn="http://www.yworks.com/xml/yfiles-bpmn/2.0" xmlns:demotablestyle="http://www.yworks.com/yFilesHTML/demos/FlatDemoTableStyle/1.0" xmlns:uml="http://www.yworks.com/yFilesHTML/demos/UMLDemoStyle/1.0" xmlns:GraphvizNodeStyle="http://www.yworks.com/yFilesHTML/graphviz-node-style/1.0" xmlns:VuejsNodeStyle="http://www.yworks.com/demos/yfiles-vuejs-node-style/1.0" xmlns:explorer-style="http://www.yworks.com/data-explorer/1.0" xmlns:y="http://www.yworks.com/xml/yfiles-common/3.0" xmlns:x="http://www.yworks.com/xml/yfiles-common/markup/3.0" xmlns:x0="http://www.yworks.com/yFilesHTML/demos/EntityRelationship/1.0" xmlns:sys="http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<key id="d0" for="node" attr.type="int" attr.name="zOrder" y:attr.uri="http://www.yworks.com/xml/yfiles-z-order/1.0/zOrder"/>
+	<key id="d1" for="node" attr.type="boolean" attr.name="Expanded" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/Expanded">
+		<default>true</default>
+	</key>
+	<key id="d2" for="node" attr.type="string" attr.name="url"/>
+	<key id="d3" for="node" attr.type="string" attr.name="description"/>
+	<key id="d4" for="node" attr.name="NodeLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeLabels"/>
+	<key id="d5" for="node" attr.name="NodeGeometry" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeGeometry"/>
+	<key id="d6" for="all" attr.name="UserTags" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/UserTags"/>
+	<key id="d7" for="node" attr.name="NodeStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/NodeStyle"/>
+	<key id="d8" for="node" attr.name="NodeViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/NodeViewState"/>
+	<key id="d9" for="edge" attr.type="string" attr.name="url"/>
+	<key id="d10" for="edge" attr.type="string" attr.name="description"/>
+	<key id="d11" for="edge" attr.name="EdgeLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeLabels"/>
+	<key id="d12" for="edge" attr.name="EdgeGeometry" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeGeometry"/>
+	<key id="d13" for="edge" attr.name="EdgeStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/EdgeStyle"/>
+	<key id="d14" for="edge" attr.name="EdgeViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/EdgeViewState"/>
+	<key id="d15" for="port" attr.name="PortLabels" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortLabels"/>
+	<key id="d16" for="port" attr.name="PortLocationParameter" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortLocationParameter">
+		<default>
+			<x:Static Member="y:FreeNodePortLocationModel.NodeCenterAnchored"/>
+		</default>
+	</key>
+	<key id="d17" for="port" attr.name="PortStyle" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/PortStyle">
+		<default>
+			<x:Static Member="y:VoidPortStyle.Instance"/>
+		</default>
+	</key>
+	<key id="d18" for="port" attr.name="PortViewState" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/folding/1.1/PortViewState"/>
+	<key id="d19" attr.name="SharedData" y:attr.uri="http://www.yworks.com/xml/yfiles-common/2.0/SharedData"/>
+	<data key="d19">
+		<y:SharedData>
+			<yjs:SolidColorFill x:Key="1" color="#FFE8EEF7" xmlns:yjs="http://www.yworks.com/xml/yfiles-for-html/2.0/xaml"/>
+			<yjs:SolidColorFill x:Key="2" color="#FFB7C9E3" xmlns:yjs="http://www.yworks.com/xml/yfiles-for-html/2.0/xaml"/>
+			<yjs:SolidColorFill x:Key="3" color="#FFF7E3D4" xmlns:yjs="http://www.yworks.com/xml/yfiles-for-html/2.0/xaml"/>
+		</y:SharedData>
+	</data>
+	<graph id="G" edgedefault="directed">
+		<data key="d6">
+			<y:Json>{"version":"2.0.0","origin":"yed-live","theme":{"name":"light","version":"1.0.0"},"__mg":"yed-live"}</y:Json>
+		</data>
+		<node id="n0">
+			<data key="d0">0</data>
+			<data key="d5">
+				<y:RectD X="-194.75" Y="139.8125" Width="99.625" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Seasons</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>year</sys:String>
+									<sys:String><![CDATA[total points]]></sys:String>
+									<sys:String><![CDATA[teams (json array)]]></sys:String>
+									<sys:String></sys:String>
+									<sys:String></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n1">
+			<data key="d0">1</data>
+			<data key="d5">
+				<y:RectD X="1041.625" Y="192.4375" Width="99.625" Height="209"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Games</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>br_id</sys:String>
+									<sys:String><![CDATA[win team FK]]></sys:String>
+									<sys:String><![CDATA[lose team FK]]></sys:String>
+									<sys:String><![CDATA[win team points]]></sys:String>
+									<sys:String><![CDATA[lose team points]]></sys:String>
+									<sys:String><![CDATA[season FK]]></sys:String>
+									<sys:String>datetime</sys:String>
+									<sys:String>attendance</sys:String>
+									<sys:String>duration_minutes</sys:String>
+									<sys:String>arena</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n2">
+			<data key="d0">2</data>
+			<data key="d5">
+				<y:RectD X="460.5" Y="-1020.1875" Width="99.625" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Teams</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>name</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n3">
+			<data key="d0">3</data>
+			<data key="d5">
+				<y:RectD X="1698.3125" Y="-1020.1875" Width="99.625" Height="291.375"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Players</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>first_name</sys:String>
+									<sys:String>last_name</sys:String>
+									<sys:String>height_cm</sys:String>
+									<sys:String>weight_lb</sys:String>
+									<sys:String>city</sys:String>
+									<sys:String>territory</sys:String>
+									<sys:String>country</sys:String>
+									<sys:String>birthdate</sys:String>
+									<sys:String><![CDATA[year start]]></sys:String>
+									<sys:String><![CDATA[year end]]></sys:String>
+									<sys:String>colleges</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n4">
+			<data key="d0">4</data>
+			<data key="d5">
+				<y:RectD X="1041.625" Y="412.5" Width="84.125" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Plays</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String><![CDATA[game FK]]></sys:String>
+									<sys:String>quarter</sys:String>
+									<sys:String>time</sys:String>
+									<sys:String>distance</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n5">
+			<data key="d0">5</data>
+			<data key="d5">
+				<y:RectD X="1041.625" Y="600.4375" Width="84.125" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Action Instances]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String><![CDATA[play FK]]></sys:String>
+									<sys:String><![CDATA[player FK]]></sys:String>
+									<sys:String><![CDATA[Action FK]]></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n6">
+			<data key="d0">7</data>
+			<data key="d3"><![CDATA[Quarter data from games is saved here programmatically]]></data>
+			<data key="d5">
+				<y:RectD X="-725.75" Y="-550.375" Width="128.875" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 3}" insetFill="DARK_ORANGE" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Conferences by year]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object"/>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+			<data key="d8">
+				<y:ViewState>
+					<y:FolderNodeState x:Key="c|view" Layout="0.75,71.125,99.625,171.875">
+						<y:FolderNodeState.Style>
+							<x0:EntityNodeStyle fill="{y:GraphMLReference 3}" insetFill="DARK_ORANGE" stroke="BLACK">
+								<x0:EntityNodeStyle.model>
+									<x0:EntityRelationshipModel>
+										<x0:EntityRelationshipModel.title>Quarters</x0:EntityRelationshipModel.title>
+										<x0:EntityRelationshipModel.attributes>
+											<x:Array Type="sys:Object">
+												<sys:String>Attribute1</sys:String>
+												<sys:String>Attribute2</sys:String>
+											</x:Array>
+										</x0:EntityRelationshipModel.attributes>
+									</x0:EntityRelationshipModel>
+								</x0:EntityNodeStyle.model>
+							</x0:EntityNodeStyle>
+						</y:FolderNodeState.Style>
+					</y:FolderNodeState>
+				</y:ViewState>
+			</data>
+		</node>
+		<node id="n7">
+			<data key="d0">8</data>
+			<data key="d3"><![CDATA[Quarter data from games is saved here programmatically]]></data>
+			<data key="d5">
+				<y:RectD X="-562.25" Y="-550.375" Width="128.875" Height="159.5"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 3}" insetFill="DARK_ORANGE" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Divisions by year]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+			<data key="d8">
+				<y:ViewState>
+					<y:FolderNodeState x:Key="c|view" Layout="15.75,86.125,99.625,171.875">
+						<y:FolderNodeState.Style>
+							<x0:EntityNodeStyle fill="{y:GraphMLReference 3}" insetFill="DARK_ORANGE" stroke="BLACK">
+								<x0:EntityNodeStyle.model>
+									<x0:EntityRelationshipModel>
+										<x0:EntityRelationshipModel.title>Quarters</x0:EntityRelationshipModel.title>
+										<x0:EntityRelationshipModel.attributes>
+											<x:Array Type="sys:Object">
+												<sys:String>Attribute1</sys:String>
+												<sys:String>Attribute2</sys:String>
+											</x:Array>
+										</x0:EntityRelationshipModel.attributes>
+									</x0:EntityRelationshipModel>
+								</x0:EntityNodeStyle.model>
+							</x0:EntityNodeStyle>
+						</y:FolderNodeState.Style>
+					</y:FolderNodeState>
+				</y:ViewState>
+			</data>
+		</node>
+		<node id="n8">
+			<data key="d0">9</data>
+			<data key="d5">
+				<y:RectD X="345.5" Y="-1020.1875" Width="90.875" Height="122.375"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Team States]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String><![CDATA[team FK]]></sys:String>
+									<sys:String>City</sys:String>
+									<sys:String>Territory</sys:String>
+									<sys:String>Country</sys:String>
+									<sys:String>date</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n9">
+			<data key="d0">10</data>
+			<data key="d5">
+				<y:RectD X="-71" Y="556.9375" Width="99.625" Height="122.375"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Coaches</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>first_name</sys:String>
+									<sys:String>last_name</sys:String>
+									<sys:String>birthdate</sys:String>
+									<sys:String><![CDATA[origin city]]></sys:String>
+									<sys:String><![CDATA[origin territory]]></sys:String>
+									<sys:String><![CDATA[origin country]]></sys:String>
+									<sys:String><![CDATA[high school]]></sys:String>
+									<sys:String></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n10">
+			<data key="d0">11</data>
+			<data key="d5">
+				<y:RectD X="-194.75" Y="556.9375" Width="99.625" Height="86.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Coach States]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String><![CDATA[team FK]]></sys:String>
+									<sys:String>date</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n11">
+			<data key="d0">12</data>
+			<data key="d5">
+				<y:RectD X="1574.5625" Y="-1020.1875" Width="99.625" Height="101.625"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title><![CDATA[Player States]]></x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String><![CDATA[team FK]]></sys:String>
+									<sys:String>team</sys:String>
+									<sys:String><![CDATA[jersey no.]]></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n12">
+			<data key="d0">13</data>
+			<data key="d5">
+				<y:RectD X="1041.625" Y="804.4375" Width="84.125" Height="171.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>Actions</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>code</sys:String>
+									<sys:String>Description</sys:String>
+									<sys:String></sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n13">
+			<data key="d0">14</data>
+			<data key="d5">
+				<y:RectD X="1344.3125" Y="-589.3125" Width="99.625" Height="660.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>PlayerGameStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>player_br_id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>played</sys:String>
+									<sys:String>started</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+									<sys:String>plus_minus</sys:String>
+									<sys:String>true_shooting_percentage</sys:String>
+									<sys:String>effective_field_goal_percentage</sys:String>
+									<sys:String>three_point_attempt_rate</sys:String>
+									<sys:String>free_throw_attempt_rate</sys:String>
+									<sys:String>offensive_rebound_percentage</sys:String>
+									<sys:String>defensive_rebound_percentage</sys:String>
+									<sys:String>total_rebound_percentage</sys:String>
+									<sys:String>assist_percentage</sys:String>
+									<sys:String>steal_percentage</sys:String>
+									<sys:String>block_percentage</sys:String>
+									<sys:String>turnover_percentage</sys:String>
+									<sys:String>usage_percentage</sys:String>
+									<sys:String>offensive_rating</sys:String>
+									<sys:String>defensive_rating</sys:String>
+									<sys:String>box_plus_minus</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n14">
+			<data key="d0">16</data>
+			<data key="d5">
+				<y:RectD X="1521.3125" Y="-589.3125" Width="99.625" Height="402.375"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>PlayerGameQuarterStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>player_br_id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>quarter</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+									<sys:String>plus_minus</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n15">
+			<data key="d0">17</data>
+			<data key="d5">
+				<y:RectD X="1698.3125" Y="-589.3125" Width="99.625" Height="402.375"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>PlayerGameHalfStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>player_br_id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>half</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+									<sys:String>plus_minus</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n16">
+			<data key="d0">18</data>
+			<data key="d5">
+				<y:RectD X="392.8125" Y="-589.3125" Width="99.625" Height="660.875"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>TeamGameStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+									<sys:String>true_shooting_percentage</sys:String>
+									<sys:String>effective_field_goal_percentage</sys:String>
+									<sys:String>three_point_attempt_rate</sys:String>
+									<sys:String>free_throw_attempt_rate</sys:String>
+									<sys:String>offensive_rebound_percentage</sys:String>
+									<sys:String>defensive_rebound_percentage</sys:String>
+									<sys:String>total_rebound_percentage</sys:String>
+									<sys:String>assist_percentage</sys:String>
+									<sys:String>steal_percentage</sys:String>
+									<sys:String>block_percentage</sys:String>
+									<sys:String>turnover_percentage</sys:String>
+									<sys:String>usage_percentage</sys:String>
+									<sys:String>offensive_rating</sys:String>
+									<sys:String>defensive_rating</sys:String>
+									<sys:String>pace_factor</sys:String>
+									<sys:String>ft_per_fga</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n17">
+			<data key="d0">19</data>
+			<data key="d5">
+				<y:RectD X="562.3125" Y="-589.3125" Width="99.625" Height="389.125"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>TeamGameQuarterStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>quarter</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+		<node id="n18">
+			<data key="d0">20</data>
+			<data key="d5">
+				<y:RectD X="731.8125" Y="-589.3125" Width="99.625" Height="389.125"/>
+			</data>
+			<data key="d7">
+				<x0:EntityNodeStyle fill="{y:GraphMLReference 1}" insetFill="{y:GraphMLReference 2}" stroke="BLACK">
+					<x0:EntityNodeStyle.model>
+						<x0:EntityRelationshipModel>
+							<x0:EntityRelationshipModel.title>TeamGameHalfStats</x0:EntityRelationshipModel.title>
+							<x0:EntityRelationshipModel.attributes>
+								<x:Array Type="sys:Object">
+									<sys:String>id</sys:String>
+									<sys:String>game_br_id</sys:String>
+									<sys:String>team_br_id</sys:String>
+									<sys:String>opponent_br_id</sys:String>
+									<sys:String>half</sys:String>
+									<sys:String>minutes_played</sys:String>
+									<sys:String>field_goals</sys:String>
+									<sys:String>field_goal_attempts</sys:String>
+									<sys:String>field_goal_percentage</sys:String>
+									<sys:String>three_pointers</sys:String>
+									<sys:String>three_pointer_percentage</sys:String>
+									<sys:String>free_throws</sys:String>
+									<sys:String>free_throw_attempts</sys:String>
+									<sys:String>free_throw_percentage</sys:String>
+									<sys:String>rebounds</sys:String>
+									<sys:String>offensive_rebounds</sys:String>
+									<sys:String>defensive_rebounds</sys:String>
+									<sys:String>steals</sys:String>
+									<sys:String>blocks</sys:String>
+									<sys:String>turnovers</sys:String>
+									<sys:String><![CDATA[personal fouls]]></sys:String>
+									<sys:String>points</sys:String>
+								</x:Array>
+							</x0:EntityRelationshipModel.attributes>
+						</x0:EntityRelationshipModel>
+					</x0:EntityNodeStyle.model>
+				</x0:EntityNodeStyle>
+			</data>
+		</node>
+	</graph>
+</graphml>

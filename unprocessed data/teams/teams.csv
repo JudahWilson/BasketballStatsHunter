@@ -1,0 +1,130 @@
+location,name,Franchise,Lg,From,To,Yrs,G,W,L,W/L%,Plyfs,Div,Conf,Champ
+Atlanta,Hawks,Atlanta Hawks,NBA,1949-50,2022-23,74,5839,2883,2956,0.494,48,12,0,1
+Atlanta,Hawks,Atlanta Hawks,NBA,1968-69,2022-23,55,4421,2185,2236,0.494,35,6,0,0
+St. Louis,Hawks,St. Louis Hawks,NBA,1955-56,1967-68,13,1005,553,452,0.55,12,6,0,1
+Milwaukee,Hawks,Milwaukee Hawks,NBA,1951-52,1954-55,4,281,91,190,0.324,0,0,0,0
+Tri-Cities,Blackhawks,Tri-Cities Blackhawks,NBA,1949-50,1950-51,2,132,54,78,0.409,1,0,0,0
+Boston,Celtics,Boston Celtics,NBA/BAA,1946-47,2022-23,77,6017,3559,2458,0.591,59,32,10,17
+Brooklyn,Nets,Brooklyn Nets,NBA/ABA,1967-68,2022-23,56,4513,1988,2525,0.441,30,5,2,2
+Brooklyn,Nets,Brooklyn Nets,NBA,2012-13,2022-23,11,865,406,459,0.469,7,0,0,0
+New Jersey,Nets,New Jersey Nets,NBA,1977-78,2011-12,35,2822,1186,1636,0.42,16,4,2,0
+New York,Nets,New York Nets,NBA,1976-77,1976-77,1,82,22,60,0.268,0,0,0,0
+New York,Nets,New York Nets,ABA,1968-69,1975-76,8,666,338,328,0.508,7,1,0,2
+New Jersey,Americans,New Jersey Americans,ABA,1967-68,1967-68,1,78,36,42,0.462,0,0,0,0
+Charlotte,Hornets,Charlotte Hornets,NBA,1988-89,2022-23,33,2616,1147,1469,0.438,10,0,0,0
+Charlotte,Hornets,Charlotte Hornets,NBA,2014-15,2022-23,9,696,312,384,0.448,1,0,0,0
+Charlotte,Bobcats,Charlotte Bobcats,NBA,2004-05,2013-14,10,804,293,511,0.364,2,0,0,0
+Charlotte,Hornets,Charlotte Hornets,NBA,1988-89,2001-02,14,1116,542,574,0.486,7,0,0,0
+Chicago,Bulls,Chicago Bulls,NBA,1966-67,2022-23,57,4582,2334,2248,0.509,36,9,6,6
+Cleveland,Cavaliers,Cleveland Cavaliers,NBA,1970-71,2022-23,53,4257,1975,2282,0.464,22,7,5,1
+Dallas,Mavericks,Dallas Mavericks,NBA,1980-81,2022-23,43,3446,1743,1703,0.506,24,4,2,1
+Denver,Nuggets,Denver Nuggets,NBA/ABA,1967-68,2022-23,56,4515,2303,2212,0.51,37,12,0,0
+Denver,Nuggets,Denver Nuggets,NBA,1976-77,2022-23,47,3771,1890,1881,0.501,28,9,0,0
+Denver,Nuggets,Denver Nuggets,ABA,1974-75,1975-76,2,168,125,43,0.744,2,2,0,0
+Denver,Rockets,Denver Rockets,ABA,1967-68,1973-74,7,576,288,288,0.5,7,1,0,0
+Detroit,Pistons,Detroit Pistons,NBA/BAA,1948-49,2022-23,75,5900,2811,3089,0.476,42,11,5,3
+Detroit,Pistons,Detroit Pistons,NBA,1957-58,2022-23,66,5281,2498,2783,0.473,34,9,5,3
+Fort Wayne,Pistons,Fort Wayne Pistons,NBA/BAA,1948-49,1956-57,9,619,313,306,0.506,8,2,0,0
+Golden State,Warriors,Golden State Warriors,NBA/BAA,1946-47,2022-23,77,6005,2913,3092,0.485,36,12,7,7
+Golden State,Warriors,Golden State Warriors,NBA,1971-72,2022-23,52,4173,2025,2148,0.485,19,7,7,5
+San Francisco,Warriors,San Francisco Warriors,NBA,1962-63,1970-71,9,729,330,399,0.453,5,2,0,0
+Philadelphia,Warriors,Philadelphia Warriors,NBA/BAA,1946-47,1961-62,16,1103,558,545,0.506,12,3,0,2
+Houston,Rockets,Houston Rockets,NBA,1967-68,2022-23,56,4507,2321,2186,0.515,34,8,4,2
+Houston,Rockets,Houston Rockets,NBA,1971-72,2022-23,52,4179,2202,1977,0.527,33,8,4,2
+San Diego,Rockets,San Diego Rockets,NBA,1967-68,1970-71,4,328,119,209,0.363,1,0,0,0
+Indiana,Pacers,Indiana Pacers,NBA/ABA,1967-68,2022-23,56,4514,2304,2210,0.51,36,9,1,3
+Indiana,Pacers,Indiana Pacers,NBA,1976-77,2022-23,47,3770,1877,1893,0.498,27,6,1,0
+Indiana,Pacers,Indiana Pacers,ABA,1967-68,1975-76,9,744,427,317,0.574,9,3,0,3
+Los Angeles,Clippers,Los Angeles Clippers,NBA,1970-71,2022-23,53,4264,1783,2481,0.418,16,2,0,0
+Los Angeles,Clippers,Los Angeles Clippers,NBA,1984-85,2022-23,39,3116,1338,1778,0.429,13,2,0,0
+San Diego,Clippers,San Diego Clippers,NBA,1978-79,1983-84,6,492,186,306,0.378,0,0,0,0
+Buffalo,Braves,Buffalo Braves,NBA,1970-71,1977-78,8,656,259,397,0.395,3,0,0,0
+Los Angeles,Lakers,Los Angeles Lakers,NBA/BAA,1948-49,2022-23,75,5906,3492,2414,0.591,62,33,19,17
+Los Angeles,Lakers,Los Angeles Lakers,NBA,1960-61,2022-23,63,5067,3035,2032,0.599,51,29,19,12
+Minneapolis,Lakers,Minneapolis Lakers,NBA/BAA,1948-49,1959-60,12,839,457,382,0.545,11,4,0,5
+Memphis,Grizzlies,Memphis Grizzlies,NBA,1995-96,2022-23,28,2211,958,1253,0.433,12,1,0,0
+Memphis,Grizzlies,Memphis Grizzlies,NBA,2001-02,2022-23,22,1751,857,894,0.489,12,1,0,0
+Vancouver,Grizzlies,Vancouver Grizzlies,NBA,1995-96,2000-01,6,460,101,359,0.22,0,0,0,0
+Miami,Heat,Miami Heat,NBA,1988-89,2022-23,35,2788,1466,1322,0.526,23,15,6,3
+Milwaukee,Bucks,Milwaukee Bucks,NBA,1968-69,2022-23,55,4426,2329,2097,0.526,34,17,3,2
+Minnesota,Timberwolves,Minnesota Timberwolves,NBA,1989-90,2022-23,34,2697,1083,1614,0.402,10,1,0,0
+New Orleans,Pelicans,New Orleans Pelicans,NBA,2002-03,2022-23,21,1670,772,898,0.462,8,1,0,0
+New Orleans,Pelicans,New Orleans Pelicans,NBA,2013-14,2022-23,10,784,353,431,0.45,3,0,0,0
+NO/Ok. City,Hornets,NO/Ok. City Hornets,NBA,2005-06,2006-07,2,164,77,87,0.47,0,0,0,0
+New Orleans,Hornets,New Orleans Hornets,NBA,2002-03,2012-13,9,722,342,380,0.474,5,1,0,0
+New York,Knicks,New York Knicks,NBA/BAA,1946-47,2022-23,77,6008,2916,3092,0.485,43,8,4,2
+Oklahoma City,Thunder,Oklahoma City Thunder,NBA,1967-68,2022-23,56,4508,2404,2104,0.533,32,11,4,1
+Oklahoma City,Thunder,Oklahoma City Thunder,NBA,2008-09,2022-23,15,1178,659,519,0.559,10,5,1,0
+Seattle,SuperSonics,Seattle SuperSonics,NBA,1967-68,2007-08,41,3330,1745,1585,0.524,22,6,3,1
+Orlando,Magic,Orlando Magic,NBA,1989-90,2022-23,34,2705,1261,1444,0.466,16,6,2,0
+Philadelphia,76ers,Philadelphia 76ers,NBA,1949-50,2022-23,74,5842,3043,2799,0.521,52,12,5,3
+Philadelphia,76ers,Philadelphia 76ers,NBA,1963-64,2022-23,60,4829,2467,2362,0.511,38,9,5,2
+Syracuse,Nationals,Syracuse Nationals,NBA,1949-50,1962-63,14,1013,576,437,0.569,14,3,0,1
+Phoenix,Suns,Phoenix Suns,NBA,1968-69,2022-23,55,4427,2372,2055,0.536,31,8,3,0
+Portland Trail,Blazers,Portland Trail Blazers,NBA,1970-71,2022-23,53,4264,2269,1995,0.532,37,6,3,1
+Sacramento,Kings,Sacramento Kings,NBA/BAA,1948-49,2022-23,75,5905,2692,3213,0.456,29,5,0,1
+Sacramento,Kings,Sacramento Kings,NBA,1985-86,2022-23,38,3030,1286,1744,0.424,10,2,0,0
+Kansas City,Kings,Kansas City Kings,NBA,1975-76,1984-85,10,820,381,439,0.465,4,1,0,0
+Kansas City-Omaha,Kings,Kansas City-Omaha Kings,NBA,1972-73,1974-75,3,246,113,133,0.459,1,0,0,0
+Cincinnati,Royals,Cincinnati Royals,NBA,1957-58,1971-72,15,1189,555,634,0.467,7,0,0,0
+Rochester,Royals,Rochester Royals,NBA/BAA,1948-49,1956-57,9,620,357,263,0.576,7,2,0,1
+San Antonio,Spurs,San Antonio Spurs,NBA/ABA,1967-68,2022-23,56,4512,2655,1857,0.588,47,22,6,5
+San Antonio,Spurs,San Antonio Spurs,NBA,1976-77,2022-23,47,3768,2277,1491,0.604,39,22,6,5
+San Antonio,Spurs,San Antonio Spurs,ABA,1973-74,1975-76,3,252,146,106,0.579,3,0,0,0
+Texas,Chaparrals,Texas Chaparrals,ABA,1970-71,1970-71,1,84,30,54,0.357,1,0,0,0
+Dallas,Chaparrals,Dallas Chaparrals,ABA,1967-68,1972-73,5,408,202,206,0.495,4,0,0,0
+Toronto,Raptors,Toronto Raptors,NBA,1995-96,2022-23,28,2213,1062,1151,0.48,13,7,1,1
+Utah,Jazz,Utah Jazz,NBA,1974-75,2022-23,49,3934,2140,1794,0.544,31,11,2,0
+Utah,Jazz,Utah Jazz,NBA,1979-80,2022-23,44,3524,1979,1545,0.562,31,11,2,0
+New Orleans,Jazz,New Orleans Jazz,NBA,1974-75,1978-79,5,410,161,249,0.393,0,0,0,0
+Washington,Wizards,Washington Wizards,NBA,1961-62,2022-23,62,4989,2253,2736,0.452,30,8,4,1
+Washington,Wizards,Washington Wizards,NBA,1997-98,2022-23,26,2048,875,1173,0.427,9,1,0,0
+Washington,Bullets,Washington Bullets,NBA,1974-75,1996-97,23,1886,887,999,0.47,13,2,3,1
+Capital,Bullets,Capital Bullets,NBA,1973-74,1973-74,1,82,47,35,0.573,1,1,0,0
+Baltimore,Bullets,Baltimore Bullets,NBA,1963-64,1972-73,10,813,401,412,0.493,7,4,1,0
+Chicago,Zephyrs,Chicago Zephyrs,NBA,1962-63,1962-63,1,80,25,55,0.313,0,0,0,0
+Chicago,Packers,Chicago Packers,NBA,1961-62,1961-62,1,80,18,62,0.225,0,0,0,0
+Anderson,Packers,Anderson Packers,NBA,1949-50,1949-50,1,64,37,27,0.578,1,0,0,0
+Baltimore,Bullets,Baltimore Bullets,NBA/BAA,1947-48,1954-55,8,450,158,292,0.351,3,0,0,1
+Chicago,Stags,Chicago Stags,NBA/BAA,1946-47,1949-50,4,237,145,92,0.612,4,1,0,0
+Cleveland,Rebels,Cleveland Rebels,BAA,1946-47,1946-47,1,60,30,30,0.5,1,0,0,0
+Denver,Nuggets,Denver Nuggets,NBA,1949-50,1949-50,1,62,11,51,0.177,0,0,0,0
+Detroit,Falcons,Detroit Falcons,BAA,1946-47,1946-47,1,60,20,40,0.333,0,0,0,0
+Indianapolis,Jets,Indianapolis Jets,BAA,1948-49,1948-49,1,60,18,42,0.3,0,0,0,0
+Indianapolis,Olympians,Indianapolis Olympians,NBA,1949-50,1952-53,4,269,132,137,0.491,4,1,0,0
+Kentucky,Colonels,Kentucky Colonels,ABA,1967-68,1975-76,9,744,448,296,0.602,9,2,0,1
+Memphis,Sounds,Memphis Sounds,ABA,1967-68,1974-75,8,660,275,385,0.417,4,1,0,0
+Memphis,Sounds,Memphis Sounds,ABA,1974-75,1974-75,1,84,27,57,0.321,1,0,0,0
+Memphis,Tams,Memphis Tams,ABA,1972-73,1973-74,2,168,45,123,0.268,0,0,0,0
+Memphis,Pros,Memphis Pros,ABA,1970-71,1971-72,2,168,67,101,0.399,1,0,0,0
+New Orleans,Buccaneers,New Orleans Buccaneers,ABA,1967-68,1969-70,3,240,136,104,0.567,2,1,0,0
+Pittsburgh,Condors,Pittsburgh Condors,ABA,1967-68,1971-72,5,408,180,228,0.441,2,1,0,1
+Pittsburgh,Condors,Pittsburgh Condors,ABA,1970-71,1971-72,2,168,61,107,0.363,0,0,0,0
+Minnesota,Pipers,Minnesota Pipers,ABA,1968-69,1968-69,1,78,36,42,0.462,1,0,0,0
+Pittsburgh,Pipers,Pittsburgh Pipers,ABA,1967-68,1969-70,2,162,83,79,0.512,1,1,0,1
+Pittsburgh,Ironmen,Pittsburgh Ironmen,BAA,1946-47,1946-47,1,60,15,45,0.25,0,0,0,0
+Providence,Steam Rollers,Providence Steam Rollers,BAA,1946-47,1948-49,3,168,46,122,0.274,0,0,0,0
+San Diego,Sails,San Diego Sails,ABA,1972-73,1975-76,4,263,101,162,0.384,2,0,0,0
+San Diego,Sails,San Diego Sails,ABA,1975-76,1975-76,1,11,3,8,0.273,0,,0,0
+San Diego,Conquistadors,San Diego Conquistadors,ABA,1972-73,1974-75,3,252,98,154,0.389,2,0,0,0
+Sheboygan,Red Skins,Sheboygan Red Skins,NBA,1949-50,1949-50,1,62,22,40,0.355,1,0,0,0
+St. Louis,Spirits of St. Louis,Spirits of St. Louis,ABA,1967-68,1975-76,9,744,334,410,0.449,5,1,0,0
+St. Louis,Spirits of St. Louis,Spirits of St. Louis,ABA,1974-75,1975-76,2,168,67,101,0.399,1,0,0,0
+Carolina,Cougars,Carolina Cougars,ABA,1969-70,1973-74,5,420,215,205,0.512,3,1,0,0
+Houston,Mavericks,Houston Mavericks,ABA,1967-68,1968-69,2,156,52,104,0.333,1,0,0,0
+St. Louis,Bombers,St. Louis Bombers,NBA/BAA,1946-47,1949-50,4,237,122,115,0.515,3,1,0,0
+Florida,Floridians,The Floridians,ABA,1967-68,1971-72,5,408,189,219,0.463,4,0,0,0
+Florida,Floridians,The Floridians,ABA,1970-71,1971-72,2,168,73,95,0.435,2,0,0,0
+Miami,Floridians,Miami Floridians,ABA,1968-69,1969-70,2,162,66,96,0.407,1,0,0,0
+Minnesota,Muskies,Minnesota Muskies,ABA,1967-68,1967-68,1,78,50,28,0.641,1,0,0,0
+Toronto,Huskies,Toronto Huskies,BAA,1946-47,1946-47,1,60,22,38,0.367,0,0,0,0
+Utah,Stars,Utah Stars,ABA,1967-68,1975-76,9,676,366,310,0.541,6,3,0,1
+Utah,Stars,Utah Stars,ABA,1970-71,1975-76,6,436,265,171,0.608,5,3,0,1
+Los Angeles,Stars,Los Angeles Stars,ABA,1968-69,1969-70,2,162,76,86,0.469,1,0,0,0
+Anaheim,Amigos,Anaheim Amigos,ABA,1967-68,1967-68,1,78,25,53,0.321,0,0,0,0
+Virginia,Squires,Virginia Squires,ABA,1967-68,1975-76,9,743,326,417,0.439,6,2,0,1
+Virginia,Squires,Virginia Squires,ABA,1970-71,1975-76,6,503,200,303,0.398,4,1,0,0
+Washington,Capitols,Washington Capitols,ABA,1969-70,1969-70,1,84,44,40,0.524,1,0,0,0
+Oakland,Oaks,Oakland Oaks,ABA,1967-68,1968-69,2,156,82,74,0.526,1,1,0,1
+Washington,Capitols,Washington Capitols,NBA/BAA,1946-47,1950-51,5,271,157,114,0.579,4,2,0,0
+Waterloo,Hawks,Waterloo Hawks,NBA,1949-50,1949-50,1,62,19,43,0.306,0,0,0,0
