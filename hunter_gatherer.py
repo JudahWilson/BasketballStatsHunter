@@ -171,10 +171,4 @@ def download_and_store_play_by_play(start_date=None):
     game, one at a time given a start date
     """
     
-    # Need logic to intelligently decide when to stop looking at days for games
-    # (2 weeks without games maybe?)
-    
-    # example url showing games per day
-    #https://www.basketball-reference.com/boxscores/?month=11&day=21&year=1971
-    
-    # at certain point, play by play is included (somewhere in the 90s)
+    # Schedule of games can be determine per year link like https://www.basketball-reference.com/leagues/NBA_2023_games.html

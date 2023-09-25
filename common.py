@@ -16,6 +16,8 @@ import time
 import bs4
 from flask import jsonify
 
+WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
+
 # The website's base url
 base_url = 'https://www.basketball-reference.com'
 
@@ -61,130 +63,6 @@ def log(message):
     """
     Log.log(message)
         
-#################################################
-# Initialize Database
-#################################################
-# Create a database file
-if not os.path.exists('basketball_stats.db'):
-    #TODO refine initialization
-    # Create a database connection
-    conn = sqlite3.connect('basketball_stats.db')
-    c = conn.cursor()
-
-    # players
-    c.execute('drop table if exists players;')
-    c.execute('''
-            create table players (
-            id         integer primary key autoincrement,
-            first_name varchar(35) null,
-            last_name  varchar(35) null,
-            height_cm  integer     null,
-            weight_lb  integer     null,
-            city       varchar(30) null,
-            territory  varchar(30) null,
-            country    varchar(30) null,
-            birthdate  date        null,
-            nba_debute date        null
-        );
-
-    '''
-    )
-
-    # player states
-    c.execute('drop table if exists player_states;')
-    c.execute('''
-        create table player_states (
-            id          integer primary key autoincrement,
-            player_id   integer     null,
-            team_states_id integer   null,
-            team_id     integer     null,
-            jersey_no   integer     null,
-            position    varchar(3)  null,
-            start_date  date        null,
-            end_date    date        null,
-            FOREIGN KEY(player_id) REFERENCES players(id),
-            FOREIGN KEY(team_states_id) REFERENCES team_states(id),
-            FOREIGN KEY(team_id) REFERENCES teams(id)
-        );
-    ''')
-
-    # coaches
-    c.execute('drop table if exists coaches;')
-    c.execute('''
-            create table coaches (
-            id         integer primary key autoincrement,
-            first_name varchar(35) null,
-            last_name  varchar(35) null,
-            birthdate  date        null,
-            nba_debute date        null
-        );
-
-    '''
-    )
-
-    # player states
-    c.execute('drop table if exists player_states;')
-    c.execute('''
-        create table player_states (
-            id          integer primary key autoincrement,
-            player_id   integer     null,
-            team_states_id integer   null,
-            team_id     integer     null,
-            jersey_no   integer     null,
-            position    varchar(3)  null,
-            start_date  date        null,
-            end_date    date        null,
-            FOREIGN KEY(player_id) REFERENCES players(id),
-            FOREIGN KEY(team_states_id) REFERENCES team_states(id),
-            FOREIGN KEY(team_id) REFERENCES teams(id)
-        );
-    ''')
-
-    # teams
-    c.execute('drop table if exists teams;')
-    c.execute(
-        '''create table teams (
-            id   integer primary key autoincrement,
-            name varchar(50) null
-        );
-        '''
-    )
-
-    # team states
-    c.execute('drop table if exists team_states;')
-    c.execute('''
-        create table team_states (
-            id          integer primary key autoincrement,
-            team_id     integer     null,
-            city        varchar(30) null,
-            territory   varchar(30) null,
-            zip         varchar(10) null,
-            country     varchar(30) null,
-            start_date  date        null,
-            end_date    date        null,
-            FOREIGN KEY(team_id) REFERENCES teams(id)
-        );
-    ''')
-    
-    # seasons
-    c.execute('drop table if exists seasons;')
-    c.execute(
-        '''create table seasons (
-            id          integer primary key autoincrement,
-            year_start  integer,
-            year_end    integer,
-            mvp         integer,
-            champion    integer,
-            FOREIGN KEY(mvp) REFERENCES players(id),
-            FOREIGN KEY(champion) REFERENCES teams(id)
-        );
-        '''
-    )
-
-    # Commit changes and close connection
-    conn.commit()
-    conn.close()
-
 #####################################################
 # DB interface class
 #####################################################
@@ -193,7 +71,7 @@ class DB:
     An interface to the db
     """
     def __init__(self):
-        self.conn = sqlite3.connect('basketball_stats.db')
+        self.conn = sqlite3.connect('basketball_stats.db') # TODO
         # self.conn.execute('SELECT load_extension("json1")') # Enable the JSON1 extension
         self.cursor = self.conn.cursor()
 
@@ -266,7 +144,7 @@ def get_soup(url):
     """
     print(url)
     response = requests.get(url)
-    time.sleep(4)
+    time.sleep(WEBSCRAPE_DEBOUNCER)
     if response.status_code < 200 or response.status_code > 299:
         raise Exception(f'Error getting data from {url}. Status ' + str(response.status_code))
 
@@ -279,4 +157,4 @@ def error_response(func):
         except Exception as e:
             error_message = str(e)
             traceback_str = traceback.format_exc()
-            return jsonify({'status_code': 500, 'message': error_message, 'traceback': traceback_str})
+            return {'status_code': 500, 'message': error_message, 'traceback': traceback_str}
