@@ -6,12 +6,12 @@ if a function
 """
 
 import json
-from project import *
+from common import *
 import pandas as pd
 import bs4
 import re
 import time
-from nameparser import HumanName
+# from nameparser import HumanName
 ##########################################
 # TEAMS
 ##########################################
@@ -172,3 +172,32 @@ def download_and_store_play_by_play(start_date=None):
     """
     
     # Schedule of games can be determine per year link like https://www.basketball-reference.com/leagues/NBA_2023_games.html
+
+def download_games1():
+    #https://www.basketball-reference.com/leagues/NBA_2023_games.html
+    
+    get_games_url = lambda year : base_url + f'/leagues/NBA_{year}_games.html' 
+    
+    seasons_url = base_url + '/leagues/'
+    
+    seasons_soup = get_soup(seasons_url)
+    
+    seasons = seasons_soup.find('table', {'id': 'stats'})
+
+    # find all the rows in the table body
+    rows = seasons.tbody.find_all('tr')
+
+    # loop through the rows and extract the data
+    for row in rows:
+        data = row.find_all('td')
+        if data:
+            season = data[0].text.strip()
+            league = data[1].text.strip()
+            champion = data[2].text.strip()
+            mvp = data[3].text.strip()
+            print(season, league, champion, mvp)
+    breakpoint()
+    breakpoint()
+    
+download_games1()
+    

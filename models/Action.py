@@ -1,4 +1,4 @@
-from Instance_Player_Game import Instance_Player_Game
+from models.Instance_Player_Game import Instance_Player_Game
 
 class Action():
     # Every play type

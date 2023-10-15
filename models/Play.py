@@ -1,4 +1,4 @@
-from Action import Action
+from models.Action import Action
 
 class Play():
     def __init__(self, actions, quarter, time, score):

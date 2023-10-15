@@ -14,7 +14,8 @@ from datetime import datetime
 import requests
 import time
 import bs4
-from flask import jsonify
+import mysql.connector 
+
 
 WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
 
@@ -67,63 +68,85 @@ def log(message):
 # DB interface class
 #####################################################
 class DB:
-    """
-    An interface to the db
-    """
-    def __init__(self):
-        self.conn = sqlite3.connect('basketball_stats.db') # TODO
-        # self.conn.execute('SELECT load_extension("json1")') # Enable the JSON1 extension
-        self.cursor = self.conn.cursor()
+    from sqlalchemy import create_engine
+    from fastapi import HTTPException
+    
+    # conn = mysql.connector.connect(
+    #     host=os.environ['BACKEND_DB_HOST'],
+    #     user=os.environ['BACKEND_DB_USER'],
+    #     passwd=os.environ['BACKEND_DB_PASSWORD'],
+    #     database=os.environ['BACKEND_DB_NAME'],
+    # )
+    # cursor = conn.cursor()
+    
+    conn_str = f"mysql+mysqlconnector://{os.environ['BACKEND_DB_USER']}:{os.environ['BACKEND_DB_PASSWORD']}@{os.environ['BACKEND_DB_HOST']}/{os.environ['BACKEND_DB_NAME']}"
+    _engine = create_engine(conn_str)
 
-    def __del__(self):
-        self.conn.commit()
-        self.conn.close()
+    @staticmethod
+    def simple_check_sql_injection(sql: str):
+        '''
+        Checks for SQL injection in a sql statement. 
+        '''
+        if '--' in sql or '/*' in sql or '*/' in sql or 'delete ' in sql.lower() \
+        or 'insert ' in sql.lower() or 'update ' in sql.lower() or 'union ' in sql.lower():
+            raise DB.HTTPException(status_code=500, detail='SQL statement could not be executed: SQL injection detected')
 
-    def select(self, query):
+    @staticmethod
+    def select(sql: str):
         try:
-            assert 'update' not in query.lower(), 'Use update() for update queries'
-            assert 'insert' not in query.lower(), 'Use insert() for insert queries'
-            assert 'delete' not in query.lower(), 'Use delete() for delete queries'
+            assert 'update' not in sql.lower(), 'Use update() for update queries'
+            assert 'insert' not in sql.lower(), 'Use insert() for insert queries'
+            assert 'delete' not in sql.lower(), 'Use delete() for delete queries'
 
-            self.cursor.execute(query)
-            return self.cursor.fetchall()
+            DB.cursor.execute(sql)
+            data = DB.cursor.fetchall()
+            columns = [col[0] for col in DB.cursor.description]
+            data = [dict(zip(columns, row)) for row in data]
+            return data
         except Exception as e:
             # display traceback including line #
             traceback.print_exc()
             print(str(e))
             return None
-        
-    def update(self, query):
+    
+    @staticmethod 
+    def update(query):
         try:
             assert 'select' not in query.lower(), 'Use select() for select queries'
             assert 'insert' not in query.lower(), 'Use insert() for insert queries'
             assert 'delete' not in query.lower(), 'Use delete() for delete queries'
 
-            self.cursor.execute(query)
-            return self.cursor.fetchall()
+            DB.cursor.execute(query)
+            DB.conn.commit()
+            
+            return DB.cursor.fetchall()
         except Exception as e:
             # display traceback including line #
             traceback.print_exc()
             print(str(e))
             return None
-        
-    def insert(self, query):
+    
+    @staticmethod    
+    def insert(query):
         
         try:
             assert 'select' not in query.lower(), 'Use select() for select queries'
             assert 'update' not in query.lower(), 'Use update() for update queries'
             assert 'delete' not in query.lower(), 'Use delete() for delete queries'
 
-            self.cursor.execute(query)
-            return self.cursor.fetchall()
+            DB.cursor.execute(query)
+            DB.conn.commit()
+            
+            return DB.cursor.fetchall()
         except Exception as e:
             # display traceback including line #
             traceback.print_exc()
             print(str(e))
             return None
-
-# The project's database variable
-db = DB() 
+        
+    @staticmethod
+    def close():
+        DB.conn.close()
 
 
 #####################################################
