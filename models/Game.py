@@ -3,15 +3,19 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import pandas as pd
-from Action import Action
-from Play import Play
-from Instance_Player_Game import Instance_Player_Game
-from Instance_Team_Game import Instance_Team_Game
+from models.Action import Action
+from models.Play import Play
+from models.Instance_Player_Game import Instance_Player_Game
+from models.Instance_Team_Game import Instance_Team_Game
 import pyperclip
-
+sys.path.append('..')
+from common import *
 class Game():
 
     def __init__(self, url):
+        
+        # TODO check if game exists in db, get from db if so
+        
         self.url = url
         self.datetime = None
         if url.startswith('https'):   
