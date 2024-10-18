@@ -9,7 +9,6 @@ PerGameStats/TeamGameStats/json
 
 # Manual gitignore entries
 db/.env
-*.session.sql
 db/cacert-2023-05-30.pem
 basketball_stats.db
 .vscode/settings.json
