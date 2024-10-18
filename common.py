@@ -15,7 +15,9 @@ import requests
 import time
 import bs4
 import mysql.connector 
+from dotenv import load_dotenv
 
+load_dotenv()
 
 WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
 
@@ -146,7 +148,8 @@ class DB:
         
     @staticmethod
     def close():
-        DB.conn.close()
+        # DB.conn.close()
+        pass
 
 
 #####################################################

@@ -1,0 +1,5 @@
+game_id,game_br_id,half,minutes_played,team_br_id,field_goals,field_goal_attempts,field_goal_percentage,three_pointers,three_pointer_attempts,three_pointer_percentage,free_throws,free_throw_attempts,free_throw_percentage,rebounds,offensive_rebounds,defensive_rebounds,assists,steals,blocks,turnovers,personal_fouls,points
+168496,202008150POR,1,,POR,,,,,,,,,,,,,,,,,,
+168496,202008150POR,1,,MEM,,,,,,,,,,,,,,,,,,
+168496,202008150POR,2,,POR,,,,,,,,,,,,,,,,,,
+168496,202008150POR,2,,MEM,,,,,,,,,,,,,,,,,,

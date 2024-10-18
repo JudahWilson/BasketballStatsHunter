@@ -1,0 +1,30 @@
+KEY:
+- = in progress
+-- = acquired
+-+ = import in progress
++ = imported
+
+
++games
++players
++teams
+coaches
+coachstates
+playerstates
++seasons
+post 96 stats
+    ++teamgamestats (TODO verify three point percentage for non numerics like nulls in the DB? zeroes?)
+    -teamgamehalfstats
+    -teamgamequarterstats
+    playactions
+    -playergamehalfstats
+    -playergamequarterstats
+    -playergamestats
+pre 96 stats
+    teamgamestats
+    teamgamehalfstats
+    teamgamequarterstats
+    playergamehalfstats
+    playergamequarterstats
+    playergamestats
+
