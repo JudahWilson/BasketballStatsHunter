@@ -71,7 +71,6 @@ def log(message):
 #####################################################
 class DB:
     from sqlalchemy import create_engine
-    from fastapi import HTTPException
     
     # conn = mysql.connector.connect(
     #     host=os.environ['BACKEND_DB_HOST'],
@@ -91,7 +90,7 @@ class DB:
         '''
         if '--' in sql or '/*' in sql or '*/' in sql or 'delete ' in sql.lower() \
         or 'insert ' in sql.lower() or 'update ' in sql.lower() or 'union ' in sql.lower():
-            raise DB.HTTPException(status_code=500, detail='SQL statement could not be executed: SQL injection detected')
+            raise Exception('SQL statement could not be executed: SQL injection detected')
 
     @staticmethod
     def select(sql: str):

@@ -12,7 +12,7 @@ import bs4
 import re
 import time
 import datetime
-
+from sqlalchemy import text
 
 # from nameparser import HumanName
 ##########################################
@@ -74,7 +74,7 @@ def load_seasons():
 
         # Leauge
         db_row["league"] = re.search(
-            "/leagues/([A-Z]{3})_\d{4}.html", cells[1].a["href"]
+            r"/leagues/([A-Z]{3})_\d{4}.html", cells[1].a["href"]
         )[1]
 
         # basketball reference ID
@@ -244,27 +244,40 @@ def load_games(f):
     games["inactive_players"] = games["inactive_players"].apply(lambda x: json.dumps(x))
     games["officials"] = games["officials"].apply(lambda x: json.dumps(x))
     games["attendance"] = games["attendance"].apply(lambda x: 0 if x == "" else x)
+    games['game_duration'] = None # only 197606040BOS has json data for it and it isn't the duration of the game--unclear but maybe time of day it started.
     page = start_chunk_page
-    while page * 1000 < len(games):
-        try:
-            games.iloc[(page - 1) * 1000 : page * 1000].to_sql(
-                name=TABLE_NAME,
-                con=DB._engine,
-                if_exists="append",
-                chunksize=1000,
-                index=False,
-            )
-            with open("log.txt", "w") as f:
-                f.write(str(page))
-            page += 1
-        except Exception as e:
-            with open("log.txt", "a+") as f:
-                f.write(str(e))
-            break
-
-    games.iloc[(page - 1) * 1000 :].to_sql(
-        name=TABLE_NAME, con=DB._engine, if_exists="append", chunksize=1000, index=False
-    )
+    
+    with DB._engine.connect() as connection:
+        connection.execute(text('SET FOREIGN_KEY_CHECKS=0;'))
+    
+    try:
+        while page * 1000 < len(games):
+            try:
+                games.iloc[(page - 1) * 1000 : page * 1000].to_sql(
+                    name=TABLE_NAME,
+                    con=DB._engine,
+                    if_exists="append",
+                    chunksize=1000,
+                    index=False,
+                )
+                with open("log.txt", "w") as f:
+                    f.write(str(page))
+                page += 1
+            except Exception as e:
+                with open("log.txt", "a+") as f:
+                    f.write(str(e))
+                break
+    
+        games.iloc[(page - 1) * 1000 :].to_sql(
+            name=TABLE_NAME, con=DB._engine, if_exists="append", chunksize=1000, index=False
+        )
+    except Exception:
+        breakpoint()
+        traceback.print_exc()
+    
+    
+    with DB._engine.connect() as connection:
+        connection.execute(text('SET FOREIGN_KEY_CHECKS=1;'))
 
 
 def get_points_per_team_by_year(team_br_id):
@@ -373,5 +386,8 @@ def get_team_game_stats():
             
             
         year -= 1
-get_team_game_stats()
+
+    
+load_games('games.json')
+
 DB.close()
