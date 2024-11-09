@@ -35,9 +35,10 @@ from pgs_helper import *
 import re
 import argparse
 import warnings
-from sqlalchemy.exc import RemovedIn20Warning
+from sqlalchemy import text
+# from sqlalchemy.exc import RemovedIn20Warning
 warnings.filterwarnings("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=RemovedIn20Warning)
+# warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
 #endregion
 
@@ -48,17 +49,17 @@ testQL = None # TODO test the testing done by testQL
 # region ARGS
 parser = argparse.ArgumentParser()
 parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson'])
-parser.add_argument('-s', '--seasons-range', help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY]', type=str)
+parser.add_argument('seasons_range', help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]', type=str)
 # parser.add_argument('-o', '--oldest-season', help='Oldest season to process (specify the STARTING year the of season)', type=int)
 # parser.add_argument('-n', '--newest-season', help='Newest season to process (specify the STARTING year the of season)', type=int, default=1946)
-parser.add_argument('-t', '--tables', help=''''[CSV] teamgamestats' ('tgs')
+parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
     'teamgamequarterstats' ('tgqs')
     'teamgamehalfstats' ('tghs')
     'playergamestats' ('pgs')
     'playergamequarterstats' ('pgqs')
     'playergamehalfstats' ('pghs')''')
 args = parser.parse_args()
-if not re.match(r'^\d{2}-\d{2}$', args.seasons_range):
+if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
     parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
 if args.format in ['json','db','rmjson'] and args.tables == []:
     parser.error(f'table option is required for {args.format}')
@@ -729,6 +730,12 @@ def loadJSONToDB(begin_year, stop_year,
             
             if '201312300DEN' in list(games.game_br_id):
                 games.loc[(games.game_br_id == '201312300DEN') & (games.player_br_id == 'anthojo01'), 'box_plus_minus'] = None # no idea y 
+            
+            if '200305250DAL' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200305250DAL') & (games.player_br_id == 'kerrst01'), 'box_plus_minus'] = 4 # no idea y 
+                
+            if '200102130VAN' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200102130VAN') & (games.player_br_id == 'carrch01'), 'box_plus_minus'] = 3 # no idea y 
                 
         
         if get_TeamGameQuarterStats or get_TeamGameHalfStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:   
@@ -770,40 +777,45 @@ def loadJSONToDB(begin_year, stop_year,
 
     games = None
     try:
-        engine.execute('SET FOREIGN_KEY_CHECKS=0;')
+        
         begin_year = int(begin_year)
         stop_year = int(stop_year)
         year = begin_year
 
         while year >= stop_year:
-            with open(f'{TABLE_NAME}/json/{year}{TABLE_NAME}.jsonl', 'r') as f:
-                games = pd.read_json(f,lines=True)
+            with create_engine(conn_str).begin() as connection:
+                connection.execute(text('SET FOREIGN_KEY_CHECKS=0;'))
             
-            games = clean_data(games)
-            page = 1
-            chunksize = 1000
-            while page * chunksize < len(games):
-                try:
-                    games_paginated = games.iloc[(page - 1) * chunksize : page * chunksize]
-                    games_paginated.to_sql(
-                        name=TABLE_NAME,
-                        con=engine,
-                        if_exists="append",
-                        chunksize=chunksize,
-                        index=False,
-                    )
-                    with open("log.txt", "w") as f:
-                        f.write(str(page))
-                    page += 1
-                except Exception as e:
-                    with open("log.txt", "a+") as f:
-                        f.write(str(e))
-                    break
+                with open(f'{TABLE_NAME}/json/{year}{TABLE_NAME}.jsonl', 'r') as f:
+                    games = pd.read_json(f,lines=True)
+                
+                games = clean_data(games)
+                page = 1
+                chunksize = 1000
+                while page * chunksize < len(games):
+                    try:
+                        games_paginated = games.iloc[(page - 1) * chunksize : page * chunksize]
+                        games_paginated.to_sql(
+                            name=TABLE_NAME,
+                            con=connection,
+                            if_exists="append",
+                            chunksize=chunksize,
+                            index=False,
+                        )
+                        with open("log.txt", "w") as f:
+                            f.write(str(page))
+                        page += 1
+                    except Exception as e:
+                        with open("log.txt", "a+") as f:
+                            f.write(str(e))
+                        break
 
-            games.iloc[(page - 1) * chunksize :].to_sql(
-                name=TABLE_NAME, con=engine, if_exists="append", chunksize=chunksize, index=False
-            )
-            year -= 1
+                games.iloc[(page - 1) * chunksize :].to_sql(
+                    name=TABLE_NAME, con=connection, if_exists="append", chunksize=chunksize, index=False
+                )
+                year -= 1
+                
+                connection.execute(text('SET FOREIGN_KEY_CHECKS=1;'))                
     except Exception as e:
         print('----------------')
         print('ERROR LOADING TO DB!: ' + str(e) + '\n')
@@ -811,15 +823,22 @@ def loadJSONToDB(begin_year, stop_year,
         print('\nGame details:')
         print('----------------')
         breakpoint()
-    finally:
-        engine.execute('SET FOREIGN_KEY_CHECKS=1;')
 
 
 
 if __name__ == '__main__':
-    oldest_year, newest_year = args.seasons_range.split('-')
-    oldest_year = int(oldest_year)
-    newest_year = int(newest_year)
+    if '-' in args.seasons_range:
+        year1, year2 = args.seasons_range.split('-')
+        if year1 < year2:
+            oldest_year = int(year1)
+            newest_year = int(year2)
+        else:
+            oldest_year = int(year2)
+            newest_year = int(year1)
+    else:
+        newest_year=int(args.seasons_range)
+        oldest_year=1946
+    
     if args.format == 'json':
         get_TeamGameStats = False
         get_TeamGameHalfStats = False
@@ -871,6 +890,7 @@ if __name__ == '__main__':
         get_PlayerGameStats = False
         get_PlayerGameHalfStats = False
         get_PlayerGameQuarterStats = False
+        tables = args.tables.split(',')
         if 'teamgamestats' in args.tables or 'tgs' in args.tables:
             print("Processing TeamGameStats")
             get_TeamGameStats=True
