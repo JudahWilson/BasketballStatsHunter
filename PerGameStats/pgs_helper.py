@@ -226,7 +226,79 @@ def save_html(game, year):
         try:
             html += soup.select(f"#box-{game['away_team_br_id']}-h2-basic")[0].prettify() + '\n'
         except Exception as e:
-            handle_err(e, game)                
+            handle_err(e, game)       
+            
+        # home ot1
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot1-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # away ot1
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot1-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # home ot2
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot2-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # away ot2
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot2-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # away homet3
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot3-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass        
+        
+        # away ot3
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot3-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass        
+        
+        # away homet4
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot4-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass    
+        
+        # away ot4
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot4-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass    
+        
+        # home ot5
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot5-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # away ot5
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot5-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # home ot6
+        try:
+            html += soup.select(f"#box-{game['home_team_br_id']}-ot6-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
+        
+        # away ot6
+        try:
+            html += soup.select(f"#box-{game['away_team_br_id']}-ot6-basic")[0].prettify() + '\n'
+        except Exception as e:
+            pass
         
     # If the year folder isn't there, create it
     if not os.path.exists(f'html/{year}'):

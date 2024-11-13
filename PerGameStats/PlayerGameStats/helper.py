@@ -142,6 +142,8 @@ def setPlayersData(game, four_factors, team_stats_basic, team_stats_advanced) ->
                 pgs['plus_minus'] = int(DF_pl_basic['+/-'])      
             except ValueError as e:  
                 pgs['plus_minus'] = None
+            except KeyError as e:  
+                pgs['plus_minus'] = None
             #------Advanced Stats------#
             DF_pl_advanced = DF_pls_advanced.iloc[index]
             if team_stats_advanced:

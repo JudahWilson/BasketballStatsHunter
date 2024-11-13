@@ -185,15 +185,19 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
     away_tgs['inactive_players'] = []
     home_tgs['inactive_players'] = []
     away_or_home = None
-    for tag in inactive_players.select('span, a'):
-        if tag.name == 'span':
-            if away_or_home is None:
-                away_or_home = 'away'
-            elif away_or_home == 'away':
-                away_or_home = 'home'
-        
-        elif tag.name == 'a':
-            if away_or_home == 'away':
-                away_tgs['inactive_players'].append(tag['href'].split('/')[-1].replace('.html',''))
-            elif away_or_home == 'home':
-                home_tgs['inactive_players'].append(tag['href'].split('/')[-1].replace('.html',''))
+    if inactive_players:
+        for tag in inactive_players.select('span, a'):
+            if tag.name == 'span':
+                if away_or_home is None:
+                    away_or_home = 'away'
+                elif away_or_home == 'away':
+                    away_or_home = 'home'
+            
+            elif tag.name == 'a':
+                if away_or_home == 'away':
+                    away_tgs['inactive_players'].append(tag['href'].split('/')[-1].replace('.html',''))
+                elif away_or_home == 'home':
+                    home_tgs['inactive_players'].append(tag['href'].split('/')[-1].replace('.html',''))
+    else:
+        away_tgs['inactive_players'] = []
+        home_tgs['inactive_players'] = []

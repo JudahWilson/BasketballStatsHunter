@@ -57,37 +57,45 @@ parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
     'teamgamehalfstats' ('tghs')
     'playergamestats' ('pgs')
     'playergamequarterstats' ('pgqs')
-    'playergamehalfstats' ('pghs')''')
+    'playergamehalfstats' ('pghs')''',
+    nargs='?')
 args = parser.parse_args()
 if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
     parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
 if args.format in ['json','db','rmjson'] and args.tables == []:
     parser.error(f'table option is required for {args.format}')
-for a in args.tables.split(','):
-    if a not in [
-        'teamgamestats','tgs',
-        'teamgamequarterstats','tgqs',
-        'teamgamehalfstats','tghs',
-        'playergamestats','pgs',
-        'playergamequarterstats','pgqs',
-        'playergamehalfstats','pghs',
-    ]:
-        parser.error(f'''Invalid table name: {a}.
-Valid table names are:
-    'teamgamestats' ('tgs')
-    'teamgamequarterstats' ('tgqs')
-    'teamgamehalfstats' ('tghs')
-    'playergamestats' ('pgs')
-    'playergamequarterstats' ('pgqs')
-    'playergamehalfstats' ('pghs')''')
+if args.tables:
+    for a in args.tables.split(','):
+        if a not in [
+            'teamgamestats','tgs',
+            'teamgamequarterstats','tgqs',
+            'teamgamehalfstats','tghs',
+            'playergamestats','pgs',
+            'playergamequarterstats','pgqs',
+            'playergamehalfstats','pghs',
+        ]:
+            parser.error(f'''Invalid table name: {a}.
+    Valid table names are:
+        'teamgamestats' ('tgs')
+        'teamgamequarterstats' ('tgqs')
+        'teamgamehalfstats' ('tghs')
+        'playergamestats' ('pgs')
+        'playergamequarterstats' ('pgqs')
+        'playergamehalfstats' ('pghs')''')
 if args.format == 'rmjson':
     raise NotImplementedError('rmjson not implemented yet')
 #endregion
 
 
     
-def getTeamGameStatsHTML(start_year=None, stop_year=1946, singular_game_br_id=False):
+def getTeamGameStatsHTML(start_year=None, stop_year=1946, singular_game_br_id=False, override_existing_html=False):
     
+    if override_existing_html:
+        if input('THIS IS OVERRIDING EXISTING HTML RATHER THAN PICKING UP WHERE THE SCRIPT LEFT OFF.\nInput "y" to continue:') == 'y':
+            print('Proceeding script...')
+        else:
+            print('Set override_existing_html to False (or omit the argument) in the call to getTeamGameStatsHTML')
+                
     if singular_game_br_id:
         year = int(singular_game_br_id[:4])
         SQL = f"""SELECT * FROM Games
@@ -119,6 +127,8 @@ def getTeamGameStatsHTML(start_year=None, stop_year=1946, singular_game_br_id=Fa
             for folder in os.listdir('html'):
                 if folder.isnumeric() and int(folder) > year:
                     continue
+                elif folder == '.gitkeep':
+                    continue
                 else:
                     # If contents in folder 
                     if os.listdir(f'html/{folder}'):
@@ -127,20 +137,18 @@ def getTeamGameStatsHTML(start_year=None, stop_year=1946, singular_game_br_id=Fa
                         files.sort()
                         last_file = files[0]
                         left_off_game_br_id = last_file.split('-')[1].split('.')[0]
-            
                     
             for ind, game in games.iterrows():
+                if not override_existing_html:
+                    if left_off_game_br_id:
+                        # Pick up where we left off if we have to
+                        if left_off_game_br_id == game['br_id']:
+                            # Skip to the next game
+                            if left_off_game_br_id:
+                                left_off_game_br_id = False
+                        continue
                 
-                if left_off_game_br_id:
-                    # Pick up where we left off if we have to
-                    if left_off_game_br_id == game['br_id']:
-                        # Skip to the next game
-                        if left_off_game_br_id:
-                            left_off_game_br_id = False
-                    continue
-                
-                
-                save_html(game['br_id'], year)
+                save_html(game, year)
                 
                 print('SAVED')
             print('YEAR ' + str(year) + ' COMPLETE')
@@ -207,7 +215,8 @@ def setTeamGameStatsJSON(begin_year=None, stop_year=1946,get_TeamGameStats=False
 
                 if len(soup.select('#inactive_players')) > 0:
                     inactive_players = soup.select('#inactive_players')[0]
-
+                else:
+                    inactive_players = None
                 home_team_br_id = remove_numbers(game.br_id)
                 away_team_br_id = soup.select('.stats_table')[0]['id'].split('-')[1]
                 
@@ -925,6 +934,6 @@ if __name__ == '__main__':
         exit(0)
 
     elif args.format == 'html':
-        getTeamGameStatsHTML(newest_year, oldest_year) 
+        getTeamGameStatsHTML(newest_year, oldest_year, override_existing_html=True) 
         exit(0)
 
