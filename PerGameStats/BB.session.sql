@@ -13,7 +13,10 @@ union select "teamgamehalfstats" as "table", count(*) from teamgamehalfstats
 union select "teamgamequarterstats" as "table", count(*) from teamgamequarterstats
 union select "teamgamequarterstats" as "table", count(*) from teamgamequarterstats;
 
-
+select "FIRST playergamestats" as "table", min(game_br_id) as "game_br_id" from playergamestats
+union select "LAST playergamestats" as "table", max(game_br_id) as "game_br_id" from playergamestats
+union select "FIRST teamgamestats" as "table", min(game_br_id) as "game_br_id" from teamgamestats
+union select "LAST teamgamestats" as "table", max(game_br_id) as "game_br_id" from teamgamestats;
 
 select "FIRST playergamestats" as "table", min(game_br_id) as "game_br_id" from playergamestats
 union select "LAST playergamestats" as "table", max(game_br_id) as "game_br_id" from playergamestats

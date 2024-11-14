@@ -117,69 +117,70 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
     home_tgs['points'] = home_team_basic.select('[data-stat="pts"]')[-1].text.strip()
     
     #------Advanced Stats------#
-    next_field='true_shooting_percentage'
-    away_tgs['true_shooting_percentage'] = away_team_advanced.select('[data-stat="ts_pct"]')[-1].text.strip()
-    home_tgs['true_shooting_percentage'] = home_team_advanced.select('[data-stat="ts_pct"]')[-1].text.strip()
-    
-    next_field='effective_field_goal_percentage'
-    away_tgs['effective_field_goal_percentage'] = away_team_advanced.select('[data-stat="efg_pct"]')[-1].text.strip()
-    home_tgs['effective_field_goal_percentage'] = home_team_advanced.select('[data-stat="efg_pct"]')[-1].text.strip()
-    
-    next_field='three_point_attempt_rate'
-    away_tgs['three_point_attempt_rate'] = away_team_advanced.select('[data-stat="fg3a_per_fga_pct"]')[-1].text.strip()
-    home_tgs['three_point_attempt_rate'] = home_team_advanced.select('[data-stat="fg3a_per_fga_pct"]')[-1].text.strip()
-    
-    next_field='free_throw_attempt_rate'
-    away_tgs['free_throw_attempt_rate'] = away_team_advanced.select('[data-stat="fta_per_fga_pct"]')[-1].text.strip()
-    home_tgs['free_throw_attempt_rate'] = home_team_advanced.select('[data-stat="fta_per_fga_pct"]')[-1].text.strip()
-    
-    next_field='offensive_rebound_percentage'
-    away_tgs['offensive_rebound_percentage'] = away_team_advanced.select('[data-stat="orb_pct"]')[-1].text.strip()
-    home_tgs['offensive_rebound_percentage'] = home_team_advanced.select('[data-stat="orb_pct"]')[-1].text.strip()
-    
-    next_field='defensive_rebound_percentage'
-    away_tgs['defensive_rebound_percentage'] = away_team_advanced.select('[data-stat="drb_pct"]')[-1].text.strip()
-    home_tgs['defensive_rebound_percentage'] = home_team_advanced.select('[data-stat="drb_pct"]')[-1].text.strip()
-    
-    next_field='total_rebound_percentage'
-    away_tgs['total_rebound_percentage'] = away_team_advanced.select('[data-stat="trb_pct"]')[-1].text.strip()
-    home_tgs['total_rebound_percentage'] = home_team_advanced.select('[data-stat="trb_pct"]')[-1].text.strip()
-    
-    next_field='assist_percentage'
-    away_tgs['assist_percentage'] = away_team_advanced.select('[data-stat="ast_pct"]')[-1].text.strip()
-    home_tgs['assist_percentage'] = home_team_advanced.select('[data-stat="ast_pct"]')[-1].text.strip()
-    
-    next_field='steal_percentage'
-    away_tgs['steal_percentage'] = away_team_advanced.select('[data-stat="stl_pct"]')[-1].text.strip()
-    home_tgs['steal_percentage'] = home_team_advanced.select('[data-stat="stl_pct"]')[-1].text.strip()
-    
-    next_field='block_percentage'
-    away_tgs['block_percentage'] = away_team_advanced.select('[data-stat="blk_pct"]')[-1].text.strip()
-    home_tgs['block_percentage'] = home_team_advanced.select('[data-stat="blk_pct"]')[-1].text.strip()
-    
-    next_field='turnover_percentage'
-    away_tgs['turnover_percentage'] = away_team_advanced.select('[data-stat="tov_pct"]')[-1].text.strip()
-    home_tgs['turnover_percentage'] = home_team_advanced.select('[data-stat="tov_pct"]')[-1].text.strip()
-    
-    next_field='usage_percentage'
-    away_tgs['usage_percentage'] = away_team_advanced.select('[data-stat="usg_pct"]')[-1].text.strip()
-    home_tgs['usage_percentage'] = home_team_advanced.select('[data-stat="usg_pct"]')[-1].text.strip()
-    
-    next_field='offensive_rating'
-    away_tgs['offensive_rating'] = away_team_advanced.select('[data-stat="off_rtg"]')[-1].text.strip()
-    home_tgs['offensive_rating'] = home_team_advanced.select('[data-stat="off_rtg"]')[-1].text.strip()
-    
-    next_field='defensive_rating'
-    away_tgs['defensive_rating'] = away_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
-    home_tgs['defensive_rating'] = home_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
-    
-    next_field='pace_factor'
-    away_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[1].text.strip()
-    home_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[2].text.strip()
-    
-    next_field='ft_per_fga'
-    away_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
-    home_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
+    if away_team_advanced:
+        next_field='true_shooting_percentage'
+        away_tgs['true_shooting_percentage'] = away_team_advanced.select('[data-stat="ts_pct"]')[-1].text.strip()
+        home_tgs['true_shooting_percentage'] = home_team_advanced.select('[data-stat="ts_pct"]')[-1].text.strip()
+        
+        next_field='effective_field_goal_percentage'
+        away_tgs['effective_field_goal_percentage'] = away_team_advanced.select('[data-stat="efg_pct"]')[-1].text.strip()
+        home_tgs['effective_field_goal_percentage'] = home_team_advanced.select('[data-stat="efg_pct"]')[-1].text.strip()
+        
+        next_field='three_point_attempt_rate'
+        away_tgs['three_point_attempt_rate'] = away_team_advanced.select('[data-stat="fg3a_per_fga_pct"]')[-1].text.strip()
+        home_tgs['three_point_attempt_rate'] = home_team_advanced.select('[data-stat="fg3a_per_fga_pct"]')[-1].text.strip()
+        
+        next_field='free_throw_attempt_rate'
+        away_tgs['free_throw_attempt_rate'] = away_team_advanced.select('[data-stat="fta_per_fga_pct"]')[-1].text.strip()
+        home_tgs['free_throw_attempt_rate'] = home_team_advanced.select('[data-stat="fta_per_fga_pct"]')[-1].text.strip()
+        
+        next_field='offensive_rebound_percentage'
+        away_tgs['offensive_rebound_percentage'] = away_team_advanced.select('[data-stat="orb_pct"]')[-1].text.strip()
+        home_tgs['offensive_rebound_percentage'] = home_team_advanced.select('[data-stat="orb_pct"]')[-1].text.strip()
+        
+        next_field='defensive_rebound_percentage'
+        away_tgs['defensive_rebound_percentage'] = away_team_advanced.select('[data-stat="drb_pct"]')[-1].text.strip()
+        home_tgs['defensive_rebound_percentage'] = home_team_advanced.select('[data-stat="drb_pct"]')[-1].text.strip()
+        
+        next_field='total_rebound_percentage'
+        away_tgs['total_rebound_percentage'] = away_team_advanced.select('[data-stat="trb_pct"]')[-1].text.strip()
+        home_tgs['total_rebound_percentage'] = home_team_advanced.select('[data-stat="trb_pct"]')[-1].text.strip()
+        
+        next_field='assist_percentage'
+        away_tgs['assist_percentage'] = away_team_advanced.select('[data-stat="ast_pct"]')[-1].text.strip()
+        home_tgs['assist_percentage'] = home_team_advanced.select('[data-stat="ast_pct"]')[-1].text.strip()
+        
+        next_field='steal_percentage'
+        away_tgs['steal_percentage'] = away_team_advanced.select('[data-stat="stl_pct"]')[-1].text.strip()
+        home_tgs['steal_percentage'] = home_team_advanced.select('[data-stat="stl_pct"]')[-1].text.strip()
+        
+        next_field='block_percentage'
+        away_tgs['block_percentage'] = away_team_advanced.select('[data-stat="blk_pct"]')[-1].text.strip()
+        home_tgs['block_percentage'] = home_team_advanced.select('[data-stat="blk_pct"]')[-1].text.strip()
+        
+        next_field='turnover_percentage'
+        away_tgs['turnover_percentage'] = away_team_advanced.select('[data-stat="tov_pct"]')[-1].text.strip()
+        home_tgs['turnover_percentage'] = home_team_advanced.select('[data-stat="tov_pct"]')[-1].text.strip()
+        
+        next_field='usage_percentage'
+        away_tgs['usage_percentage'] = away_team_advanced.select('[data-stat="usg_pct"]')[-1].text.strip()
+        home_tgs['usage_percentage'] = home_team_advanced.select('[data-stat="usg_pct"]')[-1].text.strip()
+        
+        next_field='offensive_rating'
+        away_tgs['offensive_rating'] = away_team_advanced.select('[data-stat="off_rtg"]')[-1].text.strip()
+        home_tgs['offensive_rating'] = home_team_advanced.select('[data-stat="off_rtg"]')[-1].text.strip()
+        
+        next_field='defensive_rating'
+        away_tgs['defensive_rating'] = away_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
+        home_tgs['defensive_rating'] = home_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
+        
+        next_field='pace_factor'
+        away_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[1].text.strip()
+        home_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[2].text.strip()
+        
+        next_field='ft_per_fga'
+        away_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
+        home_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
     
     next_field='inactive_players'
     away_tgs['inactive_players'] = []

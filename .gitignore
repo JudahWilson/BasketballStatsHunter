@@ -1,4 +1,4 @@
-# Bulk files
+# PerGameStats
 PerGameStats/html
 PerGameStats/PlayerGameHalfStats/json
 PerGameStats/PlayerGameQuarterStats/json
@@ -6,7 +6,8 @@ PerGameStats/PlayerGameStats/json
 PerGameStats/TeamGameHalfStats/json
 PerGameStats/TeamGameQuarterStats/json
 PerGameStats/TeamGameStats/json
-
+PerGameStats/lastgamehtml.txt
+PerGameStats/log.txt
 # Manual gitignore entries
 db/.env
 db/cacert-2023-05-30.pem

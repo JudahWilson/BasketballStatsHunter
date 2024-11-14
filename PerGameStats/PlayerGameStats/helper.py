@@ -145,8 +145,8 @@ def setPlayersData(game, four_factors, team_stats_basic, team_stats_advanced) ->
             except KeyError as e:  
                 pgs['plus_minus'] = None
             #------Advanced Stats------#
-            DF_pl_advanced = DF_pls_advanced.iloc[index]
             if team_stats_advanced:
+                DF_pl_advanced = DF_pls_advanced.iloc[index]
                     
                 next_field='true_shooting_percentage'; pgs['true_shooting_percentage'] = DF_pl_advanced['TS%']            
                 next_field='effective_field_goal_percentage'; pgs['effective_field_goal_percentage'] = DF_pl_advanced['eFG%']

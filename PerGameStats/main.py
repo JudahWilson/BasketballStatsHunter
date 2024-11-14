@@ -1,17 +1,16 @@
 # TODO
 '''
-- pgs
-    2010
-- pgqs
-    2010
-- pghs
-    2010
-- tgs
-    2010
-- tgqs
-    2010
-- tghs
-    2010
+**py main.py json 1989-1980 tgs:**
+File "C:\StatBucket DB\PerGameStats\TeamGameStats\helper.py", line 44, in setJSON
+    away_tgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text
+                             ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'select'
+
+**py main.py json 1983-1980 pgs**
+File "C:\StatBucket DB\PerGameStats\PlayerGameStats\helper.py", line 109, in setPlayersData
+    next_field='team_br_id'; pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
+                                                 ^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'select'
 '''
 
 #region IMPORTS and CONFIG
@@ -148,6 +147,8 @@ def getTeamGameStatsHTML(start_year=None, stop_year=1946, singular_game_br_id=Fa
                                 left_off_game_br_id = False
                         continue
                 
+                with open('lastgamehtml.txt','w') as f:
+                    f.write(game.br_id)
                 save_html(game, year)
                 
                 print('SAVED')
