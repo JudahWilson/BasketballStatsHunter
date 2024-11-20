@@ -1,18 +1,20 @@
-# TODO
-'''
-**py main.py json 1989-1980 tgs:**
+r''' TODO
+**LOGIC TO GET TEAM_BR_ID NEEDS TO BE DIFFERENT**
+==================================================
+$ py main.py json 1989-1980 -t tgs
+---
 File "C:\StatBucket DB\PerGameStats\TeamGameStats\helper.py", line 44, in setJSON
     away_tgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text
                              ^^^^^^^^^^^^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'select'
-
-**py main.py json 1983-1980 pgs**
+--------------------------------------------------
+$ py main.py json 1983-1980 -t pgs
+---
 File "C:\StatBucket DB\PerGameStats\PlayerGameStats\helper.py", line 109, in setPlayersData
     next_field='team_br_id'; pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
                                                  ^^^^^^^^^^^^^^^^^^^
 AttributeError: 'NoneType' object has no attribute 'select'
 '''
-
 #region IMPORTS and CONFIG
 import json
 import pandas as pd
@@ -47,22 +49,28 @@ testQL = None # TODO test the testing done by testQL
 
 # region ARGS
 parser = argparse.ArgumentParser()
-parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson'])
-parser.add_argument('seasons_range', help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]', type=str)
+parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb'])
+parser.add_argument('seasons_range', type=str, nargs='?',
+                    help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
 # parser.add_argument('-o', '--oldest-season', help='Oldest season to process (specify the STARTING year the of season)', type=int)
 # parser.add_argument('-n', '--newest-season', help='Newest season to process (specify the STARTING year the of season)', type=int, default=1946)
-parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
+parser.add_argument('--tables','-t', help=''''[CSV] teamgamestats' ('tgs')
     'teamgamequarterstats' ('tgqs')
     'teamgamehalfstats' ('tghs')
     'playergamestats' ('pgs')
     'playergamequarterstats' ('pgqs')
     'playergamehalfstats' ('pghs')''',
     nargs='?')
+
+
 args = parser.parse_args()
-if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
-    parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
+if args.seasons_range:
+    if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
+        parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
 if args.format in ['json','db','rmjson'] and args.tables == []:
     parser.error(f'table option is required for {args.format}')
+if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
+    parser.error(f'seasons_range is required for {args.format} (YYYY-YYYY) or just YYYY for all seasons YYYY and earlier')
 if args.tables:
     for a in args.tables.split(','):
         if a not in [
@@ -81,8 +89,7 @@ if args.tables:
         'playergamestats' ('pgs')
         'playergamequarterstats' ('pgqs')
         'playergamehalfstats' ('pghs')''')
-if args.format == 'rmjson':
-    raise NotImplementedError('rmjson not implemented yet')
+
 #endregion
 
 
@@ -836,18 +843,166 @@ def loadJSONToDB(begin_year, stop_year,
 
 
 
-if __name__ == '__main__':
-    if '-' in args.seasons_range:
-        year1, year2 = args.seasons_range.split('-')
-        if year1 < year2:
-            oldest_year = int(year1)
-            newest_year = int(year2)
+def lsJSON(
+                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    Process JSON files into the database reverse chronologically
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+
+    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
+    str_output=''
+    for table in tables:
+        str_output += f'\n\n{table}:'
+        for file in os.listdir(f'{table}/json'):
+            if data_file_pattern.match(file):
+                str_output += f'\n\t{file}'
+
+    print(str_output)
+
+
+    
+def rmJSON(newest_year, oldest_year,
+                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    remove JSON files from the file system
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    
+    target_table_count = 0
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+
+    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
+    str_output=''
+    for table in tables:
+        str_output += f'\n\n{table}:'
+        for file in os.listdir(f'{table}/json'):
+            if data_file_pattern.match(file):
+                if int(file[:4]) <= newest_year and int(file[:4]) >= oldest_year:
+                    str_output += f'\n\tDELETED {file}'
+                    
+                    os.remove(f'{table}/json/{file}')
+
+    print(str_output)
+ 
+   
+
+def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+        get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    show where progress was left off for importing data in the database 
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+        
+    basic_table_sql=''
+    advanced_table_sql=''
+    is_first_basic_table = True
+    is_first_advancded_table = True
+    for table in tables:
+        if table.lower() in ['tgs','pgs','teamgamestats','playergamestats']:
+            if is_first_basic_table:
+                basic_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            else:
+                basic_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            is_first_basic_table = False
         else:
-            oldest_year = int(year2)
-            newest_year = int(year1)
-    else:
-        newest_year=int(args.seasons_range)
-        oldest_year=1946
+            if is_first_advancded_table:
+                advanced_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            else:
+                advanced_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            is_first_advancded_table = False
+    basic_table_sql += ';'
+    with create_engine(conn_str).begin() as connection:
+        basic_df = pd.read_sql(sql=basic_table_sql, con=engine)     
+        advanced_df = pd.read_sql(sql=advanced_table_sql, con=engine)     
+    print('\nBASIC DATA:')
+    print(basic_df.to_string(index=False))
+    print('\n\nADVANCED DATA:')
+    print(advanced_df.to_string(index=False))
+    
+    
+if __name__ == '__main__':
+    if args.seasons_range:
+        if '-' in args.seasons_range:
+            year1, year2 = args.seasons_range.split('-')
+            if year1 < year2:
+                oldest_year = int(year1)
+                newest_year = int(year2)
+            else:
+                oldest_year = int(year2)
+                newest_year = int(year1)
+        else:
+            newest_year=int(args.seasons_range)
+            oldest_year=1946
     
     if args.format == 'json':
         get_TeamGameStats = False
@@ -893,6 +1048,101 @@ if __name__ == '__main__':
         
         exit(0)
 
+    elif args.format == 'lsjson':
+        get_TeamGameStats = False
+        get_TeamGameHalfStats = False
+        get_TeamGameQuarterStats = False
+        get_PlayerGameStats = False
+        get_PlayerGameHalfStats = False
+        get_PlayerGameQuarterStats = False
+        if args.tables:
+            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                get_TeamGameStats=True
+            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                get_TeamGameQuarterStats=True
+            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                get_TeamGameHalfStats=True
+            if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                get_PlayerGameStats=True
+            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                get_PlayerGameQuarterStats=True
+            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                get_PlayerGameHalfStats=True
+        else:
+            get_TeamGameStats=True
+            get_TeamGameQuarterStats=True
+            get_TeamGameHalfStats=True
+            get_PlayerGameStats=True
+            get_PlayerGameQuarterStats=True
+            get_PlayerGameHalfStats=True
+        lsJSON(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+        
+    elif args.format == 'rmjson':
+        get_TeamGameStats = False
+        get_TeamGameHalfStats = False
+        get_TeamGameQuarterStats = False
+        get_PlayerGameStats = False
+        get_PlayerGameHalfStats = False
+        get_PlayerGameQuarterStats = False
+        if args.tables:
+            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                get_TeamGameStats=True
+            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                get_TeamGameQuarterStats=True
+            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                get_TeamGameHalfStats=True
+            if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                get_PlayerGameStats=True
+            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                get_PlayerGameQuarterStats=True
+            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                get_PlayerGameHalfStats=True
+        else:
+            get_TeamGameStats=True
+            get_TeamGameQuarterStats=True
+            get_TeamGameHalfStats=True
+            get_PlayerGameStats=True
+            get_PlayerGameQuarterStats=True
+            get_PlayerGameHalfStats=True
+        
+        rmJSON(newest_year,
+                oldest_year,
+                get_TeamGameStats,
+                get_TeamGameQuarterStats,
+                get_TeamGameHalfStats,
+                get_PlayerGameStats,
+                get_PlayerGameQuarterStats,
+                get_PlayerGameHalfStats)
+    
+    elif args.format == 'lsdb':
+        get_TeamGameStats = False
+        get_TeamGameHalfStats = False
+        get_TeamGameQuarterStats = False
+        get_PlayerGameStats = False
+        get_PlayerGameHalfStats = False
+        get_PlayerGameQuarterStats = False
+        if args.tables:
+            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                get_TeamGameStats=True
+            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                get_TeamGameQuarterStats=True
+            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                get_TeamGameHalfStats=True
+            if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                get_PlayerGameStats=True
+            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                get_PlayerGameQuarterStats=True
+            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                get_PlayerGameHalfStats=True
+        else:
+            get_TeamGameStats=True
+            get_TeamGameQuarterStats=True
+            get_TeamGameHalfStats=True
+            get_PlayerGameStats=True
+            get_PlayerGameQuarterStats=True
+            get_PlayerGameHalfStats=True
+        lsdb(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+    
     elif args.format == 'db':
         get_TeamGameStats = False
         get_TeamGameHalfStats = False
