@@ -1,19 +1,5 @@
 r''' TODO
-**LOGIC TO GET TEAM_BR_ID NEEDS TO BE DIFFERENT**
-==================================================
-$ py main.py json 1989-1980 -t tgs
----
-File "C:\StatBucket DB\PerGameStats\TeamGameStats\helper.py", line 44, in setJSON
-    away_tgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text
-                             ^^^^^^^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'select'
---------------------------------------------------
-$ py main.py json 1983-1980 -t pgs
----
-File "C:\StatBucket DB\PerGameStats\PlayerGameStats\helper.py", line 109, in setPlayersData
-    next_field='team_br_id'; pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
-                                                 ^^^^^^^^^^^^^^^^^^^
-AttributeError: 'NoneType' object has no attribute 'select'
+- import OT quarter
 '''
 #region IMPORTS and CONFIG
 import json
@@ -990,6 +976,7 @@ def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalf
     print(advanced_df.to_string(index=False))
     
     
+
 if __name__ == '__main__':
     if args.seasons_range:
         if '-' in args.seasons_range:

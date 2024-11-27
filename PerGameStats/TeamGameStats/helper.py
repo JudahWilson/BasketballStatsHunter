@@ -36,13 +36,13 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
     home_tgs['game_br_id'] = game['br_id']
     away_tgs['game_br_id'] = game['br_id']
     
+    next_field='team_br_id'
+    away_tgs['team_br_id'] = away_team_basic.attrs['id'].split('-')[1]
+    home_tgs['team_br_id'] = home_team_basic.attrs['id'].split('-')[1]
+    
     next_field='minutes_played'
     away_tgs['minutes_played'] = away_team_basic.select('td[data-stat="mp"]')[-1].text.strip()
     home_tgs['minutes_played'] = home_team_basic.select('td[data-stat="mp"]')[-1].text.strip()
-    
-    next_field='team_br_id'
-    away_tgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text
-    home_tgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[1].text
     
     next_field='field_goals'
     away_tgs['field_goals'] = away_team_basic.select('[data-stat="fg"]')[-1].text.strip()
@@ -56,17 +56,18 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
     away_tgs['field_goal_percentage'] = away_team_basic.select('[data-stat="fg_pct"]')[-1].text.strip()
     home_tgs['field_goal_percentage'] = home_team_basic.select('[data-stat="fg_pct"]')[-1].text.strip()
     
-    next_field='three_pointers'
-    away_tgs['three_pointers'] = away_team_basic.select('[data-stat="fg3"]')[-1].text.strip()
-    home_tgs['three_pointers'] = home_team_basic.select('[data-stat="fg3"]')[-1].text.strip()
+    if 'three_pointers' in away_tgs:
+        next_field='three_pointers'
+        away_tgs['three_pointers'] = away_team_basic.select('[data-stat="fg3"]')[-1].text.strip()
+        home_tgs['three_pointers'] = home_team_basic.select('[data-stat="fg3"]')[-1].text.strip()
     
-    next_field='three_pointer_attempts'
-    away_tgs['three_pointer_attempts'] = away_team_basic.select('[data-stat="fg3a"]')[-1].text.strip()
-    home_tgs['three_pointer_attempts'] = home_team_basic.select('[data-stat="fg3a"]')[-1].text.strip()
-    
-    next_field='three_pointer_percentage'
-    away_tgs['three_pointer_percentage'] = away_team_basic.select('[data-stat="fg3_pct"]')[-1].text.strip()
-    home_tgs['three_pointer_percentage'] = home_team_basic.select('[data-stat="fg3_pct"]')[-1].text.strip()
+        next_field='three_pointer_attempts'
+        away_tgs['three_pointer_attempts'] = away_team_basic.select('[data-stat="fg3a"]')[-1].text.strip()
+        home_tgs['three_pointer_attempts'] = home_team_basic.select('[data-stat="fg3a"]')[-1].text.strip()
+        
+        next_field='three_pointer_percentage'
+        away_tgs['three_pointer_percentage'] = away_team_basic.select('[data-stat="fg3_pct"]')[-1].text.strip()
+        home_tgs['three_pointer_percentage'] = home_team_basic.select('[data-stat="fg3_pct"]')[-1].text.strip()
     
     next_field='free_throws'
     away_tgs['free_throws'] = away_team_basic.select('[data-stat="ft"]')[-1].text.strip()
@@ -115,6 +116,16 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
     next_field='points'
     away_tgs['points'] = away_team_basic.select('[data-stat="pts"]')[-1].text.strip()
     home_tgs['points'] = home_team_basic.select('[data-stat="pts"]')[-1].text.strip()
+    
+    if four_factors:        
+        next_field='pace_factor'
+        away_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[1].text.strip()
+        home_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[2].text.strip()
+        
+        next_field='ft_per_fga'
+        away_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
+        home_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
+
     
     #------Advanced Stats------#
     if away_team_advanced:
@@ -174,14 +185,6 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
         away_tgs['defensive_rating'] = away_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
         home_tgs['defensive_rating'] = home_team_advanced.select('[data-stat="def_rtg"]')[-1].text.strip()
         
-        next_field='pace_factor'
-        away_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[1].text.strip()
-        home_tgs['pace_factor'] = four_factors.select('[data-stat="pace"]')[2].text.strip()
-        
-        next_field='ft_per_fga'
-        away_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
-        home_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
-    
     next_field='inactive_players'
     away_tgs['inactive_players'] = []
     home_tgs['inactive_players'] = []

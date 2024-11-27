@@ -1,8 +1,8 @@
 import pandas as pd
 import pyperclip
 from io import StringIO
-
-def setPlayersData(game, four_factors, team_stats_basic, team_stats_advanced) -> list:
+# TODO how to handle four factors if none (see calling func??)
+def setPlayersData(game, team_br_id, team_stats_basic, team_stats_advanced) -> list:
     # Get DataFrane of basic stats
     DF_pls_basic = pd.read_html(StringIO(str(team_stats_basic)))
     DF_pls_basic = DF_pls_basic[0]
@@ -106,7 +106,7 @@ def setPlayersData(game, four_factors, team_stats_basic, team_stats_advanced) ->
 
         else:
             next_field='minutes_played'; pgs['minutes_played'] = DF_pl_basic['MP']            
-            next_field='team_br_id'; pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
+            next_field='team_br_id'; pgs['team_br_id'] = team_br_id
             next_field='field_goals'; pgs['field_goals'] = DF_pl_basic['FG']
             next_field='field_goal_attempts'; pgs['field_goal_attempts'] = DF_pl_basic['FGA']            
             next_field='field_goal_percentage'; pgs['field_goal_percentage'] = DF_pl_basic['FG%']            
@@ -144,6 +144,7 @@ def setPlayersData(game, four_factors, team_stats_basic, team_stats_advanced) ->
                 pgs['plus_minus'] = None
             except KeyError as e:  
                 pgs['plus_minus'] = None
+            
             #------Advanced Stats------#
             if team_stats_advanced:
                 DF_pl_advanced = DF_pls_advanced.iloc[index]
@@ -195,7 +196,7 @@ def setJSON(
     # away players
     all_players += setPlayersData(
         game, 
-        four_factors=four_factors,
+        team_br_id=game['away_team_br_id'],
         team_stats_basic=away_team_basic,
         team_stats_advanced=away_team_advanced,
     )
@@ -203,7 +204,7 @@ def setJSON(
     # home players
     all_players += setPlayersData(
         game, 
-        four_factors=four_factors,
+        team_br_id=game['home_team_br_id'],
         team_stats_basic=home_team_basic,
         team_stats_advanced=home_team_advanced,
     )
