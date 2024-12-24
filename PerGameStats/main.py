@@ -1,5 +1,12 @@
 r''' TODO
-- import OT quarter
+- all pgs,pgqs,pghs due to team_br_id problem
+    -/ json
+    - db
+- import OT for all tables
+- 1980 html missing last several games-- impacts pgs,tgs
+- download pbp html
+- PerGameStats/corrections/202008150POR
+  - manual user input bc its unavailable
 '''
 #region IMPORTS and CONFIG
 import json
@@ -241,6 +248,7 @@ def setTeamGameStatsJSON(begin_year=None, stop_year=1946,get_TeamGameStats=False
                     home_team_h2 = soup.select(f'#box-{home_team_br_id}-h2-basic')[0]
                     away_team_h1 = soup.select(f'#box-{away_team_br_id}-h1-basic')[0]
                     away_team_h2 = soup.select(f'#box-{away_team_br_id}-h2-basic')[0]
+                    
                 else:
                     home_team_q1 = None
                     home_team_q2 = None
@@ -700,7 +708,7 @@ def loadJSONToDB(begin_year, stop_year,
         if 'usage_percentage' in games.columns:
             games['usage_percentage'] = games['usage_percentage'].apply(shift_decimal)
         if 'box_plus_minus' in games.columns:
-            games['box_plus_minus'] = games['box_plus_minus'].apply(lambda x: 0 if x == -1000 else x)
+            games['box_plus_minus'] = games['box_plus_minus'].apply(lambda x: None if x == -1000 else x)
         
 
         if 'three_pointer_percentage' in games.columns:
@@ -735,10 +743,14 @@ def loadJSONToDB(begin_year, stop_year,
                 games.loc[(games.game_br_id == '201312300DEN') & (games.player_br_id == 'anthojo01'), 'box_plus_minus'] = None # no idea y 
             
             if '200305250DAL' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '200305250DAL') & (games.player_br_id == 'kerrst01'), 'box_plus_minus'] = 4 # no idea y 
+                games.loc[(games.game_br_id == '200305250DAL') & (games.player_br_id == 'kerrst01'), 'box_plus_minus'] = None # no idea y 
                 
             if '200102130VAN' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '200102130VAN') & (games.player_br_id == 'carrch01'), 'box_plus_minus'] = 3 # no idea y 
+                games.loc[(games.game_br_id == '200102130VAN') & (games.player_br_id == 'carrch01'), 'box_plus_minus'] = None # no idea y 
+                
+            if '200911030DAL' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'box_plus_minus'] = None # no idea y 
+                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'defensive_rating'] = 0 # no idea y 
                 
         
         if get_TeamGameQuarterStats or get_TeamGameHalfStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:   

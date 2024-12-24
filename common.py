@@ -175,6 +175,29 @@ def get_soup(url):
 
     return bs4.BeautifulSoup(response.text, 'html.parser')
 
+
+def get_br_stats_tables():
+    """Generates a list of the symbols BR resembles quarters, halves, and
+    overtime in the html ids
+    
+    Yields:
+        'str': symbols BR resembles quarters, halves, and overtime in the
+                html ids
+    """
+    yield 'q1'
+    yield 'q2'
+    yield 'q3'
+    yield 'q4'
+    yield 'h1'
+    yield 'h2'
+    yield 'ot1'
+    yield 'ot2'
+    yield 'ot3'
+    yield 'ot4'
+    yield 'ot5'
+    yield 'ot6'
+
+
 def error_response(func):
     def wrapper(*args, **kwargs):
         try:

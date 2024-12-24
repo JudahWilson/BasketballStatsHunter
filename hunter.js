@@ -4,21 +4,7 @@ const cheerio = require("cheerio");
 const mysql = require("mysql2/promise");
 const fs = require("fs"); // Require the file system module to read the SSL certificate file
 
-async function connectToDatabase() {
-  const connection = await mysql.createConnection({
-    host: "aws.connect.psdb.cloud",
-    user: "gldu8hlddg4nt34zocdr",
-    password: "pscale_pw_3qk5CQZlCIIroDBI5F2AO1j8CiWbSx9phzPNx98GaU9",
-    database: "data",
-    ssl: {
-      ca: fs.readFileSync("cacert.pem"),
-    },
-  });
 
-  await connection.connect();
-
-  return connection;
-}
 
 // #region COMMON FUNCTIONS
 function formatISOString(strDate) {
