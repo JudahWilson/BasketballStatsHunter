@@ -34,56 +34,57 @@ from sqlalchemy import text
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
+from gooey import Gooey
 #endregion
 
 ####################################################
 testQL = None # TODO test the testing done by testQL
 ####################################################
-
-# region ARGS
-parser = argparse.ArgumentParser()
-parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb'])
-parser.add_argument('seasons_range', type=str, nargs='?',
-                    help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
-# parser.add_argument('-o', '--oldest-season', help='Oldest season to process (specify the STARTING year the of season)', type=int)
-# parser.add_argument('-n', '--newest-season', help='Newest season to process (specify the STARTING year the of season)', type=int, default=1946)
-parser.add_argument('--tables','-t', help=''''[CSV] teamgamestats' ('tgs')
-    'teamgamequarterstats' ('tgqs')
-    'teamgamehalfstats' ('tghs')
-    'playergamestats' ('pgs')
-    'playergamequarterstats' ('pgqs')
-    'playergamehalfstats' ('pghs')''',
-    nargs='?')
-
-
-args = parser.parse_args()
-if args.seasons_range:
-    if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
-        parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
-if args.format in ['json','db','rmjson'] and args.tables == []:
-    parser.error(f'table option is required for {args.format}')
-if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
-    parser.error(f'seasons_range is required for {args.format} (YYYY-YYYY) or just YYYY for all seasons YYYY and earlier')
-if args.tables:
-    for a in args.tables.split(','):
-        if a not in [
-            'teamgamestats','tgs',
-            'teamgamequarterstats','tgqs',
-            'teamgamehalfstats','tghs',
-            'playergamestats','pgs',
-            'playergamequarterstats','pgqs',
-            'playergamehalfstats','pghs',
-        ]:
-            parser.error(f'''Invalid table name: {a}.
-    Valid table names are:
-        'teamgamestats' ('tgs')
+# @Gooey()
+def args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb'])
+    parser.add_argument('seasons_range', type=str, nargs='?',
+                        help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
+    # parser.add_argument('-o', '--oldest-season', help='Oldest season to process (specify the STARTING year the of season)', type=int)
+    # parser.add_argument('-n', '--newest-season', help='Newest season to process (specify the STARTING year the of season)', type=int, default=1946)
+    parser.add_argument('--tables','-t', help=''''[CSV] teamgamestats' ('tgs')
         'teamgamequarterstats' ('tgqs')
         'teamgamehalfstats' ('tghs')
         'playergamestats' ('pgs')
         'playergamequarterstats' ('pgqs')
-        'playergamehalfstats' ('pghs')''')
+        'playergamehalfstats' ('pghs')''',
+        nargs='?')
 
-#endregion
+
+    args = parser.parse_args()
+    if args.seasons_range:
+        if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
+            parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
+    if args.format in ['json','db','rmjson'] and args.tables == []:
+        parser.error(f'table option is required for {args.format}')
+    if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
+        parser.error(f'seasons_range is required for {args.format} (YYYY-YYYY) or just YYYY for all seasons YYYY and earlier')
+    if args.tables:
+        for a in args.tables.split(','):
+            if a not in [
+                'teamgamestats','tgs',
+                'teamgamequarterstats','tgqs',
+                'teamgamehalfstats','tghs',
+                'playergamestats','pgs',
+                'playergamequarterstats','pgqs',
+                'playergamehalfstats','pghs',
+            ]:
+                parser.error(f'''Invalid table name: {a}.
+        Valid table names are:
+            'teamgamestats' ('tgs')
+            'teamgamequarterstats' ('tgqs')
+            'teamgamehalfstats' ('tghs')
+            'playergamestats' ('pgs')
+            'playergamequarterstats' ('pgqs')
+            'playergamehalfstats' ('pghs')''')
+    return args
+args = args()
 
 
     
@@ -189,6 +190,7 @@ def setTeamGameStatsJSON(begin_year=None, stop_year=1946,get_TeamGameStats=False
             breakpoint()
         
         for file in os.listdir(f'html/{year}'):
+            
             if file.endswith('.html'):
                 
                 #region DATA PREP
@@ -753,14 +755,13 @@ def loadJSONToDB(begin_year, stop_year,
                 games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'defensive_rating'] = 0 # no idea y 
                 
         
-        if get_TeamGameQuarterStats or get_TeamGameHalfStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:   
-            if '202008150POR' in list(games.game_br_id):
-                # TODO use the corrections for this game instead
-                games = games[games.game_br_id != '202008150POR']
+        # if get_TeamGameQuarterStats or get_TeamGameHalfStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:   
+        #     if '202008150POR' in list(games.game_br_id):
+        #         # TODO use the corrections for this game instead
+        #         games = games[games.game_br_id != '202008150POR']
                 
         return games
     ###########################################################
-    
     
     target_table_count = 0
     if get_TeamGameStats:
@@ -986,7 +987,6 @@ def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalf
     print(basic_df.to_string(index=False))
     print('\n\nADVANCED DATA:')
     print(advanced_df.to_string(index=False))
-    
     
 
 if __name__ == '__main__':
