@@ -35,7 +35,9 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
 from gooey import Gooey
+import pdb
 #endregion
+
 
 ####################################################
 testQL = None # TODO test the testing done by testQL
@@ -478,7 +480,7 @@ def setPlayerGameStatsJSON(
                         skip_PlayerGameStats = is_game_processed(game.br_id, game_leftoff_at)
                         skip_PlayerGameQuarterStats = is_game_processed(game.br_id, game_quarter_leftoff_at)
                         skip_PlayerGameHalfStats = is_game_processed(game.br_id, game_half_leftoff_at)
-                    
+                        
                         # If data should be skipped for all specified tables, continue to the next file 
                         if (get_PlayerGameStats == False or skip_PlayerGameStats) \
                         and (get_PlayerGameQuarterStats == False or skip_PlayerGameQuarterStats) \
@@ -723,7 +725,7 @@ def loadJSONToDB(begin_year, stop_year,
         if 'inactive_players' in games.columns:
             games["inactive_players"] = games["inactive_players"].apply(lambda x: json.dumps(x))
         if 'minutes_played' in games.columns and (get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats):
-            games['seconds_played'] = games['minutes_played'].apply(lambda x: int(x.split(':')[0]) * 60 + int(x.split(':')[1]) if x != None else None)
+            games['seconds_played'] = games['minutes_played'].apply(lambda x: int(x.split(':')[0]) * 60 + int(x.split(':')[1]) if not x in [None, 'DNP'] else None)
             del games['minutes_played']
         
         
@@ -807,7 +809,7 @@ def loadJSONToDB(begin_year, stop_year,
                 
                 games = clean_data(games)
                 page = 1
-                chunksize = 1000
+                chunksize = 1000 #!
                 while page * chunksize < len(games):
                     try:
                         games_paginated = games.iloc[(page - 1) * chunksize : page * chunksize]
@@ -989,6 +991,7 @@ def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalf
     print(advanced_df.to_string(index=False))
     
 
+
 if __name__ == '__main__':
     if args.seasons_range:
         if '-' in args.seasons_range:
@@ -1003,187 +1006,188 @@ if __name__ == '__main__':
             newest_year=int(args.seasons_range)
             oldest_year=1946
     
-    if args.format == 'json':
-        get_TeamGameStats = False
-        get_TeamGameHalfStats = False
-        get_TeamGameQuarterStats = False
-        get_PlayerGameStats = False
-        get_PlayerGameHalfStats = False
-        get_PlayerGameQuarterStats = False
-        if 'teamgamestats' in args.tables or 'tgs' in args.tables:
-            print("Processing TeamGameStats")
-            get_TeamGameStats=True
-        if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
-            print("Processing TeamGameQuarterStats")
-            get_TeamGameQuarterStats=True
-        if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
-            print("Processing TeamGameHalfStats")
-            get_TeamGameHalfStats=True
-        if 'playergamestats' in args.tables or 'pgs' in args.tables:
-            print("Processing PlayerGameStats")
-            get_PlayerGameStats=True
-        if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
-            print("Processing PlayerGameQuarterStats")
-            get_PlayerGameQuarterStats=True
-        if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
-            print("Processing PlayerGameHalfStats")
-            get_PlayerGameHalfStats=True
-        
-
-        if get_TeamGameStats or get_TeamGameQuarterStats or get_TeamGameHalfStats:
-            setTeamGameStatsJSON(
-                newest_year,
-                oldest_year,
-                get_TeamGameStats=get_TeamGameStats,
-                get_TeamGameHalfStats=get_TeamGameHalfStats,
-                get_TeamGameQuarterStats=get_TeamGameQuarterStats)
-        if get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:
-            setPlayerGameStatsJSON(
-                newest_year,
-                oldest_year,
-                get_PlayerGameStats=get_PlayerGameStats,
-                get_PlayerGameHalfStats=get_PlayerGameHalfStats,
-                get_PlayerGameQuarterStats=get_PlayerGameQuarterStats)
-        
-        exit(0)
-
-    elif args.format == 'lsjson':
-        get_TeamGameStats = False
-        get_TeamGameHalfStats = False
-        get_TeamGameQuarterStats = False
-        get_PlayerGameStats = False
-        get_PlayerGameHalfStats = False
-        get_PlayerGameQuarterStats = False
-        if args.tables:
+    match args.format:
+        case 'json':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
             if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                print("Processing TeamGameStats")
                 get_TeamGameStats=True
             if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                print("Processing TeamGameQuarterStats")
                 get_TeamGameQuarterStats=True
             if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                print("Processing TeamGameHalfStats")
                 get_TeamGameHalfStats=True
             if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                print("Processing PlayerGameStats")
                 get_PlayerGameStats=True
             if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                print("Processing PlayerGameQuarterStats")
                 get_PlayerGameQuarterStats=True
             if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                print("Processing PlayerGameHalfStats")
                 get_PlayerGameHalfStats=True
-        else:
-            get_TeamGameStats=True
-            get_TeamGameQuarterStats=True
-            get_TeamGameHalfStats=True
-            get_PlayerGameStats=True
-            get_PlayerGameQuarterStats=True
-            get_PlayerGameHalfStats=True
-        lsJSON(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
-        
-    elif args.format == 'rmjson':
-        get_TeamGameStats = False
-        get_TeamGameHalfStats = False
-        get_TeamGameQuarterStats = False
-        get_PlayerGameStats = False
-        get_PlayerGameHalfStats = False
-        get_PlayerGameQuarterStats = False
-        if args.tables:
-            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
-                get_TeamGameStats=True
-            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
-                get_TeamGameQuarterStats=True
-            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
-                get_TeamGameHalfStats=True
-            if 'playergamestats' in args.tables or 'pgs' in args.tables:
-                get_PlayerGameStats=True
-            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
-                get_PlayerGameQuarterStats=True
-            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
-                get_PlayerGameHalfStats=True
-        else:
-            get_TeamGameStats=True
-            get_TeamGameQuarterStats=True
-            get_TeamGameHalfStats=True
-            get_PlayerGameStats=True
-            get_PlayerGameQuarterStats=True
-            get_PlayerGameHalfStats=True
-        
-        rmJSON(newest_year,
-                oldest_year,
-                get_TeamGameStats,
-                get_TeamGameQuarterStats,
-                get_TeamGameHalfStats,
-                get_PlayerGameStats,
-                get_PlayerGameQuarterStats,
-                get_PlayerGameHalfStats)
-    
-    elif args.format == 'lsdb':
-        get_TeamGameStats = False
-        get_TeamGameHalfStats = False
-        get_TeamGameQuarterStats = False
-        get_PlayerGameStats = False
-        get_PlayerGameHalfStats = False
-        get_PlayerGameQuarterStats = False
-        if args.tables:
-            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
-                get_TeamGameStats=True
-            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
-                get_TeamGameQuarterStats=True
-            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
-                get_TeamGameHalfStats=True
-            if 'playergamestats' in args.tables or 'pgs' in args.tables:
-                get_PlayerGameStats=True
-            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
-                get_PlayerGameQuarterStats=True
-            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
-                get_PlayerGameHalfStats=True
-        else:
-            get_TeamGameStats=True
-            get_TeamGameQuarterStats=True
-            get_TeamGameHalfStats=True
-            get_PlayerGameStats=True
-            get_PlayerGameQuarterStats=True
-            get_PlayerGameHalfStats=True
-        lsdb(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
-    
-    elif args.format == 'db':
-        get_TeamGameStats = False
-        get_TeamGameHalfStats = False
-        get_TeamGameQuarterStats = False
-        get_PlayerGameStats = False
-        get_PlayerGameHalfStats = False
-        get_PlayerGameQuarterStats = False
-        tables = args.tables.split(',')
-        if 'teamgamestats' in args.tables or 'tgs' in args.tables:
-            print("Processing TeamGameStats")
-            get_TeamGameStats=True
-        if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
-            print("Processing TeamGameQuarterStats")
-            get_TeamGameQuarterStats=True
-        if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
-            print("Processing TeamGameHalfStats")
-            get_TeamGameHalfStats=True
-        if 'playergamestats' in args.tables or 'pgs' in args.tables:
-            print("Processing PlayerGameStats")
-            get_PlayerGameStats=True
-        if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
-            print("Processing PlayerGameQuarterStats")
-            get_PlayerGameQuarterStats=True
-        if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
-            print("Processing PlayerGameHalfStats")
-            get_PlayerGameHalfStats=True
             
 
-        loadJSONToDB(
-            newest_year, 
-            oldest_year, 
-            get_TeamGameStats=get_TeamGameStats,
-            get_TeamGameHalfStats=get_TeamGameHalfStats,
-            get_TeamGameQuarterStats=get_TeamGameQuarterStats,
-            get_PlayerGameStats=get_PlayerGameStats,
-            get_PlayerGameHalfStats=get_PlayerGameHalfStats,
-            get_PlayerGameQuarterStats=get_PlayerGameQuarterStats,
-        )
-        
-        exit(0)
+            if get_TeamGameStats or get_TeamGameQuarterStats or get_TeamGameHalfStats:
+                setTeamGameStatsJSON(
+                    newest_year,
+                    oldest_year,
+                    get_TeamGameStats=get_TeamGameStats,
+                    get_TeamGameHalfStats=get_TeamGameHalfStats,
+                    get_TeamGameQuarterStats=get_TeamGameQuarterStats)
+            if get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:
+                setPlayerGameStatsJSON(
+                    newest_year,
+                    oldest_year,
+                    get_PlayerGameStats=get_PlayerGameStats,
+                    get_PlayerGameHalfStats=get_PlayerGameHalfStats,
+                    get_PlayerGameQuarterStats=get_PlayerGameQuarterStats)
+            
+            exit(0)
 
-    elif args.format == 'html':
-        getTeamGameStatsHTML(newest_year, oldest_year, override_existing_html=True) 
-        exit(0)
+        case 'lsjson':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
+            if args.tables:
+                if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                    get_TeamGameStats=True
+                if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                    get_TeamGameQuarterStats=True
+                if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                    get_TeamGameHalfStats=True
+                if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                    get_PlayerGameStats=True
+                if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                    get_PlayerGameQuarterStats=True
+                if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                    get_PlayerGameHalfStats=True
+            else:
+                get_TeamGameStats=True
+                get_TeamGameQuarterStats=True
+                get_TeamGameHalfStats=True
+                get_PlayerGameStats=True
+                get_PlayerGameQuarterStats=True
+                get_PlayerGameHalfStats=True
+            lsJSON(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+            
+        case 'rmjson':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
+            if args.tables:
+                if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                    get_TeamGameStats=True
+                if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                    get_TeamGameQuarterStats=True
+                if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                    get_TeamGameHalfStats=True
+                if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                    get_PlayerGameStats=True
+                if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                    get_PlayerGameQuarterStats=True
+                if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                    get_PlayerGameHalfStats=True
+            else:
+                get_TeamGameStats=True
+                get_TeamGameQuarterStats=True
+                get_TeamGameHalfStats=True
+                get_PlayerGameStats=True
+                get_PlayerGameQuarterStats=True
+                get_PlayerGameHalfStats=True
+            
+            rmJSON(newest_year,
+                    oldest_year,
+                    get_TeamGameStats,
+                    get_TeamGameQuarterStats,
+                    get_TeamGameHalfStats,
+                    get_PlayerGameStats,
+                    get_PlayerGameQuarterStats,
+                    get_PlayerGameHalfStats)
+        
+        case 'lsdb':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
+            if args.tables:
+                if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                    get_TeamGameStats=True
+                if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                    get_TeamGameQuarterStats=True
+                if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                    get_TeamGameHalfStats=True
+                if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                    get_PlayerGameStats=True
+                if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                    get_PlayerGameQuarterStats=True
+                if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                    get_PlayerGameHalfStats=True
+            else:
+                get_TeamGameStats=True
+                get_TeamGameQuarterStats=True
+                get_TeamGameHalfStats=True
+                get_PlayerGameStats=True
+                get_PlayerGameQuarterStats=True
+                get_PlayerGameHalfStats=True
+            lsdb(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+        
+        case 'db':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
+            tables = args.tables.split(',')
+            if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                print("Processing TeamGameStats")
+                get_TeamGameStats=True
+            if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                print("Processing TeamGameQuarterStats")
+                get_TeamGameQuarterStats=True
+            if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                print("Processing TeamGameHalfStats")
+                get_TeamGameHalfStats=True
+            if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                print("Processing PlayerGameStats")
+                get_PlayerGameStats=True
+            if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                print("Processing PlayerGameQuarterStats")
+                get_PlayerGameQuarterStats=True
+            if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                print("Processing PlayerGameHalfStats")
+                get_PlayerGameHalfStats=True
+                
+
+            loadJSONToDB(
+                newest_year, 
+                oldest_year, 
+                get_TeamGameStats=get_TeamGameStats,
+                get_TeamGameHalfStats=get_TeamGameHalfStats,
+                get_TeamGameQuarterStats=get_TeamGameQuarterStats,
+                get_PlayerGameStats=get_PlayerGameStats,
+                get_PlayerGameHalfStats=get_PlayerGameHalfStats,
+                get_PlayerGameQuarterStats=get_PlayerGameQuarterStats,
+            )
+            
+            exit(0)
+
+        case 'html':
+            getTeamGameStatsHTML(newest_year, oldest_year, override_existing_html=False) 
+            exit(0)
 

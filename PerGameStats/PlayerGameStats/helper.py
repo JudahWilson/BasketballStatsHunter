@@ -44,10 +44,16 @@ def setPlayersData(game, team_br_id, team_stats_basic, team_stats_advanced) -> l
         pgs['player_br_id'] = SP_player.th.a['href'].split('/')[-1].replace('.html','')
         pgs['game_br_id'] = game['br_id']
 
-        if str(DF_pl_basic.MP) == 'nan' or 'Did Not Play' in SP_player.text or 'Did Not Dress' in SP_player.text or 'Not With Team' in SP_player.text or 'Player Suspended' in SP_player.text:
+        if str(DF_pl_basic.MP) == 'nan' \
+            or str(DF_pl_basic.MP) == 'DNP' \
+            or 'Did Not Play' in SP_player.text \
+            or 'Did Not Dress' in SP_player.text \
+            or 'Not With Team' in SP_player.text \
+            or 'Player Suspended' in SP_player.text:
+                
             pgs['played'] = False 
             
-            if 'Did Not Play' in SP_player.text:
+            if 'Did Not Play' in SP_player.text or str(DF_pl_basic.MP) == 'DNP':
                 pgs['reason_for_absence'] = 'Did Not Play'
             elif 'Did Not Dress' in SP_player.text:
                 pgs['reason_for_absence'] = 'Did Not Dress'
@@ -68,8 +74,7 @@ def setPlayersData(game, team_br_id, team_stats_basic, team_stats_advanced) -> l
         
         if not pgs['played']:
             pgs['minutes_played'] = None
-            pgs['team_br_id'] = game['away_team_br_id']
-            pgs['field_goals'] = None
+            pgs['team_br_id'] = team_br_id
             pgs['field_goal_attempts'] = None
             pgs['field_goal_percentage'] = None
             pgs['three_pointers'] = None

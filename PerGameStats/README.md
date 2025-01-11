@@ -41,3 +41,7 @@ did i capture ot quarter stats??
 ---------------------------------------------------
 BY QUARTERS / HALFS
 quarters / halfs are only available 96-97 season and above
+
+# Known Issues
+- OT stats not recorded (team and player)
+- evey player is flaged as starting (playergamestats)

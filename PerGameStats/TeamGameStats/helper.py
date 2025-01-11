@@ -125,6 +125,12 @@ def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_play
         next_field='ft_per_fga'
         away_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
         home_tgs['ft_per_fga'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
+        
+        # No advanced stat tables
+        if not away_team_advanced: 
+            next_field='offensive_rebound_percentage'
+            away_tgs['offensive_rebound_percentage'] = four_factors.select('[data-stat="ft_rate"]')[1].text.strip()
+            home_tgs['offensive_rebound_percentage'] = four_factors.select('[data-stat="ft_rate"]')[2].text.strip()
 
     
     #------Advanced Stats------#

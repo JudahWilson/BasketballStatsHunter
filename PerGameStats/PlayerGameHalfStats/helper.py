@@ -45,7 +45,7 @@ def setPlayersData(game, half, four_factors, team_stats_h, debug=False) -> list:
 
         if not played:
             pgs['minutes_played'] = None
-            pgs['team_br_id'] = game['away_team_br_id']
+            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
             pgs['field_goals'] = None
             pgs['field_goal_attempts'] = None
             pgs['field_goal_percentage'] = None

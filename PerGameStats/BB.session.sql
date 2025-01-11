@@ -1,3 +1,11 @@
+SELECT * FROM playergamehalfstats
+ ORDER BY game_br_id desc
+ LIMIT 200;
+
+
+---------------------------------------------------------------------------
+;
+
 select "playergamestats" as "table", count(*) from playergamestats
 union select "playergamestats" as "table", count(*) from playergamestats
 union select "playergamequarterstats" as "table", count(*) from playergamequarterstats
