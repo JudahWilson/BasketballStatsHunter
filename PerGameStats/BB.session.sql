@@ -1,6 +1,9 @@
-SELECT * FROM playergamehalfstats
- ORDER BY game_br_id desc
- LIMIT 200;
+delete from playergamequarterstats;
+
+
+SELECT * FROM playergamehalfstats 
+ORDER BY game_br_id
+LIMIT 100;
 
 
 ---------------------------------------------------------------------------

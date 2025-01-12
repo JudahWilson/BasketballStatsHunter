@@ -5,7 +5,7 @@ import pyperclip
 
 
 
-def setPlayersData(game, half, four_factors, team_stats_h, debug=False) -> list:
+def setPlayersData(game, half, is_home, four_factors, team_stats_h, debug=False) -> list:
     # Get DataFrane of basic stats
     DF_pls_basic = pd.read_html(StringIO(str(team_stats_h)))
     DF_pls_basic = DF_pls_basic[0]
@@ -43,9 +43,13 @@ def setPlayersData(game, half, four_factors, team_stats_h, debug=False) -> list:
         else:
             played = True
 
+        if is_home:
+            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[1].text
+        else:
+            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[1].text
+        
         if not played:
             pgs['minutes_played'] = None
-            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
             pgs['field_goals'] = None
             pgs['field_goal_attempts'] = None
             pgs['field_goal_percentage'] = None
@@ -69,7 +73,6 @@ def setPlayersData(game, half, four_factors, team_stats_h, debug=False) -> list:
         else:
 
             next_field='minutes_played'; pgs['minutes_played'] = DF_pl_basic['MP']            
-            next_field='team_br_id'; pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text #~
             next_field='field_goals'; pgs['field_goals'] = DF_pl_basic['FG']
             next_field='field_goal_attempts'; pgs['field_goal_attempts'] = DF_pl_basic['FGA']            
             next_field='field_goal_percentage'; pgs['field_goal_percentage'] = DF_pl_basic['FG%']            
@@ -132,6 +135,7 @@ def setJSON(
     # Home players
     all_players += setPlayersData(
         game, 
+        True,
         half,
         four_factors=four_factors,
         team_stats_h=away_team_h,
@@ -141,6 +145,7 @@ def setJSON(
     # Away players
     all_players += setPlayersData(
         game, 
+        False,
         half,
         four_factors=four_factors,
         team_stats_h=home_team_h,

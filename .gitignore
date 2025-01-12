@@ -197,3 +197,5 @@ node_modules
 **/*.html
 metabase
 PerGameStats/log.txt
+
+BB.session.sql
