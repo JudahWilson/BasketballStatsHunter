@@ -48,9 +48,7 @@ def args():
     parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb'])
     parser.add_argument('seasons_range', type=str, nargs='?',
                         help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
-    # parser.add_argument('-o', '--oldest-season', help='Oldest season to process (specify the STARTING year the of season)', type=int)
-    # parser.add_argument('-n', '--newest-season', help='Newest season to process (specify the STARTING year the of season)', type=int, default=1946)
-    parser.add_argument('--tables','-t', help=''''[CSV] teamgamestats' ('tgs')
+    parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
         'teamgamequarterstats' ('tgqs')
         'teamgamehalfstats' ('tghs')
         'playergamestats' ('pgs')
@@ -670,6 +668,9 @@ def loadJSONToDB(begin_year, stop_year,
     ###########################################################
     def clean_data(games):
         
+        
+        
+        
         # Convert to boolean
         if 'played' in games.columns:
             games['played'] = games['played'].astype(bool)
@@ -677,6 +678,47 @@ def loadJSONToDB(begin_year, stop_year,
             games['started'] = games['started'].astype(bool)
 
 
+        if get_TeamGameStats:
+            games.loc[games.offensive_rebounds == '','offensive_rebounds'] = np.nan # no idea y 
+            games.loc[games.defensive_rebounds == '','defensive_rebounds'] = np.nan # no idea y 
+            games.loc[games.pace_factor == '','pace_factor'] = np.nan # no idea y 
+            games.loc[games.offensive_rating == '','offensive_rating'] = np.nan # no idea y 
+            games.loc[games.defensive_rating == '','defensive_rating'] = np.nan # no idea y 
+            games.loc[games.offensive_rebound_percentage == '','offensive_rebound_percentage'] = np.nan # no idea y 
+            games.loc[games.defensive_rebound_percentage == '','defensive_rebound_percentage'] = np.nan # no idea y 
+            games.loc[games.steal_percentage == '','steal_percentage'] = np.nan # no idea y 
+            games.loc[games.steals == '','steals'] = np.nan # no idea y 
+            games.loc[games.turnovers == '','turnovers'] = np.nan # no idea y 
+            games.loc[games.blocksgs == '','blocksgs'] = np.nan # no idea y 
+        
+        if get_PlayerGameStats:
+            # if '202103270LAC' in list(games.game_br_id):
+            #     # TODO this is sus
+            #     games.loc[(games.game_br_id == '202103270LAC') & (games.player_br_id == 'howardw01'), 'free_throw_attempt_rate'] = .609 # no idea y
+            
+            if '201601210DEN' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '201601210DEN') & (games.player_br_id == 'millemi01'), 'box_plus_minus'] = None # no idea y 
+            
+            if '201411070ORL' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '201411070ORL') & (games.player_br_id == 'bennean01'), 'box_plus_minus'] = None # no idea y 
+            
+            # if '201412290MIA' in list(games.game_br_id):
+            #     games.loc[(games.game_br_id == '201412290MIA') & (games.player_br_id == 'whiteha01'), 'free_throw_attempt_rate'] = None # no idea y 
+            
+            if '201312300DEN' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '201312300DEN') & (games.player_br_id == 'anthojo01'), 'box_plus_minus'] = None # no idea y 
+            
+            if '200305250DAL' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200305250DAL') & (games.player_br_id == 'kerrst01'), 'box_plus_minus'] = None # no idea y 
+                
+            if '200102130VAN' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200102130VAN') & (games.player_br_id == 'carrch01'), 'box_plus_minus'] = None # no idea y 
+                
+            if '200911030DAL' in list(games.game_br_id):
+                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'box_plus_minus'] = None # no idea y 
+                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'defensive_rating'] = 0 # no idea y 
+        
+        
         # shift decimal two places
         def shift_decimal(val):
             if str(val) == 'nan':
@@ -728,39 +770,6 @@ def loadJSONToDB(begin_year, stop_year,
             games['seconds_played'] = games['minutes_played'].apply(lambda x: int(x.split(':')[0]) * 60 + int(x.split(':')[1]) if not x in [None, 'DNP'] else None)
             del games['minutes_played']
         
-        
-        if get_PlayerGameStats:
-            # if '202103270LAC' in list(games.game_br_id):
-            #     # TODO this is sus
-            #     games.loc[(games.game_br_id == '202103270LAC') & (games.player_br_id == 'howardw01'), 'free_throw_attempt_rate'] = .609 # no idea y
-            
-            if '201601210DEN' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '201601210DEN') & (games.player_br_id == 'millemi01'), 'box_plus_minus'] = None # no idea y 
-            
-            if '201411070ORL' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '201411070ORL') & (games.player_br_id == 'bennean01'), 'box_plus_minus'] = None # no idea y 
-            
-            # if '201412290MIA' in list(games.game_br_id):
-            #     games.loc[(games.game_br_id == '201412290MIA') & (games.player_br_id == 'whiteha01'), 'free_throw_attempt_rate'] = None # no idea y 
-            
-            if '201312300DEN' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '201312300DEN') & (games.player_br_id == 'anthojo01'), 'box_plus_minus'] = None # no idea y 
-            
-            if '200305250DAL' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '200305250DAL') & (games.player_br_id == 'kerrst01'), 'box_plus_minus'] = None # no idea y 
-                
-            if '200102130VAN' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '200102130VAN') & (games.player_br_id == 'carrch01'), 'box_plus_minus'] = None # no idea y 
-                
-            if '200911030DAL' in list(games.game_br_id):
-                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'box_plus_minus'] = None # no idea y 
-                games.loc[(games.game_br_id == '200911030DAL') & (games.player_br_id == 'koufoko01'), 'defensive_rating'] = 0 # no idea y 
-                
-        
-        # if get_TeamGameQuarterStats or get_TeamGameHalfStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:   
-        #     if '202008150POR' in list(games.game_br_id):
-        #         # TODO use the corrections for this game instead
-        #         games = games[games.game_br_id != '202008150POR']
                 
         return games
     ###########################################################
