@@ -45,7 +45,7 @@ testQL = None # TODO test the testing done by testQL
 # @Gooey()
 def args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb'])
+    parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb','rmdb'])
     parser.add_argument('seasons_range', type=str, nargs='?',
                         help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
     parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
@@ -647,6 +647,154 @@ def setPlayerGameStatsJSON(
 
 
 
+def lsJSON(
+                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    Process JSON files into the database reverse chronologically
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+
+    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
+    str_output=''
+    for table in tables:
+        str_output += f'\n\n{table}:'
+        for file in os.listdir(f'{table}/json'):
+            if data_file_pattern.match(file):
+                str_output += f'\n\t{file}'
+
+    print(str_output)
+
+
+    
+def rmJSON(newest_year, oldest_year,
+                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    remove JSON files from the file system
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    
+    target_table_count = 0
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+
+    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
+    str_output=''
+    for table in tables:
+        str_output += f'\n\n{table}:'
+        for file in os.listdir(f'{table}/json'):
+            if data_file_pattern.match(file):
+                if int(file[:4]) <= newest_year and int(file[:4]) >= oldest_year:
+                    str_output += f'\n\tDELETED {file}'
+                    
+                    os.remove(f'{table}/json/{file}')
+
+    print(str_output)
+ 
+   
+
+def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+        get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
+    '''
+    show where progress was left off for importing data in the database 
+    :param stop_year: int - The newest year to process
+    :param begin_year: int - The oldest year to process
+    :param get_TeamGameStats: bool - Load TeamGameStats
+    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
+    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_PlayerGameStats: bool - Load PlayerGameStats
+    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
+    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    '''
+    tables = []
+    if get_TeamGameStats:
+        tables += ["TeamGameStats"]
+    if get_TeamGameQuarterStats:
+        tables += ["TeamGameQuarterStats"]
+    if get_TeamGameHalfStats:
+        tables += ["TeamGameHalfStats"]
+    if get_PlayerGameStats:
+        tables += ["PlayerGameStats"]
+    if get_PlayerGameQuarterStats:
+        tables += ["PlayerGameQuarterStats"]
+    if get_PlayerGameHalfStats:
+        tables += ["PlayerGameHalfStats"]
+        
+    basic_table_sql=''
+    advanced_table_sql=''
+    is_first_basic_table = True
+    is_first_advancded_table = True
+    for table in tables:
+        if table.lower() in ['tgs','pgs','teamgamestats','playergamestats']:
+            if is_first_basic_table:
+                basic_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            else:
+                basic_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            is_first_basic_table = False
+        else:
+            if is_first_advancded_table:
+                advanced_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            else:
+                advanced_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
+                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
+            is_first_advancded_table = False
+    basic_table_sql += ';'
+    with create_engine(conn_str).begin() as connection:
+        basic_df = pd.read_sql(sql=basic_table_sql, con=engine)     
+        advanced_df = pd.read_sql(sql=advanced_table_sql, con=engine)     
+    print('\nBASIC DATA:')
+    print(basic_df.to_string(index=False))
+    print('\n\nADVANCED DATA:')
+    print(advanced_df.to_string(index=False))
+    
+
+
 def loadJSONToDB(begin_year, stop_year, 
                 get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
                 get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False,
@@ -678,21 +826,22 @@ def loadJSONToDB(begin_year, stop_year,
 
 
         if get_TeamGameStats:
-            games.loc[games.offensive_rebounds == '','offensive_rebounds'] = np.nan # no idea y 
-            games.loc[games.defensive_rebounds == '','defensive_rebounds'] = np.nan # no idea y 
-            games.loc[games.pace_factor == '','pace_factor'] = np.nan # no idea y 
-            games.loc[games.offensive_rating == '','offensive_rating'] = np.nan # no idea y 
-            games.loc[games.defensive_rating == '','defensive_rating'] = np.nan # no idea y 
-            games.loc[games.offensive_rebound_percentage == '','offensive_rebound_percentage'] = np.nan # no idea y 
-            games.loc[games.defensive_rebound_percentage == '','defensive_rebound_percentage'] = np.nan # no idea y 
-            games.loc[games.steal_percentage == '','steal_percentage'] = np.nan # no idea y 
-            games.loc[games.steals == '','steals'] = np.nan # no idea y 
-            games.loc[games.turnovers == '','turnovers'] = np.nan # no idea y 
-            games.loc[games.blocks == '','blocks'] = np.nan # no idea y 
-            games.loc[games.field_goal_attempts == '','field_goal_attempts'] = np.nan # no idea y 
-            games.loc[games.field_goal_percentage == '','field_goal_percentage'] = np.nan # no idea y 
-            games.loc[games.assists == '','assists'] = np.nan # no idea y 
-            games.loc[games.rebounds == '','rebounds'] = np.nan # no idea y 
+            games.loc[games.offensive_rebounds == '','offensive_rebounds'] = np.nan
+            games.loc[games.defensive_rebounds == '','defensive_rebounds'] = np.nan
+            games.loc[games.pace_factor == '','pace_factor'] = np.nan
+            games.loc[games.offensive_rating == '','offensive_rating'] = np.nan
+            games.loc[games.defensive_rating == '','defensive_rating'] = np.nan
+            games.loc[games.offensive_rebound_percentage == '','offensive_rebound_percentage'] = np.nan
+            games.loc[games.defensive_rebound_percentage == '','defensive_rebound_percentage'] = np.nan
+            games.loc[games.steal_percentage == '','steal_percentage'] = np.nan
+            games.loc[games.steals == '','steals'] = np.nan
+            games.loc[games.turnovers == '','turnovers'] = np.nan
+            games.loc[games.blocks == '','blocks'] = np.nan
+            games.loc[games.field_goal_attempts == '','field_goal_attempts'] = np.nan
+            games.loc[games.field_goal_percentage == '','field_goal_percentage'] = np.nan
+            games.loc[games.assists == '','assists'] = np.nan
+            games.loc[games.rebounds == '','rebounds'] = np.nan
+            games.loc[games.personal_fouls == '','personal_fouls'] = np.nan
         
         if get_PlayerGameStats:
             # if '202103270LAC' in list(games.game_br_id):
@@ -856,153 +1005,48 @@ def loadJSONToDB(begin_year, stop_year,
 
 
 
-def lsJSON(
-                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
-                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
-    '''
-    Process JSON files into the database reverse chronologically
-    :param stop_year: int - The newest year to process
-    :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
-    '''
-    
-    tables = []
-    if get_TeamGameStats:
-        tables += ["TeamGameStats"]
-    if get_TeamGameQuarterStats:
-        tables += ["TeamGameQuarterStats"]
-    if get_TeamGameHalfStats:
-        tables += ["TeamGameHalfStats"]
-    if get_PlayerGameStats:
-        tables += ["PlayerGameStats"]
-    if get_PlayerGameQuarterStats:
-        tables += ["PlayerGameQuarterStats"]
-    if get_PlayerGameHalfStats:
-        tables += ["PlayerGameHalfStats"]
-
-    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
-    str_output=''
-    for table in tables:
-        str_output += f'\n\n{table}:'
-        for file in os.listdir(f'{table}/json'):
-            if data_file_pattern.match(file):
-                str_output += f'\n\t{file}'
-
-    print(str_output)
-
-
-    
-def rmJSON(newest_year, oldest_year,
-                get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
-                get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
-    '''
-    remove JSON files from the file system
-    :param stop_year: int - The newest year to process
-    :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
-    '''
-    
-    target_table_count = 0
-    tables = []
-    if get_TeamGameStats:
-        tables += ["TeamGameStats"]
-    if get_TeamGameQuarterStats:
-        tables += ["TeamGameQuarterStats"]
-    if get_TeamGameHalfStats:
-        tables += ["TeamGameHalfStats"]
-    if get_PlayerGameStats:
-        tables += ["PlayerGameStats"]
-    if get_PlayerGameQuarterStats:
-        tables += ["PlayerGameQuarterStats"]
-    if get_PlayerGameHalfStats:
-        tables += ["PlayerGameHalfStats"]
-
-    data_file_pattern = re.compile(r'\d{4}.*.jsonl')
-    str_output=''
-    for table in tables:
-        str_output += f'\n\n{table}:'
-        for file in os.listdir(f'{table}/json'):
-            if data_file_pattern.match(file):
-                if int(file[:4]) <= newest_year and int(file[:4]) >= oldest_year:
-                    str_output += f'\n\tDELETED {file}'
-                    
-                    os.remove(f'{table}/json/{file}')
-
-    print(str_output)
- 
-   
-
-def lsdb(get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
+def rmdb(oldest_year: int, newest_year: int, 
+        get_TeamGameStats=False,get_TeamGameQuarterStats=False,get_TeamGameHalfStats=False, 
         get_PlayerGameStats=False,get_PlayerGameQuarterStats=False,get_PlayerGameHalfStats=False):
-    '''
-    show where progress was left off for importing data in the database 
-    :param stop_year: int - The newest year to process
-    :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
-    '''
-    tables = []
-    if get_TeamGameStats:
-        tables += ["TeamGameStats"]
-    if get_TeamGameQuarterStats:
-        tables += ["TeamGameQuarterStats"]
-    if get_TeamGameHalfStats:
-        tables += ["TeamGameHalfStats"]
-    if get_PlayerGameStats:
-        tables += ["PlayerGameStats"]
-    if get_PlayerGameQuarterStats:
-        tables += ["PlayerGameQuarterStats"]
-    if get_PlayerGameHalfStats:
-        tables += ["PlayerGameHalfStats"]
-        
-    basic_table_sql=''
-    advanced_table_sql=''
-    is_first_basic_table = True
-    is_first_advancded_table = True
-    for table in tables:
-        if table.lower() in ['tgs','pgs','teamgamestats','playergamestats']:
-            if is_first_basic_table:
-                basic_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
-            else:
-                basic_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
-            is_first_basic_table = False
-        else:
-            if is_first_advancded_table:
-                advanced_table_sql = f'''select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
-            else:
-                advanced_table_sql += f'''\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}'''
-            is_first_advancded_table = False
-    basic_table_sql += ';'
-    with create_engine(conn_str).begin() as connection:
-        basic_df = pd.read_sql(sql=basic_table_sql, con=engine)     
-        advanced_df = pd.read_sql(sql=advanced_table_sql, con=engine)     
-    print('\nBASIC DATA:')
-    print(basic_df.to_string(index=False))
-    print('\n\nADVANCED DATA:')
-    print(advanced_df.to_string(index=False))
-    
 
+    target_table_count = 0
+    if get_TeamGameStats:
+        TABLE_NAME = "TeamGameStats"
+        target_table_count += 1
+    if get_TeamGameQuarterStats:
+        TABLE_NAME = "TeamGameQuarterStats"
+        target_table_count += 1
+    if get_TeamGameHalfStats:
+        TABLE_NAME = "TeamGameHalfStats"
+        target_table_count += 1
+    if get_PlayerGameStats:
+        TABLE_NAME = "PlayerGameStats"
+        target_table_count += 1
+    if get_PlayerGameQuarterStats:
+        TABLE_NAME = "PlayerGameQuarterStats"
+        target_table_count += 1
+    if get_PlayerGameHalfStats:
+        TABLE_NAME = "PlayerGameHalfStats"
+        target_table_count += 1
+        
+    if target_table_count > 1:
+        print("Only one table can be loaded at a time")
+        exit(1)
+    
+    with engine.begin() as connection:        
+        # Games for each year start no earlier than september, so all games
+        # between {oldest_year}0901 (Sept. 1) and {newest_year + 1}0901 are
+        # deleted
+        SQL=f"""
+            DELETE FROM {TABLE_NAME}
+            WHERE game_br_id > '{oldest_year}0901'
+            AND game_br_id <= '{newest_year + 1}0901'
+            """
+        print(SQL)
+        result = connection.execute(text(SQL))
+        print(f"Rows deleted: {result.rowcount}")
+    
+    
 
 if __name__ == '__main__':
     if args.seasons_range:
@@ -1199,6 +1243,41 @@ if __name__ == '__main__':
             
             exit(0)
 
+        case 'rmdb':
+            get_TeamGameStats = False
+            get_TeamGameHalfStats = False
+            get_TeamGameQuarterStats = False
+            get_PlayerGameStats = False
+            get_PlayerGameHalfStats = False
+            get_PlayerGameQuarterStats = False
+            if args.tables:
+                if 'teamgamestats' in args.tables or 'tgs' in args.tables:
+                    get_TeamGameStats=True
+                if 'teamgamequarterstats' in args.tables or 'tgqs' in args.tables:
+                    get_TeamGameQuarterStats=True
+                if 'teamgamehalfstats' in args.tables or 'tghs' in args.tables:
+                    get_TeamGameHalfStats=True
+                if 'playergamestats' in args.tables or 'pgs' in args.tables:
+                    get_PlayerGameStats=True
+                if 'playergamequarterstats' in args.tables or 'pgqs' in args.tables:
+                    get_PlayerGameQuarterStats=True
+                if 'playergamehalfstats' in args.tables or 'pghs' in args.tables:
+                    get_PlayerGameHalfStats=True
+            else:
+                get_TeamGameStats=True
+                get_TeamGameQuarterStats=True
+                get_TeamGameHalfStats=True
+                get_PlayerGameStats=True
+                get_PlayerGameQuarterStats=True
+                get_PlayerGameHalfStats=True
+            rmdb(
+                oldest_year, newest_year,
+                get_TeamGameStats, get_TeamGameQuarterStats,
+                get_TeamGameHalfStats, get_PlayerGameStats,
+                get_PlayerGameQuarterStats, get_PlayerGameHalfStats
+            )
+            # lsdb(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+        
         case 'html':
             getTeamGameStatsHTML(newest_year, oldest_year, override_existing_html=False) 
             exit(0)
