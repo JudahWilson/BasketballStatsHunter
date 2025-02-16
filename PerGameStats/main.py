@@ -502,7 +502,6 @@ def setPlayerGameStatsJSON(
                     
                     away_team_basic = soup.select(f'#box-{away_team_br_id}-game-basic')[0]
                     home_team_basic = soup.select(f'#box-{home_team_br_id}-game-basic')[0]
-        
                     try:
                         away_team_advanced = soup.select(f'#box-{away_team_br_id}-game-advanced')[0]
                     except IndexError:
@@ -689,7 +688,11 @@ def loadJSONToDB(begin_year, stop_year,
             games.loc[games.steal_percentage == '','steal_percentage'] = np.nan # no idea y 
             games.loc[games.steals == '','steals'] = np.nan # no idea y 
             games.loc[games.turnovers == '','turnovers'] = np.nan # no idea y 
-            games.loc[games.blocksgs == '','blocksgs'] = np.nan # no idea y 
+            games.loc[games.blocks == '','blocks'] = np.nan # no idea y 
+            games.loc[games.field_goal_attempts == '','field_goal_attempts'] = np.nan # no idea y 
+            games.loc[games.field_goal_percentage == '','field_goal_percentage'] = np.nan # no idea y 
+            games.loc[games.assists == '','assists'] = np.nan # no idea y 
+            games.loc[games.rebounds == '','rebounds'] = np.nan # no idea y 
         
         if get_PlayerGameStats:
             # if '202103270LAC' in list(games.game_br_id):

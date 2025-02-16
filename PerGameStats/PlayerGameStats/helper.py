@@ -8,7 +8,10 @@ def setPlayersData(game, team_br_id, team_stats_basic, team_stats_advanced) -> l
     DF_pls_basic = DF_pls_basic[0]
     DF_pls_basic.columns = DF_pls_basic.columns.droplevel(0)
     # remove row that function as headers
-    DF_pls_basic = DF_pls_basic[DF_pls_basic['Starters']!='Reserves']
+    
+    # Exclude a blank header labeled as "Reserves"
+    if 'Starters' in DF_pls_basic.columns:
+        DF_pls_basic = DF_pls_basic[DF_pls_basic['Starters']!='Reserves']
 
     # Get soup object list over the same basic data
     SP_pl_basic = team_stats_basic.find('tbody').find_all('tr')
@@ -17,15 +20,18 @@ def setPlayersData(game, team_br_id, team_stats_basic, team_stats_advanced) -> l
     is_starter = True
     
     if team_stats_advanced:
+        # DATAFRAME VERSION
         DF_pls_advanced = pd.read_html(StringIO(str(team_stats_advanced)))
         DF_pls_advanced = DF_pls_advanced[0]
         DF_pls_advanced.columns = DF_pls_advanced.columns.droplevel(0)
         # remove row that function as headers
         DF_pls_advanced = DF_pls_advanced[DF_pls_advanced['Starters']!='Reserves']
-        # Get soup object list over the same basic data
-        SP_pl_advanced = team_stats_advanced.find_all('tbody')[0].find_all('tr')
-        # remove row that function as headers
-        SP_pl_advanced = [element for element in SP_pl_basic if 'thead' not in element.get('class', [])]
+        
+        # BEAUTIFUL SOUP VERSION
+        # # Get soup object list over the same basic data
+        # SP_pl_advanced = team_stats_advanced.find_all('tbody')[0].find_all('tr')
+        # # remove row that function as headers
+        # SP_pl_advanced = [element for element in SP_pl_basic if 'thead' not in element.get('class', [])]
     
     # convert to index based loop to deal with basic and advanced simultaneously
     index=0

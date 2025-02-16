@@ -1,5 +1,3 @@
-import PlayByPlays.GamePlayer as GamePlayer
-
 ACTIONS = {
     "ASSIST": 1,
     "BLOCK": 2,
@@ -127,18 +125,3 @@ class PlayAction:
 
         return string
 
-    @property
-    def player(self):
-        return self._player
-
-    @player.setter
-    def player(self, p):
-        if p is None:
-            self._player = None
-        elif isinstance(p, GamePlayer):
-            self._player = p
-            self.player_br_id = p.player_br_id
-        else:
-            raise TypeError(
-                "player must be set using a Player object"
-            )

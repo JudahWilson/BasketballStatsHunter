@@ -12,6 +12,8 @@ import glob
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import numpy as np
+from enum import Enum
+from pydantic import BaseModel
 
 WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
 
@@ -21,6 +23,27 @@ engine = create_engine(conn_str)
 
 # The website's base url
 base_url = 'https://www.basketball-reference.com'
+
+    
+class PlayNotYetSupportedError(Exception):
+    pass
+
+class ActionMap(Enum):
+    assist='assist'
+
+class PlayAction(BaseModel):
+    action: ActionMap
+    player_br_id: str | None = None
+    team_br_id: str | None = None
+    
+class Play(BaseModel):
+    game_br_id: str
+    plays: list[PlayAction]
+    quarter: int
+    clock_time: str
+    home_score: int
+    away_score: int
+    distance_feet: int | None = None
 
 
 def handle_err(e, game=None,additional_message=None):
@@ -42,6 +65,19 @@ class CustomEncoder(JSONEncoder):
          if isinstance(obj, np.int64):
              return int(obj)
          return super().default(obj)
+
+def get_pbp_filename(game_br_id):
+    year = game_br_id[:4]
+    return f'html/{year}/PlayByPlay-{game_br_id}.html'
+
+
+def get_player_br_id_from_url(href):
+    """extract the player_br_id from a given player url
+
+    Args:
+        url (str): A link to a player description page
+    """
+    return href.split("/")[-1].replace(".html", "")
 
 
 def get_soup(url):
@@ -68,31 +104,3 @@ def get_soup(url):
             raise Exception(f'Error getting data from {url}. Status ' + str(response.status_code))
 
     return bs4.BeautifulSoup(response.text, 'html.parser')
-
-
-
-def save_html(game, year):
-    print(game['br_id'])
-
-    try:
-        url = base_url + "/boxscores/pbp/" + game['br_id'] + ".html"
-    except Exception as e:
-        breakpoint()
-        breakpoint()
-    soup = get_soup(url)
-    
-    # TODO get all plays all quarters
-    try:
-        html = str(soup.select('#pbp')[0])
-        
-        # TODO write 1 html file per game in 'html' folder 
-        
-        # If the year folder isn't there, create it
-        if not os.path.exists(f'html/{year}'):
-            os.makedirs(f'html/{year}')
-        
-        with open(f'html/{year}/PlayByPlay-{game["br_id"]}.html', 'w', encoding='utf-8') as f:
-            f.write(html)
-    except Exception as e:
-        breakpoint()
-        breakpoint()

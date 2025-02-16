@@ -2,6 +2,7 @@ import pandas as pd
 import duckdb
 from pbp_helper import *
 import argparse
+from PlayByPlays.process_html import process_html
 
 # region ARGS
 parser = argparse.ArgumentParser()
@@ -19,12 +20,6 @@ if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
 #endregion
 
 
-
-def test():
-    from Game import Game
-    x=Game('202110190MIL')
-    breakpoint()
-    breakpoint()
     
     
 def getPlayByPlaysHTML(start_year=None, stop_year=1946):
@@ -55,7 +50,27 @@ def getPlayByPlaysHTML(start_year=None, stop_year=1946):
             #             left_off_game_br_id = False
             #     continue
             
-            save_html(game, year)
+            print(game['br_id'])
+
+            try:
+                url = base_url + "/boxscores/pbp/" + game['br_id'] + ".html"
+            except Exception as e:
+                breakpoint()
+            
+            soup = get_soup(url)
+            
+            try:
+                html = str(soup.select('#pbp')[0])
+                
+                # If the year folder isn't there, create it
+                if not os.path.exists(f'html/{year}'):
+                    os.makedirs(f'html/{year}')
+                
+                with open(get_pbp_filename(game['br_id']), 'w', encoding='utf-8') as f:
+                    f.write(html)
+                    
+            except Exception as e:
+                breakpoint()
             
             print('SAVED')
         print('YEAR ' + str(year) + ' COMPLETE')
