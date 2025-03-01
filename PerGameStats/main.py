@@ -815,9 +815,6 @@ def loadJSONToDB(begin_year, stop_year,
     ###########################################################
     def clean_data(games):
         
-        
-        
-        
         # Convert to boolean
         if 'played' in games.columns:
             games['played'] = games['played'].astype(bool)
@@ -842,6 +839,8 @@ def loadJSONToDB(begin_year, stop_year,
             games.loc[games.assists == '','assists'] = np.nan
             games.loc[games.rebounds == '','rebounds'] = np.nan
             games.loc[games.personal_fouls == '','personal_fouls'] = np.nan
+            games.loc[games.minutes_played == '','minutes_played'] = np.nan
+            games.loc[games.ft_per_fga == '','ft_per_fga'] = np.nan
         
         if get_PlayerGameStats:
             # if '202103270LAC' in list(games.game_br_id):
@@ -960,7 +959,7 @@ def loadJSONToDB(begin_year, stop_year,
         begin_year = int(begin_year)
         stop_year = int(stop_year)
         year = begin_year
-
+        games_paginated = None
         while year >= stop_year:
             with create_engine(conn_str).begin() as connection:
                 connection.execute(text('SET FOREIGN_KEY_CHECKS=0;'))
@@ -996,11 +995,7 @@ def loadJSONToDB(begin_year, stop_year,
                 
                 connection.execute(text('SET FOREIGN_KEY_CHECKS=1;'))                
     except Exception as e:
-        print('----------------')
-        print('ERROR LOADING TO DB!: ' + str(e) + '\n')
-        traceback.print_exc()
-        print('\nGame details:')
-        print('----------------')
+        handle_err(e, games_paginated=games_paginated)
         breakpoint()
 
 

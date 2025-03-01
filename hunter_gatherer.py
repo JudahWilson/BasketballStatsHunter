@@ -280,20 +280,6 @@ def load_games(f):
         connection.execute(text('SET FOREIGN_KEY_CHECKS=1;'))
 
 
-def get_points_per_team_by_year(team_br_id):
-    """
-    Get the points per team per year
-    """
-
-    # get the games
-    games = pd.read_sql(
-        f"SELECT * FROM Games WHERE home_team_br_id = '{team_br_id}' OR away_team_br_id = '{team_br_id}'",
-        DB._engine,
-    )
-    # TODO
-    breakpoint()
-    breakpoint()
-
 
 # TODO
 def get_pbp():
