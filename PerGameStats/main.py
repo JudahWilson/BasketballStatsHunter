@@ -41,7 +41,6 @@ import pdb
 ####################################################
 testQL = None # TODO test the testing done by testQL
 ####################################################
-# @Gooey()
 def args():
     parser = argparse.ArgumentParser()
     parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb','rmdb'])
