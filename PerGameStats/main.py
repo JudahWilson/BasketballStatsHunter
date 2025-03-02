@@ -34,7 +34,6 @@ from sqlalchemy import text
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
-from gooey import Gooey
 import pdb
 #endregion
 
