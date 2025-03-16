@@ -201,3 +201,8 @@ PerGameStats/log.txt
 BB.session.sql
 test.py
 log.txt
+
+# metabase
+metabase.db.mv.db
+metabase.db.trace.db
+plugins/
