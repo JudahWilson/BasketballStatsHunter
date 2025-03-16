@@ -35,16 +35,72 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
 import pdb
+import questionary
+from questionary import Choice, Form
 #endregion
 
 
-####################################################
 testQL = None # TODO test the testing done by testQL
-####################################################
-# @Gooey()
+
+
 def args():
+    #################################    
+    # region callbacks
+    #################################    
+    def set_format_arg():
+        choices=[Choice('json', checked=True), Choice('html'), Choice('db'), Choice('rmjson'), Choice('lsjson'), Choice('lsdb'), Choice('rmdb')]
+        answer = questionary.select(
+            'Select a format',
+            choices=choices,
+            use_shortcuts=True,
+        ).ask()
+        
+        if answer:
+            args.format = answer
+        
+    
+    
+    def set_table_arg(optional: bool=False):
+        """Set the tables arg manually"""
+        choices=[
+            Choice('All', checked=True),
+            Choice('teamgamestats (tgs)', value='tgs'),
+            Choice('teamgamequarterstats (tgqs)', value='tgqs'),
+            Choice('teamgamehalfstats (tghs)', value='tghs'),
+            Choice('playergamestats (pgs)', value='pgs'),
+            Choice('playergamequarterstats (pgqs)', value='pgqs'),
+            Choice('playergamehalfstats (pghs)', value='pghs'),
+        ]
+        if optional:
+            choices += [Choice('None', value=None)]
+        
+        answer = questionary.checkbox(
+            'Select a table',
+            choices=choices,
+        ).ask()
+        
+        if answer:
+            if 'All' in answer:
+                # Select each option manually
+                args.tables = 'tgs,tgqs,tghs,pgs,pgqs,pghs'
+            else:
+                # Convert list to CSV as is expected
+                if isinstance(answer, list):
+                    answer = ','.join(answer)              
+    
+    
+    def set_seasons_range_arg(optional=True):
+        """Set seasons_arg manually"""
+        answer = questionary.text(
+            'Enter the seasons range (YYYY-YYYY)',
+            validate=lambda text: re.match(r'^\d{4}-\d{4}$', text) or re.match(r'^\d{4}$', text),
+        ).ask()
+    #endregion
+    
+    
     parser = argparse.ArgumentParser()
-    parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', choices=['json', 'db', 'html','rmjson','lsjson','lsdb','rmdb'])
+    parser.add_argument('format', help='json, html, db, rmjson (to remove json files that you are finished with)', 
+                        choices=['json', 'db', 'html','rmjson','lsjson','lsdb','rmdb'], nargs='?')
     parser.add_argument('seasons_range', type=str, nargs='?',
                         help='Oldest season\'s start year to the most recent season\'s start year, hyphen separated [YYYY-YYYY] or just the most recent start year [YYYY]')
     parser.add_argument('tables', help=''''[CSV] teamgamestats' ('tgs')
@@ -55,15 +111,22 @@ def args():
         'playergamehalfstats' ('pghs')''',
         nargs='?')
 
-
     args = parser.parse_args()
+    
+    if not args.format:
+        set_format_arg()
+    
     if args.seasons_range:
         if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
             parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
+    
     if args.format in ['json','db','rmjson'] and args.tables == []:
-        parser.error(f'table option is required for {args.format}')
-    if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
-        parser.error(f'seasons_range is required for {args.format} (YYYY-YYYY) or just YYYY for all seasons YYYY and earlier')
+        set_table_arg()
+            
+    breakpoint()
+    if args.format in ['json','db','rmjson','lsjson','lsdb'] and not args.seasons_range:
+        set_seasons_range_arg(optional=True)
+        
     if args.tables:
         for a in args.tables.split(','):
             if a not in [
