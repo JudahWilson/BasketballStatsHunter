@@ -49,3 +49,4 @@ quarters / halfs are only available 96-97 season and above
 - OT stats not recorded (team and player)
   - django model added but not db
 - evey player is flaged as starting (playergamestats)
+- games.season_br_id is only able to be populated thanks to corrections/populate_season_br_id_to_games.py, rather than hunter.js

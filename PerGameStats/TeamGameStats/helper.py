@@ -1,6 +1,5 @@
 import pandas as pd
 import pyperclip
-from io import StringIO
 
 def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_players, away_team_advanced, home_team_advanced, home_tgs, away_tgs, file, year):
     """

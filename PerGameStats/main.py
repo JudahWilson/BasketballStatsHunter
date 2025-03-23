@@ -15,7 +15,6 @@ import bs4
 import re
 import traceback
 import numpy as np
-import sys
 import TeamGameStats
 import os, re
 import pyperclip
@@ -34,7 +33,6 @@ from sqlalchemy import text
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import duckdb
-import pdb
 import questionary
 from questionary import Choice, Form
 #endregion
