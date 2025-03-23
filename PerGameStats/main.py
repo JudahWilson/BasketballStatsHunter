@@ -93,7 +93,8 @@ def args():
         """Set seasons_arg manually"""
         answer = questionary.text(
             'Enter the seasons range (YYYY-YYYY)',
-            validate=lambda text: re.match(r'^\d{4}-\d{4}$', text) or re.match(r'^\d{4}$', text),
+            validate=lambda text: re.match(r'^\d{4}-\d{4}$', text) or re.match(r'^\d{4}$', text) or text == '',
+            default='',
         ).ask()
     #endregion
     
@@ -123,7 +124,6 @@ def args():
     if args.format in ['json','db','rmjson'] and args.tables == []:
         set_table_arg()
             
-    breakpoint()
     if args.format in ['json','db','rmjson','lsjson','lsdb'] and not args.seasons_range:
         set_seasons_range_arg(optional=True)
         
