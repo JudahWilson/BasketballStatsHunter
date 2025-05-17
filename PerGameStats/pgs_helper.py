@@ -395,8 +395,17 @@ def get_last_processed_game(table_name: str) -> str | None:
     return game_leftoff_at
 
 
-def get_season_from_br_id(br_id):
-    '202304110LAL'
+def get_season_from_br_id(br_id: str) -> int:
+    """
+    Get the season from the br_id. It is the year of the season if the month is
+    October, November, or December. Otherwise, it is the year of the season - 1.
+
+    Args:
+        br_id (str): Game BR ID (e.g. 2023100001)
+
+    Returns:
+        int: start year of the game's season season (e.g. 2023)
+    """
     year = br_id[:4]
     month = br_id[4:6]
     if month in ['10', '11', '12']:
