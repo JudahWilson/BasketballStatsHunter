@@ -25,7 +25,7 @@ import TeamGameQuarterStats.helper
 import PlayerGameStats.helper
 import PlayerGameHalfStats.helper
 import PlayerGameQuarterStats.helper
-from pgs_helper import *
+from core.helper import *
 import warnings
 from sqlalchemy import text
 
@@ -50,7 +50,7 @@ def getTeamGameStatsHTML(
 
     1. **Bulk mode** (default)
        Loop backward from ``start_year`` down to ``stop_year`` and save every
-       game’s HTML—skipping files that already exist.
+       game's HTML—skipping files that already exist.
 
     2. **Single-game mode**
        Provide ``singular_game_br_id`` (e.g., ``"20250328LAL"``) to process just
@@ -953,6 +953,8 @@ def loadJSONToDB(
             games.loc[games.personal_fouls == "", "personal_fouls"] = np.nan
             games.loc[games.minutes_played == "", "minutes_played"] = np.nan
             games.loc[games.ft_per_fga == "", "ft_per_fga"] = np.nan
+            games.loc[games.free_throw_attempts == "", "free_throw_attempts"] = np.nan
+            games.loc[games.free_throw_percentage == "", "free_throw_percentage"] = np.nan
 
         if get_PlayerGameStats:
             # if '202103270LAC' in list(games.game_br_id):
@@ -1094,7 +1096,6 @@ def loadJSONToDB(
         return games
 
     ###########################################################
-
     target_table_count = 0
     if get_TeamGameStats:
         TABLE_NAME = "TeamGameStats"
@@ -1139,8 +1140,7 @@ def loadJSONToDB(
 
                 games = clean_data(games)
                 page = 1
-                chunksize = 1  #!
-                breakpoint()
+                chunksize = 1000
                 while page * chunksize < len(games):
                     try:
                         games_paginated = games.iloc[
@@ -1161,7 +1161,8 @@ def loadJSONToDB(
                             f.write(str(e))
                         break
 
-                games.iloc[(page - 1) * chunksize :].to_sql(
+                games_paginated=games.iloc[(page - 1) * chunksize :]
+                games_paginated.to_sql(
                     name=TABLE_NAME,
                     con=connection,
                     if_exists="append",
@@ -1226,7 +1227,19 @@ def rmdb(
 
 
 if __name__ == "__main__":
-    getTeamGameStatsHTML(singular_game_br_id="195403080FTW")
+    TeamGameStats.helper.setJSON(
+        games,
+        away_team_basic,
+        home_team_basic,
+        four_factors,
+        inactive_players,
+        away_team_advanced,
+        home_team_advanced,
+        home_tgs,
+        away_tgs,
+        file,
+        year,
+    )
 
     # getTeamGameStatsHTML
     # setTeamGameStatsJSON

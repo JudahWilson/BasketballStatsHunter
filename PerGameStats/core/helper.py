@@ -97,11 +97,7 @@ def handle_err(e, game=None, games_paginated=None, additional_message=None):
     print('----------------')
 
 
-class CustomEncoder(JSONEncoder):
-     def default(self, obj):
-         if isinstance(obj, np.int64):
-             return int(obj)
-         return super().default(obj)
+
 
 
 def remove_numbers(input_string: str):
@@ -331,6 +327,12 @@ def save_html(game, year):
 
 
 def insertData(fname, new_data):
+    class CustomEncoder(JSONEncoder):
+     def default(self, obj):
+         if isinstance(obj, np.int64):
+             return int(obj)
+         return super().default(obj)
+    
     # Get data currently in file
     try:
         f = open(fname, 'r')

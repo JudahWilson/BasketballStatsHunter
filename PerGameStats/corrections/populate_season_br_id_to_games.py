@@ -1,6 +1,9 @@
+"""One-off script to populate the season_br_id to games table
+
+Is this logic implemented in the code?"""
 import sys
 sys.path.append('..')
-from pgs_helper import *
+from core.helper import *
 from sqlalchemy import text
 import re
 

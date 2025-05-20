@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
 import pyperclip
 import duckdb
-from core import getTeamGameStatsHTML, setTeamGameStatsJSON, setPlayerGameStatsJSON, lsJSON, rmJSON, lsdb, loadJSONToDB, rmdb
+from core.core import getTeamGameStatsHTML, setTeamGameStatsJSON, setPlayerGameStatsJSON, lsJSON, rmJSON, lsdb, loadJSONToDB, rmdb
 from pydantic import BaseModel
 import json
 from typing import Literal

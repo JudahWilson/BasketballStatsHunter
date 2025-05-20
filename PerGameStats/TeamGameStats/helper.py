@@ -1,7 +1,18 @@
 import pandas as pd
 import pyperclip
+from bs4 import BeautifulSoup, Tag
 
-def setJSON(games, away_team_basic, home_team_basic, four_factors, inactive_players, away_team_advanced, home_team_advanced, home_tgs, away_tgs, file, year):
+def setJSON(games: pd.DataFrame, 
+           away_team_basic: Tag, 
+           home_team_basic: Tag, 
+           four_factors: Tag, 
+           inactive_players: Tag,
+           away_team_advanced: Tag, 
+           home_team_advanced: Tag,
+           home_tgs: dict,
+           away_tgs: dict,
+           file: str,
+           year: int) -> None:
     """
     Set the JSON object for the TeamGameStats object.
 
