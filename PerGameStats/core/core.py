@@ -922,177 +922,182 @@ def loadJSONToDB(
     ###########################################################
     def clean_data(games):
 
-        # Convert to boolean
-        if "played" in games.columns:
-            games["played"] = games["played"].astype(bool)
-        if "started" in games.columns:
-            games["started"] = games["started"].astype(bool)
+        try: 
+            # Convert to boolean
+            if "played" in games.columns:
+                games["played"] = games["played"].astype(bool)
+            if "started" in games.columns:
+                games["started"] = games["started"].astype(bool)
 
-        if get_TeamGameStats:
-            games.loc[games.offensive_rebounds == "", "offensive_rebounds"] = np.nan
-            games.loc[games.defensive_rebounds == "", "defensive_rebounds"] = np.nan
-            games.loc[games.pace_factor == "", "pace_factor"] = np.nan
-            games.loc[games.offensive_rating == "", "offensive_rating"] = np.nan
-            games.loc[games.defensive_rating == "", "defensive_rating"] = np.nan
-            games.loc[
-                games.offensive_rebound_percentage == "", "offensive_rebound_percentage"
-            ] = np.nan
-            games.loc[
-                games.defensive_rebound_percentage == "", "defensive_rebound_percentage"
-            ] = np.nan
-            games.loc[games.steal_percentage == "", "steal_percentage"] = np.nan
-            games.loc[games.steals == "", "steals"] = np.nan
-            games.loc[games.turnovers == "", "turnovers"] = np.nan
-            games.loc[games.blocks == "", "blocks"] = np.nan
-            games.loc[games.field_goal_attempts == "", "field_goal_attempts"] = np.nan
-            games.loc[games.field_goal_percentage == "", "field_goal_percentage"] = (
-                np.nan
-            )
-            games.loc[games.assists == "", "assists"] = np.nan
-            games.loc[games.rebounds == "", "rebounds"] = np.nan
-            games.loc[games.personal_fouls == "", "personal_fouls"] = np.nan
-            games.loc[games.minutes_played == "", "minutes_played"] = np.nan
-            games.loc[games.ft_per_fga == "", "ft_per_fga"] = np.nan
-            games.loc[games.free_throw_attempts == "", "free_throw_attempts"] = np.nan
-            games.loc[games.free_throw_percentage == "", "free_throw_percentage"] = np.nan
-
-        if get_PlayerGameStats:
-            # if '202103270LAC' in list(games.game_br_id):
-            #     # TODO this is sus
-            #     games.loc[(games.game_br_id == '202103270LAC') & (games.player_br_id == 'howardw01'), 'free_throw_attempt_rate'] = .609 # no idea y
-
-            if "201601210DEN" in list(games.game_br_id):
+            if get_TeamGameStats:
+                games.loc[games.offensive_rebounds == "", "offensive_rebounds"] = np.nan
+                games.loc[games.defensive_rebounds == "", "defensive_rebounds"] = np.nan
+                games.loc[games.pace_factor == "", "pace_factor"] = np.nan
+                games.loc[games.offensive_rating == "", "offensive_rating"] = np.nan
+                games.loc[games.defensive_rating == "", "defensive_rating"] = np.nan
                 games.loc[
-                    (games.game_br_id == "201601210DEN")
-                    & (games.player_br_id == "millemi01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
-
-            if "201411070ORL" in list(games.game_br_id):
+                    games.offensive_rebound_percentage == "", "offensive_rebound_percentage"
+                ] = np.nan
                 games.loc[
-                    (games.game_br_id == "201411070ORL")
-                    & (games.player_br_id == "bennean01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
+                    games.defensive_rebound_percentage == "", "defensive_rebound_percentage"
+                ] = np.nan
+                games.loc[games.steal_percentage == "", "steal_percentage"] = np.nan
+                games.loc[games.steals == "", "steals"] = np.nan
+                games.loc[games.turnovers == "", "turnovers"] = np.nan
+                games.loc[games.blocks == "", "blocks"] = np.nan
+                games.loc[games.field_goal_attempts == "", "field_goal_attempts"] = np.nan
+                games.loc[games.field_goal_percentage == "", "field_goal_percentage"] = (
+                    np.nan
+                )
+                games.loc[games.assists == "", "assists"] = np.nan
+                games.loc[games.rebounds == "", "rebounds"] = np.nan
+                games.loc[games.personal_fouls == "", "personal_fouls"] = np.nan
+                games.loc[games.minutes_played == "", "minutes_played"] = np.nan
+                games.loc[games.ft_per_fga == "", "ft_per_fga"] = np.nan
+                games.loc[games.free_throw_attempts == "", "free_throw_attempts"] = np.nan
+                games.loc[games.free_throw_percentage == "", "free_throw_percentage"] = np.nan
 
-            # if '201412290MIA' in list(games.game_br_id):
-            #     games.loc[(games.game_br_id == '201412290MIA') & (games.player_br_id == 'whiteha01'), 'free_throw_attempt_rate'] = None # no idea y
+            if get_PlayerGameStats:
+                #region one-off fixes
+                # if '202103270LAC' in list(games.game_br_id):
+                #     # TODO this is sus
+                #     games.loc[(games.game_br_id == '202103270LAC') & (games.player_br_id == 'howardw01'), 'free_throw_attempt_rate'] = .609 # no idea y
 
-            if "201312300DEN" in list(games.game_br_id):
-                games.loc[
-                    (games.game_br_id == "201312300DEN")
-                    & (games.player_br_id == "anthojo01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
+                if "201601210DEN" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "201601210DEN")
+                        & (games.player_br_id == "millemi01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
 
-            if "200305250DAL" in list(games.game_br_id):
-                games.loc[
-                    (games.game_br_id == "200305250DAL")
-                    & (games.player_br_id == "kerrst01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
+                if "201411070ORL" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "201411070ORL")
+                        & (games.player_br_id == "bennean01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
 
-            if "200102130VAN" in list(games.game_br_id):
-                games.loc[
-                    (games.game_br_id == "200102130VAN")
-                    & (games.player_br_id == "carrch01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
+                # if '201412290MIA' in list(games.game_br_id):
+                #     games.loc[(games.game_br_id == '201412290MIA') & (games.player_br_id == 'whiteha01'), 'free_throw_attempt_rate'] = None # no idea y
 
-            if "200911030DAL" in list(games.game_br_id):
-                games.loc[
-                    (games.game_br_id == "200911030DAL")
-                    & (games.player_br_id == "koufoko01"),
-                    "box_plus_minus",
-                ] = None  # no idea y
-                games.loc[
-                    (games.game_br_id == "200911030DAL")
-                    & (games.player_br_id == "koufoko01"),
-                    "defensive_rating",
-                ] = 0  # no idea y
+                if "201312300DEN" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "201312300DEN")
+                        & (games.player_br_id == "anthojo01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
 
-        # shift decimal two places
-        def shift_decimal(val):
-            if str(val) == "nan":
-                return val
+                if "200305250DAL" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "200305250DAL")
+                        & (games.player_br_id == "kerrst01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
 
-            # weird quirk where the website shows %100 as %-1000
-            if val == -1000:
-                return 1.0
+                if "200102130VAN" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "200102130VAN")
+                        & (games.player_br_id == "carrch01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
 
-            str_val = str(val)
-            dec_pos = str(str_val).rfind(".")
-            if dec_pos == 0:
-                return float(".00" + str_val.replace(".", ""))
-            elif dec_pos == 1:
-                return float(".0" + str_val.replace(".", ""))
-            else:
-                return float(
-                    str_val[: dec_pos - 2]
-                    + "."
-                    + str_val[dec_pos - 2 :].replace(".", "")
+                if "200911030DAL" in list(games.game_br_id):
+                    games.loc[
+                        (games.game_br_id == "200911030DAL")
+                        & (games.player_br_id == "koufoko01"),
+                        "box_plus_minus",
+                    ] = None  # no idea y
+                    games.loc[
+                        (games.game_br_id == "200911030DAL")
+                        & (games.player_br_id == "koufoko01"),
+                        "defensive_rating",
+                    ] = 0  # no idea y
+                    
+            #endregion
+
+            # shift decimal two places
+            def shift_decimal(val):
+                if str(val) == "nan":
+                    return val
+
+                # weird quirk where the website shows %100 as %-1000
+                if val == -1000:
+                    return 1.0
+
+                str_val = str(val)
+                dec_pos = str(str_val).rfind(".")
+                if dec_pos == 0:
+                    return float(".00" + str_val.replace(".", ""))
+                elif dec_pos == 1:
+                    return float(".0" + str_val.replace(".", ""))
+                else:
+                    return float(
+                        str_val[: dec_pos - 2]
+                        + "."
+                        + str_val[dec_pos - 2 :].replace(".", "")
+                    )
+
+            if "offensive_rebound_percentage" in games.columns:
+                games["offensive_rebound_percentage"] = games[
+                    "offensive_rebound_percentage"
+                ].apply(shift_decimal)
+            if "defensive_rebound_percentage" in games.columns:
+                games["defensive_rebound_percentage"] = games[
+                    "defensive_rebound_percentage"
+                ].apply(shift_decimal)
+            if "total_rebound_percentage" in games.columns:
+                games["total_rebound_percentage"] = games["total_rebound_percentage"].apply(
+                    shift_decimal
+                )
+            if "assist_percentage" in games.columns:
+                games["assist_percentage"] = games["assist_percentage"].apply(shift_decimal)
+            if "steal_percentage" in games.columns:
+                games["steal_percentage"] = games["steal_percentage"].apply(shift_decimal)
+            if "block_percentage" in games.columns:
+                games["block_percentage"] = games["block_percentage"].apply(shift_decimal)
+            if "turnover_percentage" in games.columns:
+                games["turnover_percentage"] = games["turnover_percentage"].apply(
+                    shift_decimal
+                )
+            if "usage_percentage" in games.columns:
+                games["usage_percentage"] = games["usage_percentage"].apply(shift_decimal)
+            if "box_plus_minus" in games.columns:
+                games["box_plus_minus"] = games["box_plus_minus"].apply(
+                    lambda x: None if x == -1000 else x
                 )
 
-        if "offensive_rebound_percentage" in games.columns:
-            games["offensive_rebound_percentage"] = games[
-                "offensive_rebound_percentage"
-            ].apply(shift_decimal)
-        if "defensive_rebound_percentage" in games.columns:
-            games["defensive_rebound_percentage"] = games[
-                "defensive_rebound_percentage"
-            ].apply(shift_decimal)
-        if "total_rebound_percentage" in games.columns:
-            games["total_rebound_percentage"] = games["total_rebound_percentage"].apply(
-                shift_decimal
-            )
-        if "assist_percentage" in games.columns:
-            games["assist_percentage"] = games["assist_percentage"].apply(shift_decimal)
-        if "steal_percentage" in games.columns:
-            games["steal_percentage"] = games["steal_percentage"].apply(shift_decimal)
-        if "block_percentage" in games.columns:
-            games["block_percentage"] = games["block_percentage"].apply(shift_decimal)
-        if "turnover_percentage" in games.columns:
-            games["turnover_percentage"] = games["turnover_percentage"].apply(
-                shift_decimal
-            )
-        if "usage_percentage" in games.columns:
-            games["usage_percentage"] = games["usage_percentage"].apply(shift_decimal)
-        if "box_plus_minus" in games.columns:
-            games["box_plus_minus"] = games["box_plus_minus"].apply(
-                lambda x: None if x == -1000 else x
-            )
+            if "three_pointer_percentage" in games.columns:
 
-        if "three_pointer_percentage" in games.columns:
-
-            games.three_pointer_percentage = games.three_pointer_percentage.apply(
-                lambda val: 0 if val == ".000" else val
-            )
-            games.three_pointer_percentage = games.three_pointer_percentage.apply(
-                lambda val: np.nan if val == "" else val
-            )
-
-            games.free_throw_percentage = games.free_throw_percentage.apply(
-                lambda val: 0 if val == ".000" else val
-            )
-            games.free_throw_percentage = games.free_throw_percentage.apply(
-                lambda val: np.nan if val == "" else val
-            )
-        if "inactive_players" in games.columns:
-            games["inactive_players"] = games["inactive_players"].apply(
-                lambda x: json.dumps(x)
-            )
-        if "minutes_played" in games.columns and (
-            get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats
-        ):
-            games["seconds_played"] = games["minutes_played"].apply(
-                lambda x: (
-                    int(x.split(":")[0]) * 60 + int(x.split(":")[1])
-                    if not x in [None, "DNP"]
-                    else None
+                games.three_pointer_percentage = games.three_pointer_percentage.apply(
+                    lambda val: 0 if val == ".000" else val
                 )
-            )
-            del games["minutes_played"]
+                games.three_pointer_percentage = games.three_pointer_percentage.apply(
+                    lambda val: np.nan if val == "" else val
+                )
 
+                games.free_throw_percentage = games.free_throw_percentage.apply(
+                    lambda val: 0 if val == ".000" else val
+                )
+                games.free_throw_percentage = games.free_throw_percentage.apply(
+                    lambda val: np.nan if val == "" else val
+                )
+            if "inactive_players" in games.columns:
+                games["inactive_players"] = games["inactive_players"].apply(
+                    lambda x: json.dumps(x)
+                )
+            if "minutes_played" in games.columns and (
+                get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats
+            ):
+                def minutes_to_seconds(game_minutes):
+                    if not game_minutes in [None, "DNP"] and not str(game_minutes) == "nan":
+                        return int(game_minutes.split(":")[0]) * 60 + int(game_minutes.split(":")[1])
+                    else:
+                        return None
+                
+                games["seconds_played"] = games["minutes_played"].apply(lambda x: minutes_to_seconds(x))
+                del games["minutes_played"]
+        except Exception as e:
+            handle_err(e, games=games)
         return games
 
     ###########################################################
@@ -1173,7 +1178,7 @@ def loadJSONToDB(
 
                 connection.execute(text("SET FOREIGN_KEY_CHECKS=1;"))
     except Exception as e:
-        handle_err(e, games_paginated=games_paginated)
+        handle_err(e, games=games_paginated)
         breakpoint()
 
 
@@ -1224,6 +1229,7 @@ def rmdb(
         print(SQL)
         result = connection.execute(text(SQL))
         print(f"Rows deleted: {result.rowcount}")
+
 
 
 if __name__ == "__main__":

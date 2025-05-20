@@ -61,7 +61,7 @@ def get_tag_having_text(soup, selector, needle) -> bs4.element.Tag | None:
     return None
 
 
-def handle_err(e, game=None, games_paginated=None, additional_message=None):
+def handle_err(e, game=None, games=None, additional_message=None):
     #########################################
     # TODO, options to show json? html file path? maybe the traceback and traceback is default to not be shown?
     #########################################
@@ -75,7 +75,7 @@ def handle_err(e, game=None, games_paginated=None, additional_message=None):
     # page of game data
     if game is None:
         
-        if isinstance(games_paginated, pd.DataFrame) and not games_paginated.empty:
+        if isinstance(games, pd.DataFrame) and not games.empty:
             
             # If a row is specified in a page of rows
             if ' at row ' in e.args[0]:
@@ -84,7 +84,7 @@ def handle_err(e, game=None, games_paginated=None, additional_message=None):
                 match = re.match(r'.* at row (\d+).*', e.args[0])
                 if match:
                     index = int(match.group(1)) - 1
-                    game = games_paginated.iloc[index]
+                    game = games.iloc[index]
                         
     if game is not None:
         print('\nGame details:')
