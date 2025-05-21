@@ -3,11 +3,13 @@ PerGameStats/html
 PerGameStats/PlayerGameHalfStats/json
 PerGameStats/PlayerGameQuarterStats/json
 PerGameStats/PlayerGameStats/json
+PerGameStats/PlayerGameOvertimeStats/json
 PerGameStats/TeamGameHalfStats/json
 PerGameStats/TeamGameQuarterStats/json
 PerGameStats/TeamGameStats/json
 PerGameStats/lastgamehtml.txt
 PerGameStats/log.txt
+PerGameStats/TeamGameOvertimeStats/json
 # Manual gitignore entries
 db/.env
 db/cacert-2023-05-30.pem

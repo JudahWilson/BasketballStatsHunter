@@ -12,6 +12,7 @@ import glob
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import numpy as np
+from types.types import GameBrId
 
 WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
 
@@ -365,7 +366,7 @@ def insertDataJL(fname, new_data):
             writer.write_all(new_data)
 
 
-def get_last_processed_game(table_name: str) -> str | None:
+def get_last_processed_game(table_name: str) -> GameBrId | None:
     # Get json lines files in descending chronological order
     files = glob.glob(f'{table_name}/json/*.jsonl')
     files.sort(reverse=True)
@@ -397,7 +398,7 @@ def get_last_processed_game(table_name: str) -> str | None:
     return game_leftoff_at
 
 
-def get_season_from_br_id(br_id: str) -> int:
+def get_season_from_br_id(br_id: GameBrId) -> int:
     """
     Get the season from the br_id. It is the year of the season if the month is
     October, November, or December. Otherwise, it is the year of the season - 1.
@@ -416,7 +417,7 @@ def get_season_from_br_id(br_id: str) -> int:
         return int(year) - 1
     
 
-def is_game_processed(game_in_question: str, game_leftoff_at: str) -> bool:
+def is_game_processed(game_in_question: GameBrId, game_leftoff_at: GameBrId) -> bool:
     '''
     Has the game in question been processed already?
     
@@ -439,4 +440,3 @@ def is_game_processed(game_in_question: str, game_leftoff_at: str) -> bool:
             return False
     else: 
         return False
-

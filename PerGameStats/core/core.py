@@ -22,9 +22,11 @@ import pyperclip
 import TeamGameStats.helper
 import TeamGameHalfStats.helper
 import TeamGameQuarterStats.helper
+import TeamGameOvertimeStats.helper
 import PlayerGameStats.helper
 import PlayerGameHalfStats.helper
 import PlayerGameQuarterStats.helper
+import PlayerGameOvertimeStats.helper
 from core.helper import *
 import warnings
 from sqlalchemy import text
@@ -165,6 +167,7 @@ def setTeamGameStatsJSON(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
 ):
 
     begin_year = int(begin_year)
@@ -176,6 +179,7 @@ def setTeamGameStatsJSON(
     game_leftoff_at = get_last_processed_game("TeamGameStats")
     game_quarter_leftoff_at = get_last_processed_game("TeamGameQuarterStats")
     game_half_leftoff_at = get_last_processed_game("TeamGameHalfStats")
+    game_overtime_leftoff_at = get_last_processed_game("TeamGameOvertimeStats")
 
     while year >= stop_year:
         # DB Games
@@ -210,12 +214,16 @@ def setTeamGameStatsJSON(
                 skip_TeamGameHalfStats = is_game_processed(
                     game.br_id, game_half_leftoff_at
                 )
+                skip_TeamGameOvertimeStats = is_game_processed(
+                    game.br_id, game_overtime_leftoff_at
+                )
 
                 # If data should be skipped for all specified tables, continue to the next file
                 if (
                     (get_TeamGameStats == False or skip_TeamGameStats)
                     and (get_TeamGameQuarterStats == False or skip_TeamGameQuarterStats)
                     and (get_TeamGameHalfStats == False or skip_TeamGameHalfStats)
+                    and (get_TeamGameOvertimeStats == False or skip_TeamGameOvertimeStats)
                 ):
                     continue
 
@@ -266,7 +274,10 @@ def setTeamGameStatsJSON(
                     home_team_h2 = soup.select(f"#box-{home_team_br_id}-h2-basic")[0]
                     away_team_h1 = soup.select(f"#box-{away_team_br_id}-h1-basic")[0]
                     away_team_h2 = soup.select(f"#box-{away_team_br_id}-h2-basic")[0]
-
+                    
+                    # Get array of all OTs for each team
+                    home_team_OTs = soup.select(f'table[id*="box-{home_team_br_id}-ot"]')
+                    away_team_OTs = soup.select(f'table[id*="box-{away_team_br_id}-ot"]')
                 else:
                     home_team_q1 = None
                     home_team_q2 = None
@@ -280,6 +291,8 @@ def setTeamGameStatsJSON(
                     home_team_h2 = None
                     away_team_h1 = None
                     away_team_h2 = None
+                    home_team_OTs = []
+                    away_team_OTs = []
                 # endregion
                 next_field = ""
                 # endregion
@@ -385,6 +398,33 @@ def setTeamGameStatsJSON(
                             new_data=data,
                         )
 
+                    if get_TeamGameOvertimeStats and not skip_TeamGameOvertimeStats:
+
+                        data = []
+
+                        for i in range(len(home_team_OTs)):
+                            home_ot_row = {}
+                            away_ot_row = {}
+                            TeamGameOvertimeStats.helper.setJSON(
+                                games,
+                                away_team_OTs[i],
+                                home_team_OTs[i],
+                                four_factors,
+                                home_ot_row,
+                                away_ot_row,
+                                i + 1,
+                                file,
+                                year,
+                            )
+                        
+                            data.append(away_ot_row)
+                            data.append(home_ot_row)
+
+                        insertDataJL(
+                            f"TeamGameOvertimeStats/json/{year}TeamGameOvertimeStats.jsonl",
+                            new_data=data,
+                        )
+
                     if get_TeamGameHalfStats and not skip_TeamGameHalfStats:
 
                         home_tgs1 = {}
@@ -444,6 +484,7 @@ def setPlayerGameStatsJSON(
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
     testQL: str | None = None,
 ):
     """
@@ -736,9 +777,11 @@ def lsJSON(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
 ):
     """
     Process JSON files into the database reverse chronologically
@@ -760,12 +803,16 @@ def lsJSON(
         tables += ["TeamGameQuarterStats"]
     if get_TeamGameHalfStats:
         tables += ["TeamGameHalfStats"]
+    if get_TeamGameOvertimeStats:
+        tables += ["TeamGameOvertimeStats"]
     if get_PlayerGameStats:
         tables += ["PlayerGameStats"]
     if get_PlayerGameQuarterStats:
         tables += ["PlayerGameQuarterStats"]
     if get_PlayerGameHalfStats:
         tables += ["PlayerGameHalfStats"]
+    if get_PlayerGameOvertimeStats:
+        tables += ["PlayerGameOvertimeStats"]
 
     data_file_pattern = re.compile(r"\d{4}.*.jsonl")
     str_output = ""

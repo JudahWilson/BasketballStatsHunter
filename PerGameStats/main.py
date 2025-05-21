@@ -35,9 +35,11 @@ class Controls(BaseModel):
             'teamgamestats', 'tgs',
             'teamgamequarterstats', 'tgqs', 
             'teamgamehalfstats', 'tghs',
+            'teamgameovertimestats', 'tgos', 
             'playergamestats', 'pgs',
             'playergamequarterstats', 'pgqs',
             'playergamehalfstats', 'pghs'
+            'playergameovertimestats', 'pgos'
     ]] | None = None
 
     def model_post_init(self, *args, **kwargs):
@@ -105,9 +107,11 @@ if __name__ == '__main__':
             [CSV] teamgamestats' ('tgs')
             'teamgamequarterstats' ('tgqs')
             'teamgamehalfstats' ('tghs')
+            'teamgameovertimestats' ('tgos')
             'playergamestats' ('pgs')
             'playergamequarterstats' ('pgqs')
-            'playergamehalfstats' ('pghs')''',
+            'playergamehalfstats' ('pghs'),
+            'playergameovertimestats' ('pgos')''',
         nargs='?'
     )
     parser.add_argument(
@@ -133,9 +137,11 @@ if __name__ == '__main__':
             get_TeamGameStats = False
             get_TeamGameHalfStats = False
             get_TeamGameQuarterStats = False
+            get_TeamGameOvertimeStats = False
             get_PlayerGameStats = False
             get_PlayerGameHalfStats = False
             get_PlayerGameQuarterStats = False
+            get_PlayerGameOvertimeStats = False
             
             if 'teamgamestats' in controls.tables or 'tgs' in controls.tables:
                 print("Processing TeamGameStats")
@@ -148,6 +154,10 @@ if __name__ == '__main__':
             if 'teamgamehalfstats' in controls.tables or 'tghs' in controls.tables:
                 print("Processing TeamGameHalfStats")
                 get_TeamGameHalfStats=True
+                
+            if 'teamgameovertimestats' in controls.tables or 'tgos' in controls.tables:
+                print("Processing TeamGameOvertimeStats")
+                get_TeamGameOvertimeStats=True
             
             if 'playergamestats' in controls.tables or 'pgs' in controls.tables:
                 print("Processing PlayerGameStats")
@@ -160,6 +170,10 @@ if __name__ == '__main__':
             if 'playergamehalfstats' in controls.tables or 'pghs' in controls.tables:
                 print("Processing PlayerGameHalfStats")
                 get_PlayerGameHalfStats=True
+                
+            if 'playergameovertimestats' in controls.tables or 'pgos' in controls.tables:
+                print("Processing PlayerGameOvertimeStats")
+                get_PlayerGameOvertimeStats=True
             
 
             if get_TeamGameStats or get_TeamGameQuarterStats or get_TeamGameHalfStats:
@@ -168,14 +182,16 @@ if __name__ == '__main__':
                     controls.oldest_year,
                     get_TeamGameStats=get_TeamGameStats,
                     get_TeamGameHalfStats=get_TeamGameHalfStats,
-                    get_TeamGameQuarterStats=get_TeamGameQuarterStats)
+                    get_TeamGameQuarterStats=get_TeamGameQuarterStats,
+                    get_TeamGameOvertimeStats=get_TeamGameOvertimeStats)
             if get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:
                 setPlayerGameStatsJSON(
                     controls.newest_year,
                     controls.oldest_year,
                     get_PlayerGameStats=get_PlayerGameStats,
                     get_PlayerGameHalfStats=get_PlayerGameHalfStats,
-                    get_PlayerGameQuarterStats=get_PlayerGameQuarterStats)
+                    get_PlayerGameQuarterStats=get_PlayerGameQuarterStats,
+                    get_PlayerGameOvertimeStats=get_PlayerGameOvertimeStats)
             
             exit(0)
 
@@ -183,9 +199,11 @@ if __name__ == '__main__':
             get_TeamGameStats = False
             get_TeamGameHalfStats = False
             get_TeamGameQuarterStats = False
+            get_TeamGameOvertimeStats = False
             get_PlayerGameStats = False
             get_PlayerGameHalfStats = False
             get_PlayerGameQuarterStats = False
+            get_PlayerGameOvertimeStats = False
             
             if controls.tables:
                 
@@ -198,6 +216,9 @@ if __name__ == '__main__':
                 if 'teamgamehalfstats' in controls.tables or 'tghs' in controls.tables:
                     get_TeamGameHalfStats=True
                 
+                if 'teamgameovertimestats' in controls.tables or 'tgos' in controls.tables:
+                    get_TeamGameOvertimeStats=True
+                
                 if 'playergamestats' in controls.tables or 'pgs' in controls.tables:
                     get_PlayerGameStats=True
                 
@@ -206,14 +227,18 @@ if __name__ == '__main__':
                 
                 if 'playergamehalfstats' in controls.tables or 'pghs' in controls.tables:
                     get_PlayerGameHalfStats=True
+                    
+                if 'playergameovertimestats' in controls.tables or 'pgos' in controls.tables:
+                    get_PlayerGameOvertimeStats=True
             else:
                 get_TeamGameStats=True
                 get_TeamGameQuarterStats=True
                 get_TeamGameHalfStats=True
+                get_TeamGameOvertimeStats=True
                 get_PlayerGameStats=True
                 get_PlayerGameQuarterStats=True
-                get_PlayerGameHalfStats=True
-            lsJSON(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats)
+                get_PlayerGameOvertimeStats=True
+            lsJSON(get_TeamGameStats, get_TeamGameQuarterStats, get_TeamGameHalfStats, get_TeamGameOvertimeStats, get_PlayerGameStats, get_PlayerGameQuarterStats, get_PlayerGameHalfStats, get_PlayerGameOvertimeStats)
             
         case 'rmjson':
             get_TeamGameStats = False
