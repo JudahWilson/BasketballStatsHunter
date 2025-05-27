@@ -4,7 +4,7 @@ if a function
     starts with 'store' it will store the data into the database
     ends with a number, it is one of several functions doing the downloading or storing
 """
-
+import inspect
 import json
 from common import *
 import pandas as pd
@@ -13,6 +13,75 @@ import re
 import time
 import datetime
 from sqlalchemy import text
+
+class WebScrapeJob:
+    def __init__(self, table_name) -> None:
+        """An interface class which makes the logic for webscraping a particular
+        category of data (often one table) uniform, between the downloading,
+        formatting, and importing of data
+
+        Args:
+            table_name (str): The table name of the data being processed
+        """        
+        self.table_name = table_name
+        pass
+    
+    def download_html(self):
+        """Logic to download as html is required to be implemented and should
+        not handle importing to the database"""
+        raise NotImplementedError()
+    
+    def format(self):
+        """Not required - Logic to convert to a reviewable format that can will also easily be
+        used to import the data into the DB"""
+        pass
+    
+    def import_to_db(self):
+        """Logic to import the data to the database"""
+        raise NotImplementedError()
+    
+    
+class WebScrapeTeamsJob(WebScrapeJob):
+    def __init__(self) -> None:
+        super().__init__('teams')
+        # Print context
+        print(self.__class__.__name__ + ' initialized')
+        print(inspect.currentframe().f_code.co_name)
+        """name
+            br_id
+            nba
+            baa
+            aba
+            season_start_year
+            season_end_year
+            location
+        """
+        
+        
+    def download_html(self):
+        url = base_url + "/teams/"
+        soup = get_soup(url)
+        # Get franchise urls - one franchise has many teams
+        franchise_anchor_tag = soup.select('th[data-stat=franch_name] a')
+        for a in franchise_anchor_tag:
+            # Get the team overview html
+            team_url = base_url + a['href']
+            get_soup(team_url)
+            
+            # TODO Store the individual team rows for the one franchise. There
+            # are separate team rows if
+            # - the franchise moved cities
+            # - the franchise changed from the ABA league to the NBA league
+            
+            # NOTE: (BAA and NBA are counted as the same team br_id because they
+            # never coexisted. BAA merged with NBL to make NBA)
+        breakpoint()
+        
+    def format(self):
+        pass
+    
+    def import_to_db(self):
+        pass
 
 # from nameparser import HumanName
 ##########################################
@@ -27,7 +96,7 @@ def download_teams1():
     teams_html = soup.find_all("tr", {"class": "full_table"})
     with open("html/teams.html", "w") as f:
         f.write("\n".join([str(t) for t in teams_html]))
-
+    
 
 def store_teams():
     """
@@ -373,7 +442,8 @@ def get_team_game_stats():
             
         year -= 1
 
-    
-load_games('games.json')
+
+web_scrape_teams = WebScrapeTeamsJob()
+web_scrape_teams.download_html()
 
 DB.close()

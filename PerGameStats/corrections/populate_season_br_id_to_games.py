@@ -22,33 +22,13 @@ with create_engine(conn_str).begin() as connection:
         # The first year is the year before the year shown in the season br_id
         year_start = int(re.match(r'.*(\d{4})', season[0]).group(1)) - 1
         
-        # If ABA, only update games with the teams affiliated with the ABA
-        if season_br_id.startswith('ABA'):
-
-            # Get all teams affiliated with the ABA for this season
-            # TODO
-            
-            # Update all games of the ABA teams
-            print(f"""
-                UPDATE games SET season_br_id = '{season_br_id}' 
-                WHERE br_id > '{year_start}0901%'
-                    AND br_id < '{year_start + 1}0901%'
-            """)
-            connection.execute(text(query))
-            
-        # Else, if NBA, update all games of the NBA teams
-        if season_br_id.startswith('NBA'):
-            
-            # Get all teams affiliated with the NBA for this season
-            # TODO
-            
-            # Update all games of the NBA teams
-            query = f"""
-                UPDATE games SET season_br_id = '{season_br_id}' 
-                WHERE br_id > '{year_start}0901%'
-                    AND br_id < '{year_start + 1}0901%'
-            """
-            print(query)
-            connection.execute(text(query))
+        # TODO fix to determine which league this is for
+        query = f"""
+            UPDATE games SET season_br_id = '{season_br_id}' 
+            WHERE br_id > '{year_start}0901%'
+                AND br_id < '{year_start + 1}0901%'
+        """
+        print(query)
+        connection.execute(text(query))
         
         
