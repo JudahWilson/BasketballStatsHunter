@@ -12,7 +12,7 @@ import glob
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import numpy as np
-from types.types import GameBrId
+from schemas.types import GameBrId
 
 WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
 

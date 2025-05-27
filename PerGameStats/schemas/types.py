@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from types.inc.helper import CustomField
+from schemas.inc.helper import CustomField
 from datetime import date
 
 
