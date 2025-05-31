@@ -13,41 +13,81 @@ import re
 import time
 import datetime
 from sqlalchemy import text
+from pydantic import validate_call
+from pathvalidate import is_valid_filename
+from abc import ABC, abstractmethod
 
 class WebScrapeJob:
-    def __init__(self, table_name) -> None:
-        """An interface class which makes the logic for webscraping a particular
-        category of data (often one table) uniform, between the downloading,
-        formatting, and importing of data
-
-        Args:
-            table_name (str): The table name of the data being processed
-        """        
-        self.table_name = table_name
-        pass
+    """An interface class which makes the logic for webscraping a particular
+    category of data (often one table) uniform, between the downloading,
+    formatting, and importing of data
+    """
+    #################################################
+    # Interface methods. MUST BE IMPLEMENTED
+    #################################################
+    @abstractmethod
+    def __init__(self, data_name: str) -> None:
+        self.data_name = data_name
+        """A human parseable name for the kind of data being processed"""
     
+    @abstractmethod
     def download_html(self):
         """Logic to download as html is required to be implemented and should
         not handle importing to the database"""
-        raise NotImplementedError()
+        pass
     
+    @abstractmethod
     def format(self):
-        """Not required - Logic to convert to a reviewable format that can will also easily be
+        """Logic to convert to a reviewable format that can will also easily be
         used to import the data into the DB"""
         pass
     
+    @abstractmethod
     def import_to_db(self):
         """Logic to import the data to the database"""
-        raise NotImplementedError()
+        pass
     
+    @abstractmethod
+    def get_html_file(self, *args):
+        """Get a file where HTML content is stored per the given parameter
+
+        Returns:
+            str: A file path to an HTML file
+        """
     
+    #################################################
+    # THESE PROPERTIES DO NOT NEED TO BE IMPLEMENTED.
+    # THEY ARE JUST INHERITED.
+    #############################################
+    @property
+    def data_name(self):
+        """The data_name property."""
+        return self._data_name
+    
+    @data_name.setter
+    def data_name(self, value):
+        if not is_valid_filename(value):
+            raise ValueError('data_name needs to be a valid file name')
+        self._data_name = value
+        
+        
+    @property
+    def html_folder(self):
+        """The html folder is a sibling to the current script's file
+
+        Returns:
+            str: "the script's location"/html
+        """
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        return os.path.join(script_dir, 'html')
+        
 class WebScrapeTeamsJob(WebScrapeJob):
     def __init__(self) -> None:
-        super().__init__('teams')
+        super().__init__('Teams data')
         # Print context
         print(self.__class__.__name__ + ' initialized')
         print(inspect.currentframe().f_code.co_name)
-        """name
+        """name 
             br_id
             nba
             baa
@@ -82,6 +122,7 @@ class WebScrapeTeamsJob(WebScrapeJob):
     
     def import_to_db(self):
         pass
+    
 
 # from nameparser import HumanName
 ##########################################
