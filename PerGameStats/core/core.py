@@ -223,7 +223,9 @@ def setTeamGameStatsJSON(
                     (get_TeamGameStats == False or skip_TeamGameStats)
                     and (get_TeamGameQuarterStats == False or skip_TeamGameQuarterStats)
                     and (get_TeamGameHalfStats == False or skip_TeamGameHalfStats)
-                    and (get_TeamGameOvertimeStats == False or skip_TeamGameOvertimeStats)
+                    and (
+                        get_TeamGameOvertimeStats == False or skip_TeamGameOvertimeStats
+                    )
                 ):
                     continue
 
@@ -274,10 +276,14 @@ def setTeamGameStatsJSON(
                     home_team_h2 = soup.select(f"#box-{home_team_br_id}-h2-basic")[0]
                     away_team_h1 = soup.select(f"#box-{away_team_br_id}-h1-basic")[0]
                     away_team_h2 = soup.select(f"#box-{away_team_br_id}-h2-basic")[0]
-                    
+
                     # Get array of all OTs for each team
-                    home_team_OTs = soup.select(f'table[id*="box-{home_team_br_id}-ot"]')
-                    away_team_OTs = soup.select(f'table[id*="box-{away_team_br_id}-ot"]')
+                    home_team_OTs = soup.select(
+                        f'table[id*="box-{home_team_br_id}-ot"]'
+                    )
+                    away_team_OTs = soup.select(
+                        f'table[id*="box-{away_team_br_id}-ot"]'
+                    )
                 else:
                     home_team_q1 = None
                     home_team_q2 = None
@@ -416,7 +422,7 @@ def setTeamGameStatsJSON(
                                 file,
                                 year,
                             )
-                        
+
                             data.append(away_ot_row)
                             data.append(home_ot_row)
 
@@ -831,9 +837,11 @@ def rmJSON(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
 ):
     """
     remove JSON files from the file system
@@ -842,10 +850,11 @@ def rmJSON(
     :param get_TeamGameStats: bool - Load TeamGameStats
     :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
     :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
     :param get_PlayerGameStats: bool - Load PlayerGameStats
     :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
     :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
+    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     """
 
     target_table_count = 0
@@ -856,12 +865,16 @@ def rmJSON(
         tables += ["TeamGameQuarterStats"]
     if get_TeamGameHalfStats:
         tables += ["TeamGameHalfStats"]
+    if get_TeamGameOvertimeStats:
+        tables += ["TeamGameOvertimeStats"]
     if get_PlayerGameStats:
         tables += ["PlayerGameStats"]
     if get_PlayerGameQuarterStats:
         tables += ["PlayerGameQuarterStats"]
     if get_PlayerGameHalfStats:
         tables += ["PlayerGameHalfStats"]
+    if get_PlayerGameOvertimeStats:
+        tables += ["PlayerGameOvertimeStats"]
 
     data_file_pattern = re.compile(r"\d{4}.*.jsonl")
     str_output = ""
@@ -881,9 +894,11 @@ def lsdb(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
 ):
     """
     show where progress was left off for importing data in the database
@@ -892,9 +907,11 @@ def lsdb(
     :param get_TeamGameStats: bool - Load TeamGameStats
     :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
     :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
     :param get_PlayerGameStats: bool - Load PlayerGameStats
     :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
     :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
     tables = []
@@ -904,17 +921,26 @@ def lsdb(
         tables += ["TeamGameQuarterStats"]
     if get_TeamGameHalfStats:
         tables += ["TeamGameHalfStats"]
+    if get_TeamGameOvertimeStats:
+        tables += ["TeamGameOvertimeStats"]
     if get_PlayerGameStats:
         tables += ["PlayerGameStats"]
     if get_PlayerGameQuarterStats:
         tables += ["PlayerGameQuarterStats"]
     if get_PlayerGameHalfStats:
         tables += ["PlayerGameHalfStats"]
+    if get_PlayerGameOvertimeStats:
+        tables += ["PlayerGameOvertimeStats"]
 
     basic_table_sql = ""
     advanced_table_sql = ""
     is_first_basic_table = True
     is_first_advancded_table = True
+
+    # This loop builds two SQL queries: one for basic tables (TeamGameStats/PlayerGameStats)
+    # and one for advanced tables (Quarter/Half/Overtime stats).
+    # For each table type, it creates UNION queries that find the first and last game_br_id,
+    # effectively showing the date range of data in each table.
     for table in tables:
         if table.lower() in ["tgs", "pgs", "teamgamestats", "playergamestats"]:
             if is_first_basic_table:
@@ -948,9 +974,11 @@ def loadJSONToDB(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
     debug=False,
 ):
     """
@@ -960,16 +988,18 @@ def loadJSONToDB(
     :param get_TeamGameStats: bool - Load TeamGameStats
     :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
     :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
+    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
     :param get_PlayerGameStats: bool - Load PlayerGameStats
     :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
     :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
+    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
 
     ###########################################################
     def clean_data(games):
 
-        try: 
+        try:
             # Convert to boolean
             if "played" in games.columns:
                 games["played"] = games["played"].astype(bool)
@@ -983,29 +1013,37 @@ def loadJSONToDB(
                 games.loc[games.offensive_rating == "", "offensive_rating"] = np.nan
                 games.loc[games.defensive_rating == "", "defensive_rating"] = np.nan
                 games.loc[
-                    games.offensive_rebound_percentage == "", "offensive_rebound_percentage"
+                    games.offensive_rebound_percentage == "",
+                    "offensive_rebound_percentage",
                 ] = np.nan
                 games.loc[
-                    games.defensive_rebound_percentage == "", "defensive_rebound_percentage"
+                    games.defensive_rebound_percentage == "",
+                    "defensive_rebound_percentage",
                 ] = np.nan
                 games.loc[games.steal_percentage == "", "steal_percentage"] = np.nan
                 games.loc[games.steals == "", "steals"] = np.nan
                 games.loc[games.turnovers == "", "turnovers"] = np.nan
                 games.loc[games.blocks == "", "blocks"] = np.nan
-                games.loc[games.field_goal_attempts == "", "field_goal_attempts"] = np.nan
-                games.loc[games.field_goal_percentage == "", "field_goal_percentage"] = (
+                games.loc[games.field_goal_attempts == "", "field_goal_attempts"] = (
                     np.nan
                 )
+                games.loc[
+                    games.field_goal_percentage == "", "field_goal_percentage"
+                ] = np.nan
                 games.loc[games.assists == "", "assists"] = np.nan
                 games.loc[games.rebounds == "", "rebounds"] = np.nan
                 games.loc[games.personal_fouls == "", "personal_fouls"] = np.nan
                 games.loc[games.minutes_played == "", "minutes_played"] = np.nan
                 games.loc[games.ft_per_fga == "", "ft_per_fga"] = np.nan
-                games.loc[games.free_throw_attempts == "", "free_throw_attempts"] = np.nan
-                games.loc[games.free_throw_percentage == "", "free_throw_percentage"] = np.nan
+                games.loc[games.free_throw_attempts == "", "free_throw_attempts"] = (
+                    np.nan
+                )
+                games.loc[
+                    games.free_throw_percentage == "", "free_throw_percentage"
+                ] = np.nan
 
             if get_PlayerGameStats:
-                #region one-off fixes
+                # region one-off fixes
                 # if '202103270LAC' in list(games.game_br_id):
                 #     # TODO this is sus
                 #     games.loc[(games.game_br_id == '202103270LAC') & (games.player_br_id == 'howardw01'), 'free_throw_attempt_rate'] = .609 # no idea y
@@ -1059,8 +1097,8 @@ def loadJSONToDB(
                         & (games.player_br_id == "koufoko01"),
                         "defensive_rating",
                     ] = 0  # no idea y
-                    
-            #endregion
+
+            # endregion
 
             # shift decimal two places
             def shift_decimal(val):
@@ -1093,21 +1131,29 @@ def loadJSONToDB(
                     "defensive_rebound_percentage"
                 ].apply(shift_decimal)
             if "total_rebound_percentage" in games.columns:
-                games["total_rebound_percentage"] = games["total_rebound_percentage"].apply(
+                games["total_rebound_percentage"] = games[
+                    "total_rebound_percentage"
+                ].apply(shift_decimal)
+            if "assist_percentage" in games.columns:
+                games["assist_percentage"] = games["assist_percentage"].apply(
                     shift_decimal
                 )
-            if "assist_percentage" in games.columns:
-                games["assist_percentage"] = games["assist_percentage"].apply(shift_decimal)
             if "steal_percentage" in games.columns:
-                games["steal_percentage"] = games["steal_percentage"].apply(shift_decimal)
+                games["steal_percentage"] = games["steal_percentage"].apply(
+                    shift_decimal
+                )
             if "block_percentage" in games.columns:
-                games["block_percentage"] = games["block_percentage"].apply(shift_decimal)
+                games["block_percentage"] = games["block_percentage"].apply(
+                    shift_decimal
+                )
             if "turnover_percentage" in games.columns:
                 games["turnover_percentage"] = games["turnover_percentage"].apply(
                     shift_decimal
                 )
             if "usage_percentage" in games.columns:
-                games["usage_percentage"] = games["usage_percentage"].apply(shift_decimal)
+                games["usage_percentage"] = games["usage_percentage"].apply(
+                    shift_decimal
+                )
             if "box_plus_minus" in games.columns:
                 games["box_plus_minus"] = games["box_plus_minus"].apply(
                     lambda x: None if x == -1000 else x
@@ -1133,15 +1179,25 @@ def loadJSONToDB(
                     lambda x: json.dumps(x)
                 )
             if "minutes_played" in games.columns and (
-                get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats
+                get_PlayerGameStats
+                or get_PlayerGameQuarterStats
+                or get_PlayerGameHalfStats
             ):
+
                 def minutes_to_seconds(game_minutes):
-                    if not game_minutes in [None, "DNP"] and not str(game_minutes) == "nan":
-                        return int(game_minutes.split(":")[0]) * 60 + int(game_minutes.split(":")[1])
+                    if (
+                        not game_minutes in [None, "DNP"]
+                        and not str(game_minutes) == "nan"
+                    ):
+                        return int(game_minutes.split(":")[0]) * 60 + int(
+                            game_minutes.split(":")[1]
+                        )
                     else:
                         return None
-                
-                games["seconds_played"] = games["minutes_played"].apply(lambda x: minutes_to_seconds(x))
+
+                games["seconds_played"] = games["minutes_played"].apply(
+                    lambda x: minutes_to_seconds(x)
+                )
                 del games["minutes_played"]
         except Exception as e:
             handle_err(e, games=games)
@@ -1158,6 +1214,9 @@ def loadJSONToDB(
     if get_TeamGameHalfStats:
         TABLE_NAME = "TeamGameHalfStats"
         target_table_count += 1
+    if get_TeamGameOvertimeStats:
+        TABLE_NAME = "TeamGameOvertimeStats"
+        target_table_count += 1
     if get_PlayerGameStats:
         TABLE_NAME = "PlayerGameStats"
         target_table_count += 1
@@ -1166,6 +1225,9 @@ def loadJSONToDB(
         target_table_count += 1
     if get_PlayerGameHalfStats:
         TABLE_NAME = "PlayerGameHalfStats"
+        target_table_count += 1
+    if get_PlayerGameOvertimeStats:
+        TABLE_NAME = "PlayerGameOvertimeStats"
         target_table_count += 1
 
     # Backup table in use
@@ -1213,7 +1275,7 @@ def loadJSONToDB(
                             f.write(str(e))
                         break
 
-                games_paginated=games.iloc[(page - 1) * chunksize :]
+                games_paginated = games.iloc[(page - 1) * chunksize :]
                 games_paginated.to_sql(
                     name=TABLE_NAME,
                     con=connection,
@@ -1235,9 +1297,11 @@ def rmdb(
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,
     get_TeamGameHalfStats=False,
+    get_TeamGameOvertimeStats=False,
     get_PlayerGameStats=False,
     get_PlayerGameQuarterStats=False,
     get_PlayerGameHalfStats=False,
+    get_PlayerGameOvertimeStats=False,
 ):
 
     target_table_count = 0
@@ -1250,6 +1314,9 @@ def rmdb(
     if get_TeamGameHalfStats:
         TABLE_NAME = "TeamGameHalfStats"
         target_table_count += 1
+    if get_TeamGameOvertimeStats:
+        TABLE_NAME = "TeamGameOvertimeStats"
+        target_table_count += 1
     if get_PlayerGameStats:
         TABLE_NAME = "PlayerGameStats"
         target_table_count += 1
@@ -1258,6 +1325,9 @@ def rmdb(
         target_table_count += 1
     if get_PlayerGameHalfStats:
         TABLE_NAME = "PlayerGameHalfStats"
+        target_table_count += 1
+    if get_PlayerGameOvertimeStats:
+        TABLE_NAME = "PlayerGameOvertimeStats"
         target_table_count += 1
 
     if target_table_count > 1:
@@ -1278,21 +1348,10 @@ def rmdb(
         print(f"Rows deleted: {result.rowcount}")
 
 
-
 if __name__ == "__main__":
-    TeamGameStats.helper.setJSON(
-        games,
-        away_team_basic,
-        home_team_basic,
-        four_factors,
-        inactive_players,
-        away_team_advanced,
-        home_team_advanced,
-        home_tgs,
-        away_tgs,
-        file,
-        year,
-    )
+    pass
+    # Example usage of the functions
+    # Uncomment the function calls below to test them
 
     # getTeamGameStatsHTML
     # setTeamGameStatsJSON
