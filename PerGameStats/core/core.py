@@ -162,7 +162,7 @@ def getTeamGameStatsHTML(
 
 
 def setTeamGameStatsJSON(
-    begin_year=None,
+    begin_year,
     stop_year=1946,
     get_TeamGameStats=False,
     get_TeamGameQuarterStats=False,

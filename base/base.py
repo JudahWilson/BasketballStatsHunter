@@ -68,6 +68,7 @@ class BaseWebScrapeJob:
             raise ValueError('data_name needs to be a valid file name')
         self._data_name = value
         
+        
     ### html_folder
     @property
     def html_folder(self):
@@ -78,6 +79,7 @@ class BaseWebScrapeJob:
         """
         script_dir = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(script_dir, 'html')
+    
     
     ### tables
     @property

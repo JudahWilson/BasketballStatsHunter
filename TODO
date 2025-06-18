@@ -1,0 +1,6 @@
+- overtime stats _debug reason for not picking up any ot data while getting json_
+  - team
+  - player
+- redo teams
+  - the franchise vs locations issue? ..storing br_ids properly
+- play by plays
