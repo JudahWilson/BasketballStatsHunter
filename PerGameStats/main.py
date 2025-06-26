@@ -38,7 +38,7 @@ class Controls(BaseModel):
             'teamgameovertimestats', 'tgos', 
             'playergamestats', 'pgs',
             'playergamequarterstats', 'pgqs',
-            'playergamehalfstats', 'pghs'
+            'playergamehalfstats', 'pghs',
             'playergameovertimestats', 'pgos'
     ]] | None = None
 

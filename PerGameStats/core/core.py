@@ -126,7 +126,7 @@ def getTeamGameStatsHTML(
             games = pd.read_sql(sql=SQL, con=engine)
 
             # Catch up to where we left off
-            left_off_game_br_id = None
+            left_off_game_br_id: GameBrId | None = None
             for folder in os.listdir("html"):
                 if folder.isnumeric() and int(folder) > year:
                     continue
@@ -140,6 +140,14 @@ def getTeamGameStatsHTML(
                         files.sort()
                         last_file = files[0]
                         left_off_game_br_id = last_file.split("-")[1].split(".")[0]
+
+            # If the last game we left off at is in a completely different
+            # season than the first game we are processing, there is no need to
+            # be concerned with where we left off.
+            if left_off_game_br_id and not is_same_season(
+                games.iloc[0]["br_id"], left_off_game_br_id
+            ):
+                left_off_game_br_id = None
 
             for ind, game in games.iterrows():
                 if not override_existing_html:
@@ -506,6 +514,7 @@ def setPlayerGameStatsJSON(
     game_leftoff_at = get_last_processed_game("PlayerGameStats")
     game_quarter_leftoff_at = get_last_processed_game("PlayerGameQuarterStats")
     game_half_leftoff_at = get_last_processed_game("PlayerGameHalfStats")
+    game_overtime_leftoff_at = get_last_processed_game("PlayerGameOvertimeStats")
 
     while year >= stop_year:
         # DB Games
@@ -541,6 +550,7 @@ def setPlayerGameStatsJSON(
                         skip_PlayerGameStats = False
                         skip_PlayerGameQuarterStats = False
                         skip_PlayerGameHalfStats = False
+                        skip_PlayerGameOvertimeStats = False
                     else:
                         # What should we skip, if at all?
                         skip_PlayerGameStats = is_game_processed(
@@ -552,7 +562,9 @@ def setPlayerGameStatsJSON(
                         skip_PlayerGameHalfStats = is_game_processed(
                             game.br_id, game_half_leftoff_at
                         )
-
+                        skip_PlayerGameOvertimeStats = is_game_processed(
+                            game.br_id, game_overtime_leftoff_at
+                        )
                         # If data should be skipped for all specified tables, continue to the next file
                         if (
                             (get_PlayerGameStats == False or skip_PlayerGameStats)
@@ -563,6 +575,10 @@ def setPlayerGameStatsJSON(
                             and (
                                 get_PlayerGameHalfStats == False
                                 or skip_PlayerGameHalfStats
+                            )
+                            and (
+                                get_PlayerGameOvertimeStats == False
+                                or skip_PlayerGameOvertimeStats
                             )
                         ):
                             continue
@@ -765,6 +781,37 @@ def setPlayerGameStatsJSON(
                                         new_data=new_data,
                                     )
                                 new_data = []
+
+                        if get_PlayerGameOvertimeStats and not skip_PlayerGameOvertimeStats:
+                            # Get array of all OTs for each team
+                            home_team_OTs = soup.select(
+                                f'table[id*="box-{home_team_br_id}-ot"]'
+                            )
+                            away_team_OTs = soup.select(
+                                f'table[id*="box-{away_team_br_id}-ot"]'
+                            )
+                            data = []
+                            for i in range(len(home_team_OTs)):
+                                
+                                data += PlayerGameOvertimeStats.helper.setJSON(
+                                    game,
+                                    i + 1,
+                                    home_team_OTs[i],
+                                    away_team_OTs[i],
+                                    four_factors,
+                                )
+                            if testQL:
+                                insertDataJL(
+                                    f"PlayerGameOvertimeStats/json/TestPlayerGameOvertimeStats.jsonl",
+                                    new_data=data,
+                                )
+                            else:
+                                insertDataJL(
+                                    f"PlayerGameOvertimeStats/json/{year}PlayerGameOvertimeStats.jsonl",
+                                    new_data=data,
+                                )
+                            new_data = []
+
                         # endregion
 
                     except Exception as e:

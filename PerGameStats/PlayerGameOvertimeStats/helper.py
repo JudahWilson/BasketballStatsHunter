@@ -126,19 +126,19 @@ def setJSON(
     # Home players
     all_players += setPlayersData(
         game, 
-        True,
         overtime,
+        True,
         four_factors=four_factors,
-        team_stats_q=away_team_q,
+        team_stats_q=home_team_q,
     )
     
     # Away players
     all_players += setPlayersData(
         game, 
-        False,
         overtime,
+        False,
         four_factors=four_factors,
-        team_stats_q=home_team_q,
+        team_stats_q=away_team_q,
     )
 
     return all_players

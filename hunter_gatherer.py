@@ -1,9 +1,10 @@
 """
-if a function 
+if a function
     starts with 'download' it will download the data from the internet
     starts with 'store' it will store the data into the database
     ends with a number, it is one of several functions doing the downloading or storing
 """
+
 import json
 from common import *
 import pandas as pd
@@ -12,13 +13,13 @@ import re
 import time
 from sqlalchemy import text
 from base import BaseWebScrapeJob
-    
-        
+
+
 class WebScrapeTeams(BaseWebScrapeJob):
     def __init__(self) -> None:
-        super().__init__('Teams data', ['teams', 'team_locations'])
+        super().__init__("Teams data", ["teams", "team_locations"])
         # Print context
-        
+
         """name 
             br_id
             nba
@@ -28,33 +29,35 @@ class WebScrapeTeams(BaseWebScrapeJob):
             season_end_year
             location
         """
-        
-        
+
     def download_html(self):
         url = base_url + "/teams/"
         soup = get_soup(url)
         # Get franchise urls - one franchise has many teams
-        franchise_anchor_tag = soup.select('th[data-stat=franch_name] a')
-        for a in franchise_anchor_tag:
+        location_a_tag = soup.select("th[data-stat=franch_name] a")
+        for a in location_a_tag:
             # Get the team overview html
-            team_url = base_url + a['href']
+            team_url = base_url + str(a["href"])
             get_soup(team_url)
-            
+            breakpoint()
             # TODO Store the individual team rows for the one franchise. There
             # are separate team rows if
             # - the franchise moved cities
             # - the franchise changed from the ABA league to the NBA league
-            
+
             # NOTE: (BAA and NBA are counted as the same team br_id because they
             # never coexisted. BAA merged with NBL to make NBA)
         breakpoint()
-        
+
     def format_for_db(self):
         pass
-    
+
     def import_to_db(self):
         pass
-    
+
+    def get_html_file(self, *args):
+        pass
+
 
 # from nameparser import HumanName
 ##########################################
@@ -69,7 +72,7 @@ def download_teams1():
     teams_html = soup.find_all("tr", {"class": "full_table"})
     with open("html/teams.html", "w") as f:
         f.write("\n".join([str(t) for t in teams_html]))
-    
+
 
 def store_teams():
     """
@@ -286,12 +289,14 @@ def load_games(f):
     games["inactive_players"] = games["inactive_players"].apply(lambda x: json.dumps(x))
     games["officials"] = games["officials"].apply(lambda x: json.dumps(x))
     games["attendance"] = games["attendance"].apply(lambda x: 0 if x == "" else x)
-    games['game_duration'] = None # only 197606040BOS has json data for it and it isn't the duration of the game--unclear but maybe time of day it started.
+    games["game_duration"] = (
+        None  # only 197606040BOS has json data for it and it isn't the duration of the game--unclear but maybe time of day it started.
+    )
     page = start_chunk_page
-    
+
     with DB._engine.connect() as connection:
-        connection.execute(text('SET FOREIGN_KEY_CHECKS=0;'))
-    
+        connection.execute(text("SET FOREIGN_KEY_CHECKS=0;"))
+
     try:
         while page * 1000 < len(games):
             try:
@@ -309,18 +314,20 @@ def load_games(f):
                 with open("log.txt", "a+") as f:
                     f.write(str(e))
                 break
-    
+
         games.iloc[(page - 1) * 1000 :].to_sql(
-            name=TABLE_NAME, con=DB._engine, if_exists="append", chunksize=1000, index=False
+            name=TABLE_NAME,
+            con=DB._engine,
+            if_exists="append",
+            chunksize=1000,
+            index=False,
         )
     except Exception:
         breakpoint()
         traceback.print_exc()
-    
-    
-    with DB._engine.connect() as connection:
-        connection.execute(text('SET FOREIGN_KEY_CHECKS=1;'))
 
+    with DB._engine.connect() as connection:
+        connection.execute(text("SET FOREIGN_KEY_CHECKS=1;"))
 
 
 # TODO
@@ -340,83 +347,85 @@ def get_pbp():
     breakpoint()
     # https://www.basketball-reference.com/boxscores/pbp/
 
+
 def get_team_game_stats():
     year = 2023
-    
+
     while year >= 1996:
         SQL = f"""SELECT * FROM Games 
         where date_time >= '{year}-09-01'
         and date_time < '{year + 1}-09-01'
         order by date_time asc"""
-        
+
         games = pd.read_sql(sql=SQL, con=DB._engine)
 
         tgs_array = []
         for ind, game in games.iterrows():
-            url = base_url + "/boxscores/" + game['br_id'] + ".html"
+            url = base_url + "/boxscores/" + game["br_id"] + ".html"
             soup = get_soup(url)
-            
+
             # Away Team basic
             tgs = {}
-            tgs['game_id'] = game['id']
-            tgs['team_br_id'] = game['away_team_br_id']
+            tgs["game_id"] = game["id"]
+            tgs["team_br_id"] = game["away_team_br_id"]
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
             breakpoint()
-            
+
             # away team advanced
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
+
             # TODO Home Team basic
             tgs = {}
-            tgs['game_id'] = game['id']
-            tgs['team_br_id'] = game['home_team_br_id']
+            tgs["game_id"] = game["id"]
+            tgs["team_br_id"] = game["home_team_br_id"]
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
             breakpoint()
-            
+
             # TODO home team advanced
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # home team q1
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # home team q2
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # home team q3
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-           
+
             # home team q4
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # away team q1
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
+
             # away team q2
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
+
             # away team q3
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-           
+
             # away team q4
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
+
             # home h1
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # home h2
             table_soup = soup.select(f"#box-{game['home_team_br_id']}-game-basic")
-            
+
             # away h1
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
+
             # away h2
             table_soup = soup.select(f"#box-{game['away_team_br_id']}-game-basic")
-            
-            
+
         year -= 1
 
 
+# TODO temp code for testing
 web_scrape_teams = WebScrapeTeams()
 web_scrape_teams.download_html()
+
 
 DB.close()
