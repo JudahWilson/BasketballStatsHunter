@@ -1229,6 +1229,7 @@ def loadJSONToDB(
                 get_PlayerGameStats
                 or get_PlayerGameQuarterStats
                 or get_PlayerGameHalfStats
+                or get_PlayerGameOvertimeStats
             ):
 
                 def minutes_to_seconds(game_minutes):

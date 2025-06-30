@@ -12,8 +12,13 @@ parser.add_argument('seasons_range', type=str, nargs='?',
 
 args = parser.parse_args()
 if args.seasons_range:
-    if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
-        parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
+    if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range) and not not re.match(r'^\d{4}-$', args.seasons_range):
+        parser.error('Invalid seasons range. Must be in the format YYYY-YYYY,'
+                     'YYYY, or YYYY- to indicate all years between YYYY and '
+                     'the beginning of the NBA (both years are the starting year '
+                     'of their season)')
+    if args.seasons_range == '1946-':
+        args.seasons_range = '1946'
 
 if args.format not in ['lsjson','lsdb'] and not args.seasons_range:
     parser.error(f'seasons_range is required for {args.format} (YYYY-YYYY) or just YYYY for all seasons YYYY and earlier')
@@ -95,18 +100,21 @@ def lsdb():
     
 if __name__ == '__main__':
     if '-' in args.seasons_range:
-        year1, year2 = args.seasons_range.split('-')
-        if year1 < year2:
-            oldest_year = int(year1)
-            newest_year = int(year2)
-        else:
-            oldest_year = int(year2)
-            newest_year = int(year1)
+        if re.match(r'^\d{4}-\d{4}$', args.seasons_range):
+            year1, year2 = args.seasons_range.split('-')
+            if year1 < year2:
+                oldest_year = int(year1)
+                newest_year = int(year2)
+            else:
+                oldest_year = int(year2)
+                newest_year = int(year1)
+        elif re.match(r'^\d{4}-$', args.seasons_range):
+            newest_year = int(args.seasons_range.split('-')[0])
+            oldest_year = 1946
+        
     else:
-        newest_year=int(args.seasons_range)
-        oldest_year=1946
+        oldest_year = newest_year = int(args.seasons_range)
   
-    
     if args.format == 'html':
         getPlayByPlaysHTML(newest_year, oldest_year) 
         exit(0)

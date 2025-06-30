@@ -22,6 +22,7 @@ from core.core import getTeamGameStatsHTML, setTeamGameStatsJSON, setPlayerGameS
 from pydantic import BaseModel
 import json
 from typing import Literal
+import sys
 #endregion
 
 
@@ -51,43 +52,7 @@ class Controls(BaseModel):
             raise ValueError(f'seasons_range is required for {self.format}')
     
 
-def get_controls_from_cli_args(args: argparse.Namespace) -> Controls:
-    
-    if args.seasons_range:
-        if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range):
-            parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season)')
-                
-    oldest_year=None
-    newest_year=None
-    if args.seasons_range:
-        if '-' in args.seasons_range:
-            year1, year2 = args.seasons_range.split('-')
-            if year1 < year2:
-                oldest_year = int(year1)
-                newest_year = int(year2)
-            else:
-                oldest_year = int(year2)
-                newest_year = int(year1)
-        else:    
-            newest_year=int(args.seasons_range)
-            oldest_year=1946
-                
-    return Controls(
-        format=args.format,
-        oldest_year=oldest_year,
-        newest_year=newest_year,
-        tables=args.tables.split(',') if args.tables else None
-    )
-    
-    
-def get_controls_from_file():
-    with open('controls.json', 'r') as f:
-        controls = json.load(f)
-    return Controls(**controls)
-
-
-if __name__ == '__main__':
-    
+def build_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'format', 
@@ -120,7 +85,50 @@ if __name__ == '__main__':
         help='Gather all program controls from controls.json instead of CLI args'
     )
 
-    args = parser.parse_args()
+    return parser
+
+
+def get_controls_from_cli_args(args: argparse.Namespace) -> Controls:
+    
+    if args.seasons_range:
+        if not re.match(r'^\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-\d{4}$', args.seasons_range) and not re.match(r'^\d{4}-$', args.seasons_range):
+            parser.error('Invalid seasons range. Must be in the format YYYY-YYYY (both years are the starting year of their season), YYYY, or YYYY- to indicate all years between YYYY and the beginning of the NBA')
+                
+    oldest_year=None
+    newest_year=None
+    if args.seasons_range:
+        if '-' in args.seasons_range:
+            if re.match(r'^\d{4}-\d{4}$', args.seasons_range):
+                year1, year2 = args.seasons_range.split('-')
+                if year1 < year2:
+                    oldest_year = int(year1)
+                    newest_year = int(year2)
+                else:
+                    oldest_year = int(year2)
+                    newest_year = int(year1)
+            else:
+                # YYYY- means all years from YYYY to 1946 (the first year of the NBA)
+                newest_year, _ = args.seasons_range.split('-')
+                oldest_year = 1946
+        else:    
+            newest_year = int(args.seasons_range)
+            oldest_year = newest_year
+                
+    return Controls(
+        format=args.format,
+        oldest_year=oldest_year,
+        newest_year=newest_year,
+        tables=args.tables.split(',') if args.tables else None
+    )
+    
+    
+def get_controls_from_file():
+    with open('controls.json', 'r') as f:
+        controls = json.load(f)
+    return Controls(**controls)
+
+
+def handle_input_command(args):
     if args.file:
         controls = get_controls_from_file()
     else:
@@ -131,7 +139,10 @@ if __name__ == '__main__':
                 raise Exception('No format provided. Exiting...')
         else:
             controls = get_controls_from_cli_args(args)
-    
+    run_command(controls)
+
+
+def run_command(controls: Controls):
     match controls.format:
         case 'json':
             get_TeamGameStats = False
@@ -176,7 +187,7 @@ if __name__ == '__main__':
                 get_PlayerGameOvertimeStats=True
             
 
-            if get_TeamGameStats or get_TeamGameQuarterStats or get_TeamGameHalfStats:
+            if get_TeamGameStats or get_TeamGameQuarterStats or get_TeamGameHalfStats or get_TeamGameOvertimeStats:
                 setTeamGameStatsJSON(
                     controls.newest_year,
                     controls.oldest_year,
@@ -184,7 +195,7 @@ if __name__ == '__main__':
                     get_TeamGameHalfStats=get_TeamGameHalfStats,
                     get_TeamGameQuarterStats=get_TeamGameQuarterStats,
                     get_TeamGameOvertimeStats=get_TeamGameOvertimeStats)
-            if get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats:
+            if get_PlayerGameStats or get_PlayerGameQuarterStats or get_PlayerGameHalfStats or get_PlayerGameOvertimeStats:
                 setPlayerGameStatsJSON(
                     controls.newest_year,
                     controls.oldest_year,
@@ -193,8 +204,6 @@ if __name__ == '__main__':
                     get_PlayerGameQuarterStats=get_PlayerGameQuarterStats,
                     get_PlayerGameOvertimeStats=get_PlayerGameOvertimeStats)
             
-            exit(0)
-
         case 'lsjson':
             get_TeamGameStats = False
             get_TeamGameHalfStats = False
@@ -357,8 +366,6 @@ if __name__ == '__main__':
             get_PlayerGameHalfStats = False
             get_PlayerGameOvertimeStats = False
             
-            tables = controls.tables
-            
             if 'teamgamestats' in controls.tables or 'tgs' in controls.tables:
                 print("Processing TeamGameStats")
                 get_TeamGameStats=True
@@ -404,8 +411,6 @@ if __name__ == '__main__':
                 get_PlayerGameOvertimeStats=get_PlayerGameOvertimeStats
             )
             
-            exit(0)
-
         case 'rmdb':
             get_TeamGameStats = False
             get_TeamGameHalfStats = False
@@ -459,5 +464,26 @@ if __name__ == '__main__':
         
         case 'html':
             getTeamGameStatsHTML(controls.newest_year, controls.oldest_year, override_existing_html=False) 
-            exit(0)
+
+
+if __name__ == '__main__':
+    parser = build_parser()
+    
+    if len(sys.argv) == 1:
+        # No args, get input using input() in a loop and rerun commands until user quits
+        while True:
+            print('\n-----------------------------------')
+            input_command = input('Command (enter to exit): ')
+            if input_command == '':
+                break
+            try:
+                args = parser.parse_args(input_command.split())
+            except Exception as e:
+                print(f'Error: {e}')
+                continue
+            handle_input_command(args)
+    else:
+        args = parser.parse_args()
+        handle_input_command(args)
+    
 

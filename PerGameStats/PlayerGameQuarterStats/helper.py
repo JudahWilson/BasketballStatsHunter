@@ -43,7 +43,7 @@ def setPlayersData(game, quarter, is_home, four_factors, team_stats_q) -> list:
             played = True
         
         if is_home:
-            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[1].text
+            pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[0].text
         else:
             pgs['team_br_id'] = four_factors.select('[data-stat="team_id"] > a')[1].text
         
