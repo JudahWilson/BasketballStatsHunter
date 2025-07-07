@@ -2,8 +2,7 @@
 
 - Create a tool to scan important HTML tables to detect changes to the data format
 
-# Known Issues
+# TODO
 
-- hunter.js code is not reliable for getting game data for some seasons since the website has lightly updated HTML unless `get_games` (the most up-to-date function) correctly gathers data
-- `games.game_duration` data not loading correctly--all values are null
-- see PerGameStats/README.md for per-game stats known issues
+- Make hunter.js be dynamic enough to handle multiple seasons as some HTML tables formats vary
+- see PerGameStats/README.md

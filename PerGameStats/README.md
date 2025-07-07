@@ -1,13 +1,8 @@
 # TODO
 
-- OT stats not recorded (team and player)
-  - django model added but not db
 - evey player is flaged as starting (playergamestats)
-- games.season_br_id is only able to be populated thanks to corrections/populate_season_br_id_to_games.py, rather than hunter.js
+- games.season_br_id is only able to be populated thanks to corrections/populate_season_br_id_to_games.py, so update hunter.js eventually
   - populate season_br_id to games recently loaded?
-
-
-pgs.py is the entry point for this script
 
 # What data is a available when
 
@@ -46,29 +41,8 @@ starting at 82-83 `<br>`
 N/A
 
 get rid of pgs opponent_team_br_id - not necessary
-did i capture ot quarter stats??
 
 ---
 
 BY QUARTERS / HALFS
 quarters / halfs are only available 96-97 season and above
-
-
-
-OVERTIME DEVELOPMENT
-OT Support
-    tgos
-        --rmjson
-        -+json
-        -+lsjson
-        --db
-        --lsdb
-        --rmdb
-
-    pgos
-        --rmjson
-        --json
-        -+lsjson
-        --db
-        --lsdb
-        --rmdb
