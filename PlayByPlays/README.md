@@ -1,3 +1,5 @@
+# TODO rename the playactions table to actions and adjust backend repo
+
 # Plan
 
 - Use the play map and action map table
@@ -36,8 +38,9 @@
 - Play map
   - ID
   - the structure of the pbp row (format TBD)
-    - {FT} resembles feet variable?
-    - {PL} resembles player variable?
+    - {FT} resembles feet variable.
+    - {PL} resembles player variable.
+    - {TM} resembles team variable.
 - Action map
   - ID
   - human description
