@@ -1,0 +1,25 @@
+
+GENERIC PLACEHOLDER
+    P1, P2, P3.. depending on which involved player is being represented in the play
+    HT and AT to denote home and away team respectively?? Is this possible?
+    FT for the feet distance text
+
+download html rows
+    parse person and feet and replace all generic data with the GENERIC PLACEHOLDERS
+    if not in PLAY CACHE of unique plays
+        insert into it
+    insert into PLAYS associating GAME and PLAY CACHE row. set quarter / time     
+      if not in PLAYACTION CACHE
+        insert, setting GENERIC PLACEHOLDER for team or player, and associating to PLAY CACHE!
+        keep description column empty to allow for me to review and describe the play cache
+      insert PLAYACTION 
+        associate player OR team, the PLAYACTION CACHE row, the PLAY
+        set proper GENERIC PLACEHOLDER flag per the associated player/team
+        set feet if applicable
+
+LONG TERM
+    PLAYACTION CACHE management
+        my admin UI will show a list of undescribed PLAYACTION CACHE rows to allow for me to describe it
+        the django model will string represent the row via the description if present or use the PLAY CACHE text plus GENERIC PLACEHOLDER value in some clever way
+
+    MAYBE fix my django models to do django orm migrations again--BE CAREFUL
