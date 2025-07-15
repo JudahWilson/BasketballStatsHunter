@@ -28,23 +28,6 @@ base_url = 'https://www.basketball-reference.com'
 class PlayNotYetSupportedError(Exception):
     pass
 
-class ActionMap(Enum):
-    assist='assist'
-
-class PlayAction(BaseModel):
-    action: ActionMap
-    player_br_id: str | None = None
-    team_br_id: str | None = None
-    
-class Play(BaseModel):
-    game_br_id: str
-    plays: list[PlayAction]
-    quarter: int
-    clock_time: str
-    home_score: int
-    away_score: int
-    distance_feet: int | None = None
-
 
 def handle_err(e, game=None,additional_message=None):
     print('----------------')
