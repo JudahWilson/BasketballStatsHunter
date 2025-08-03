@@ -1,0 +1,8 @@
+- hunter.js to get games
+  - *Function to evaluate team involved and create entry in DB?
+    - Determine how to establish the franchise
+- pgs
+  - html
+  - json (pgs, pgqs, pghs, pgos, tgs, tgqs, tghs, tgos)
+  - db
+- pbp??
