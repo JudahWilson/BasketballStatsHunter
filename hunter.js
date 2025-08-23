@@ -4,8 +4,6 @@ const cheerio = require("cheerio");
 const mysql = require("mysql2/promise");
 const fs = require("fs"); // Require the file system module to read the SSL certificate file
 
-
-
 // #region COMMON FUNCTIONS
 function formatISOString(strDate) {
   let d = new Date(strDate);
@@ -40,21 +38,10 @@ function toMilitaryTime(time12) {
 
   return time24;
 }
-
-function save_json(data, filename) {
-  const fs = require("fs");
-  if (!filename.includes(".json")) filename = filename + ".json";
-  fs.writeFileSync(filename, JSON.stringify(data));
-}
-
 function insert_json(data, filename) {
   // Get  json data
   const fs = require("fs");
-  json_data = JSON.parse(fs.readFileSync(filename));
-  // Append new data
-  json_data.push(data);
-  // Save new data to file
-  save_json(json_data, filename);
+  fs.appendFileSync(filename, "\n" + JSON.stringify(data));
 }
 // #endregion
 
@@ -63,13 +50,18 @@ function insert_json(data, filename) {
  * @param {number} start_year start year of the one season we are processing
  */
 async function get_games(start_year) {
-  const season_url =
-    `${base_url.slice(0, -1)}/leagues/NBA_${(start_year + 1).toString()}_games.html`;
-  
+  if (!fs.existsSync("games.json")) {
+    fs.writeFileSync("games.json", "");
+  }
+
+  const season_url = `${base_url.slice(0, -1)}/leagues/NBA_${(
+    start_year + 1
+  ).toString()}_games.html`;
+
   // default page is only the first month's games
   var month_games = await axios.get(season_url);
   $ = cheerio.load(month_games.data);
-  
+
   // Get the urls to access the games of the rest of the months
   var all_months_urls = [season_url];
   $(".filter div:not(.current)").each(function (y, z) {
@@ -147,10 +139,7 @@ async function get_games(start_year) {
         console.log("home_team_points Error: " + error);
       }
       // TODO improve by checking instead if the game has completed rather than checking if there are no points
-      if (
-        game["away_team_points"] === "" &&
-        game["home_team_points"] === ""
-      ) {
+      if (game["away_team_points"] === "" && game["home_team_points"] === "") {
         console.log(`No more games in season as of ${game["date_time"]}`);
         no_more_games = true;
         break; //! BREAK
@@ -201,9 +190,7 @@ async function get_games(start_year) {
         $ = cheerio.load(game_details_response.data);
 
         try {
-          game["br_id"] = game_details_page
-            .split("/")[4]
-            .replace(".html", "");
+          game["br_id"] = game_details_page.split("/")[4].replace(".html", "");
           console.log("br_id: " + game["br_id"]);
         } catch (error) {
           game["br_id"] = null;
@@ -213,17 +200,12 @@ async function get_games(start_year) {
         // inactive players
         try {
           let inactive_players = [];
-          inactive_starting_element = $("#content strong").filter(
-            function () {
-              return $(this).text().includes("Inactive:");
-            }
-          );
+          inactive_starting_element = $("#content strong").filter(function () {
+            return $(this).text().includes("Inactive:");
+          });
           if (inactive_starting_element.length != 0) {
-            inactive_starting_element =
-              inactive_starting_element.parent();
-            for (const inactive_a_tag of inactive_starting_element.find(
-              "a"
-            )) {
+            inactive_starting_element = inactive_starting_element.parent();
+            for (const inactive_a_tag of inactive_starting_element.find("a")) {
               inactive_players.push(
                 $(inactive_a_tag)
                   .prop("href")
@@ -243,14 +225,11 @@ async function get_games(start_year) {
         // officials
         try {
           let officials = [];
-          officials_starting_element = $("#content strong").filter(
-            function () {
-              return $(this).text().includes("Officials:");
-            }
-          );
+          officials_starting_element = $("#content strong").filter(function () {
+            return $(this).text().includes("Officials:");
+          });
           if (officials_starting_element.length != 0) {
-            officials_starting_element =
-              officials_starting_element.parent();
+            officials_starting_element = officials_starting_element.parent();
             for (const officials_a_tag of officials_starting_element.find(
               "a"
             )) {
@@ -285,9 +264,7 @@ async function get_games(start_year) {
           console.log("game_duration Error: " + error);
         }
       } catch (error) {
-        console.log(
-          "CRITICAL ERROR (no game details retrieved): " + error
-        );
+        console.log("CRITICAL ERROR (no game details retrieved): " + error);
       }
       // #endregion
       console.log("-------------------------***\n\n");
@@ -875,4 +852,4 @@ async function getTeamGameStats() {
   connection.release();
 }
 
-get_games(2023)
+get_games(2024);

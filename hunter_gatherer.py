@@ -284,7 +284,10 @@ def load_games(f):
 
     start_chunk_page = 1  # default 1  | 7651 rows
 
-    games = pd.read_json(f)
+    if ".jsonl" in f:
+        games = pd.read_json(f, lines=True)
+    else:
+        games = pd.read_json(f)
 
     games["inactive_players"] = games["inactive_players"].apply(lambda x: json.dumps(x))
     games["officials"] = games["officials"].apply(lambda x: json.dumps(x))
