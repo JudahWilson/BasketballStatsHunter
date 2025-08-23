@@ -50,8 +50,8 @@ function insert_json(data, filename) {
  * @param {number} start_year start year of the one season we are processing
  */
 async function get_games(start_year) {
-  if (!fs.existsSync("games.json")) {
-    fs.writeFileSync("games.json", "");
+  if (!fs.existsSync("games.jsonl")) {
+    fs.writeFileSync("games.jsonl", "");
   }
 
   const season_url = `${base_url.slice(0, -1)}/leagues/NBA_${(
@@ -270,7 +270,7 @@ async function get_games(start_year) {
       console.log("-------------------------***\n\n");
       if (JSON.stringify(game) != "" && game.home_team_points != "") {
         // TODO improve this to more accurately exclude incomplete games
-        insert_json(game, "games.json");
+        insert_json(game, "games.jsonl");
       }
     }
   }
@@ -291,7 +291,7 @@ async function get_games_all_seasons2() {
         game_duration
             <= 2006-10-31T20:00
     */
-  console.log("BEGIN async function get_games1()");
+  console.log("BEGIN async function get_games2()");
 
   // URL of the webpage containing the table
   const url = base_url + "leagues/";
@@ -531,7 +531,7 @@ async function get_games_all_seasons2() {
             console.log("-------------------------***\n\n");
             if (JSON.stringify(game) != "" && game.home_team_points != "") {
               // TODO improve this to more accurately exclude incomplete games
-              insert_json(game, "games2.json");
+              insert_json(game, "games2.jsonl");
             }
           }
         }
@@ -793,7 +793,7 @@ async function get_games_all_seasons3() {
             console.log("-------------------------***\n\n");
             if (JSON.stringify(game) != "" && game.home_team_points != "") {
               // TODO improve this to more accurately exclude incomplete games
-              insert_json(game, "games4.json");
+              insert_json(game, "games3.jsonl");
             }
           }
         }
@@ -805,51 +805,6 @@ async function get_games_all_seasons3() {
     console.log("Error: " + error);
   }
   console.log("END async function get_games1()");
-}
-
-async function getTeamGameStats() {
-  /******************************************** */
-  let connection = await connectToDatabase();
-  let year = 2022;
-
-  while (year >= 1996) {
-    var games;
-    try {
-      var SQL = `SELECT br_id FROM Games 
-      where date_time >= '${year}-09-01'
-      and date_time < '${year + 1}-09-01'
-      order by date_time asc`;
-
-      [games, fields] = await connection.execute(SQL);
-
-      for (const game of games) {
-        try {
-          /**
-           * data
-           */
-          var url = base_url + "boxscores/" + game["br_id"] + ".html";
-          const response = await axios.get(url);
-
-          if (response.status === 200) {
-            var $ = cheerio.load(response.data);
-          } else {
-            console.log("Failed to download the HTML content");
-            console.log("URL: " + url);
-          }
-          await new Promise((resolve) => setTimeout(resolve, 4000)); //! PAUSE
-        } catch (error) {
-          console.log("Error: " + error);
-          break;
-        }
-        console.log("END async function get_games1()");
-      }
-      year = year - 1;
-    } catch (err) {
-      console.log("Error during sql query: " + err);
-      console.log("SQL: " + SQL);
-    }
-  }
-  connection.release();
 }
 
 get_games(2024);
