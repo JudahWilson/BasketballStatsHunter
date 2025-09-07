@@ -41,7 +41,7 @@ import duckdb
 
 def getTeamGameStatsHTML(
     start_year: int | None = None,
-    stop_year: int = 1946,
+    stop_year: int | None = None,
     singular_game_br_id: str | None = None,
     override_existing_html: bool = False,
 ) -> None:
@@ -64,7 +64,7 @@ def getTeamGameStatsHTML(
         First NBA season to process (e.g., ``2025`` for the 2025-26 season).
         Defaults to the current calendar year if *None*.  Ignored in single-game
         mode.
-    stop_year : int, default ``1946``
+    stop_year : int, default `start_year`
         Last season to process (inclusive) when looping in bulk mode.
     singular_game_br_id : str, optional
         A Basketball-Reference game ID.  When supplied, the function switches to
@@ -80,7 +80,7 @@ def getTeamGameStatsHTML(
 
     Examples
     --------
-    >>> # Resume bulk download from 2025 down to 1946
+    >>> # Resume bulk download of 2025 data only
     >>> getTeamGameStatsHTML(start_year=2025)
     >>> # Rebuild a single game
     >>> getTeamGameStatsHTML(singular_game_br_id="202401151OKC")
@@ -114,7 +114,10 @@ def getTeamGameStatsHTML(
 
     else:
         start_year = int(start_year)
-        stop_year = int(stop_year)
+        if not stop_year:
+            stop_year = start_year
+        else:
+            stop_year = int(stop_year)
 
         year = start_year
         while year >= stop_year:
@@ -961,35 +964,31 @@ def lsdb(
     :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
-    tables = []
+    tables = ['games']
     if get_TeamGameStats:
-        tables += ["TeamGameStats"]
+        tables += ["teamgamestats"]
     if get_TeamGameQuarterStats:
-        tables += ["TeamGameQuarterStats"]
+        tables += ["teamgamequarterstats"]
     if get_TeamGameHalfStats:
-        tables += ["TeamGameHalfStats"]
+        tables += ["teamgamehalfstats"]
     if get_TeamGameOvertimeStats:
-        tables += ["TeamGameOvertimeStats"]
+        tables += ["teamgameovertimestats"]
     if get_PlayerGameStats:
-        tables += ["PlayerGameStats"]
+        tables += ["playergamestats"]
     if get_PlayerGameQuarterStats:
-        tables += ["PlayerGameQuarterStats"]
+        tables += ["playergamequarterstats"]
     if get_PlayerGameHalfStats:
-        tables += ["PlayerGameHalfStats"]
+        tables += ["playergamehalfstats"]
     if get_PlayerGameOvertimeStats:
-        tables += ["PlayerGameOvertimeStats"]
+        tables += ["playergameovertimestats"]
 
     basic_table_sql = ""
     advanced_table_sql = ""
     is_first_basic_table = True
     is_first_advancded_table = True
 
-    # This loop builds two SQL queries: one for basic tables (TeamGameStats/PlayerGameStats)
-    # and one for advanced tables (Quarter/Half/Overtime stats).
-    # For each table type, it creates UNION queries that find the first and last game_br_id,
-    # effectively showing the date range of data in each table.
     for table in tables:
-        if table.lower() in ["tgs", "pgs", "teamgamestats", "playergamestats"]:
+        if table in ['games', "teamgamestats", "playergamestats"]:
             if is_first_basic_table:
                 basic_table_sql = f"""select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
                 union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}"""

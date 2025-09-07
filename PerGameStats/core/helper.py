@@ -45,9 +45,11 @@ def get_soup(url):
         print("RETRY")
         response = requests.get(url)
         if response.status_code < 200 or response.status_code > 299:
+            print(response.content)
             raise Exception(
                 f"Error getting data from {url}. Status " + str(response.status_code)
             )
+        
 
     return bs4.BeautifulSoup(response.text, "html.parser")
 
@@ -105,14 +107,8 @@ def remove_numbers(input_string: str):
 
 def save_html(game, year):
     print(game["br_id"])
-
-    try:
-        url = base_url + "/boxscores/" + game["br_id"] + ".html"
-    except Exception as e:
-        breakpoint()
-        breakpoint()
+    url = base_url + "/boxscores/" + game["br_id"] + ".html"
     soup = get_soup(url)
-
     html = ""
 
     # four factors table
