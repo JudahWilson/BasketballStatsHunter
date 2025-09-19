@@ -2,17 +2,17 @@ import pandas as pd
 import json
 from json import JSONEncoder
 import bs4
-import os, re
+import os
+import re
 import time
 import traceback
-import pyperclip
 import requests
 import jsonlines
 import glob
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 import numpy as np
-from schemas.types import GameBrId
+from schemas import GameBrId
 
 WEBSCRAPE_DEBOUNCER = 4  # seconds to wait between web requests
 
@@ -22,6 +22,16 @@ engine = create_engine(conn_str)
 
 # The website's base url
 base_url = "https://www.basketball-reference.com"
+
+
+def df_from_sql(SQL, print_sql=False, print_df=False):
+    if print_sql:
+        print("\n\nSQL:\n")
+        print(SQL)
+    df = pd.read_sql(SQL, engine)
+    if print_df:
+        print(df)
+    return df
 
 
 def get_soup(url):
@@ -49,7 +59,6 @@ def get_soup(url):
             raise Exception(
                 f"Error getting data from {url}. Status " + str(response.status_code)
             )
-        
 
     return bs4.BeautifulSoup(response.text, "html.parser")
 
@@ -78,12 +87,9 @@ def handle_err(e, game=None, games=None, additional_message=None):
     # If the game data is not specified, but we may can get the game from the
     # page of game data
     if game is None:
-
         if isinstance(games, pd.DataFrame) and not games.empty:
-
             # If a row is specified in a page of rows
             if " at row " in e.args[0]:
-
                 # If we can pull the row number successfully
                 match = re.match(r".* at row (\d+).*", e.args[0])
                 if match:
@@ -396,7 +402,7 @@ def save_html(game, year):
         os.makedirs(f"html/{year}")
 
     with open(
-        f'html/{year}/TeamGameStats-{game["br_id"]}.html', "w", encoding="utf-8"
+        f"html/{year}/TeamGameStats-{game['br_id']}.html", "w", encoding="utf-8"
     ) as f:
         f.write(html)
 

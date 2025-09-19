@@ -15,6 +15,7 @@ from sqlalchemy import text
 from base import BaseWebScrapeJob
 
 
+# TODO
 class WebScrapeTeams(BaseWebScrapeJob):
     def __init__(self) -> None:
         super().__init__("Teams data", ["teams", "team_locations"])
@@ -275,7 +276,7 @@ def download_and_store_play_by_play(start_date=None):
     # Schedule of games can be determine per year link like https://www.basketball-reference.com/leagues/NBA_2023_games.html
 
 
-def load_games(f):
+def load_games(filename: str):
     TABLE_NAME = "Games"
 
     """
@@ -284,10 +285,10 @@ def load_games(f):
 
     start_chunk_page = 1  # default 1  | 7651 rows
 
-    if ".jsonl" in f:
-        games = pd.read_json(f, lines=True)
+    if ".jsonl" in filename:
+        games = pd.read_json(filename, lines=True)
     else:
-        games = pd.read_json(f)
+        games = pd.read_json(filename)
 
     games["inactive_players"] = games["inactive_players"].apply(lambda x: json.dumps(x))
     games["officials"] = games["officials"].apply(lambda x: json.dumps(x))
@@ -310,12 +311,12 @@ def load_games(f):
                     chunksize=1000,
                     index=False,
                 )
-                with open("log.txt", "w") as f:
-                    f.write(str(page))
+                with open("log.txt", "w") as filename:
+                    filename.write(str(page))
                 page += 1
             except Exception as e:
-                with open("log.txt", "a+") as f:
-                    f.write(str(e))
+                with open("log.txt", "a+") as filename:
+                    filename.write(str(e))
                 break
 
         games.iloc[(page - 1) * 1000 :].to_sql(
@@ -425,10 +426,5 @@ def get_team_game_stats():
 
         year -= 1
 
+load_games('games.jsonl')
 
-# TODO temp code for testing
-web_scrape_teams = WebScrapeTeams()
-web_scrape_teams.download_html()
-
-
-DB.close()

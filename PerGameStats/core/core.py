@@ -11,38 +11,53 @@ r"""TODO
 
 # region IMPORTS and CONFIG
 import json
+from typing import List
 import pandas as pd
 import bs4
 import traceback
 import numpy as np
-import TeamGameStats
 import os
 import re
-import pyperclip
-import TeamGameStats.helper
-import TeamGameHalfStats.helper
-import TeamGameQuarterStats.helper
-import TeamGameOvertimeStats.helper
-import PlayerGameStats.helper
-import PlayerGameHalfStats.helper
-import PlayerGameQuarterStats.helper
-import PlayerGameOvertimeStats.helper
-from core.helper import *
 import warnings
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
+from PerGameStats.core.utilities import (
+    df_from_sql,
+    engine,
+    get_last_processed_game,
+    get_season_from_br_id,
+    get_tag_having_text,
+    handle_err,
+    insertDataJL,
+    is_game_processed,
+    is_same_season,
+    remove_numbers,
+    save_html,
+    conn_str,
+)
+from PerGameStats.setJson import (
+    setPlayerGameHalfStatsJson,
+    setPlayerGameOvertimeStatsJson,
+    setPlayerGameQuarterStatsJson,
+    setPlayerGameStatsJson,
+    setTeamGameHalfStatsJson,
+    setTeamGameOvertimeStatsJson,
+    setTeamGameQuarterStatsJson,
+    setTeamGameStatsJson,
+)
+from schemas import TableLiteral
+from schemas.schemas import GameBrId
 
 # from sqlalchemy.exc import RemovedIn20Warning
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.filterwarnings("ignore", category=RemovedIn20Warning)
-import duckdb
 
 # endregion
 
 
-def getTeamGameStatsHTML(
+def writeTeamGameStatsHTML(
     start_year: int | None = None,
     stop_year: int | None = None,
-    singular_game_br_id: str | None = None,
+    singular_game_br_id: GameBrId | None = None,
     override_existing_html: bool = False,
 ) -> None:
     """
@@ -172,7 +187,7 @@ def getTeamGameStatsHTML(
     print("EXITED")
 
 
-def setTeamGameStatsJSON(
+def writeTeamGameStatsJSON(
     begin_year,
     stop_year=1946,
     get_TeamGameStats=False,
@@ -180,7 +195,6 @@ def setTeamGameStatsJSON(
     get_TeamGameHalfStats=False,
     get_TeamGameOvertimeStats=False,
 ):
-
     begin_year = int(begin_year)
     stop_year = int(stop_year)
 
@@ -211,9 +225,7 @@ def setTeamGameStatsJSON(
             breakpoint()
 
         for file in os.listdir(f"html/{year}"):
-
             if file.endswith(".html"):
-
                 # region DATA PREP
                 game = games[games["br_id"] == file.split("-")[1].split(".")[0]].iloc[0]
 
@@ -315,14 +327,12 @@ def setTeamGameStatsJSON(
                 # endregion
 
                 try:
-
                     # region DATA SAVING
                     if get_TeamGameStats and not skip_TeamGameStats:
-
                         home_tgs = {}
                         away_tgs = {}
 
-                        TeamGameStats.helper.setJSON(
+                        setTeamGameStatsJson(
                             games,
                             away_team_basic,
                             home_team_basic,
@@ -344,7 +354,6 @@ def setTeamGameStatsJSON(
                         )
 
                     if get_TeamGameQuarterStats and not skip_TeamGameQuarterStats:
-
                         home_tgs1 = {}
                         away_tgs1 = {}
                         home_tgs2 = {}
@@ -354,7 +363,7 @@ def setTeamGameStatsJSON(
                         home_tgs4 = {}
                         away_tgs4 = {}
 
-                        TeamGameQuarterStats.helper.setJSON(
+                        setTeamGameQuarterStatsJson(
                             games,
                             away_team_q1,
                             home_team_q1,
@@ -365,7 +374,7 @@ def setTeamGameStatsJSON(
                             file,
                             year,
                         )
-                        TeamGameQuarterStats.helper.setJSON(
+                        setTeamGameQuarterStatsJson(
                             games,
                             away_team_q2,
                             home_team_q2,
@@ -376,7 +385,7 @@ def setTeamGameStatsJSON(
                             file,
                             year,
                         )
-                        TeamGameQuarterStats.helper.setJSON(
+                        setTeamGameQuarterStatsJson(
                             games,
                             away_team_q3,
                             home_team_q3,
@@ -387,7 +396,7 @@ def setTeamGameStatsJSON(
                             file,
                             year,
                         )
-                        TeamGameQuarterStats.helper.setJSON(
+                        setTeamGameQuarterStatsJson(
                             games,
                             away_team_q4,
                             home_team_q4,
@@ -416,13 +425,12 @@ def setTeamGameStatsJSON(
                         )
 
                     if get_TeamGameOvertimeStats and not skip_TeamGameOvertimeStats:
-
                         data = []
 
                         for i in range(len(home_team_OTs)):
                             home_ot_row = {}
                             away_ot_row = {}
-                            TeamGameOvertimeStats.helper.setJSON(
+                            setTeamGameOvertimeStatsJson(
                                 games,
                                 away_team_OTs[i],
                                 home_team_OTs[i],
@@ -443,13 +451,12 @@ def setTeamGameStatsJSON(
                         )
 
                     if get_TeamGameHalfStats and not skip_TeamGameHalfStats:
-
                         home_tgs1 = {}
                         away_tgs1 = {}
                         home_tgs2 = {}
                         away_tgs2 = {}
 
-                        TeamGameHalfStats.helper.setJSON(
+                        setTeamGameHalfStatsJson(
                             games,
                             away_team_h1,
                             home_team_h1,
@@ -460,7 +467,7 @@ def setTeamGameStatsJSON(
                             file,
                             year,
                         )
-                        TeamGameHalfStats.helper.setJSON(
+                        setTeamGameHalfStatsJson(
                             games,
                             away_team_h2,
                             home_team_h2,
@@ -495,7 +502,7 @@ def setTeamGameStatsJSON(
         year -= 1
 
 
-def setPlayerGameStatsJSON(
+def writePlayerGameStatsJSON(
     begin_year,
     stop_year=1946,
     get_PlayerGameStats=False,
@@ -540,7 +547,6 @@ def setPlayerGameStatsJSON(
         new_data = []
         for file in os.listdir(f"html/{year}"):
             if file.endswith(".html"):
-
                 try:
                     # region DATA PREP
                     game = games[games["br_id"] == file.split("-")[1].split(".")[0]]
@@ -625,7 +631,6 @@ def setPlayerGameStatsJSON(
 
                     # region GET QUARTER AND HALF STATS HTML
                     if year > 1995:
-
                         home_team_q1 = soup.select(f"#box-{home_team_br_id}-q1-basic")[
                             0
                         ]
@@ -680,13 +685,9 @@ def setPlayerGameStatsJSON(
                     next_field = ""
                     # endregion
                     try:
-
                         # region DATA SAVING
                         if get_PlayerGameStats and not skip_PlayerGameStats:
-                            home_tgs = {}
-                            away_tgs = {}
-
-                            new_data += PlayerGameStats.helper.setJSON(
+                            new_data += setPlayerGameStatsJson(
                                 game,
                                 away_team_basic,
                                 home_team_basic,
@@ -711,28 +712,28 @@ def setPlayerGameStatsJSON(
                             and not skip_PlayerGameQuarterStats
                         ):
                             if year > 1995:
-                                new_data += PlayerGameQuarterStats.helper.setJSON(
+                                new_data += setPlayerGameQuarterStatsJson(
                                     game,
                                     1,
                                     home_team_q1,
                                     away_team_q1,
                                     four_factors,
                                 )
-                                new_data += PlayerGameQuarterStats.helper.setJSON(
+                                new_data += setPlayerGameQuarterStatsJson(
                                     game,
                                     2,
                                     home_team_q2,
                                     away_team_q2,
                                     four_factors,
                                 )
-                                new_data += PlayerGameQuarterStats.helper.setJSON(
+                                new_data += setPlayerGameQuarterStatsJson(
                                     game,
                                     3,
                                     home_team_q3,
                                     away_team_q3,
                                     four_factors,
                                 )
-                                new_data += PlayerGameQuarterStats.helper.setJSON(
+                                new_data += setPlayerGameQuarterStatsJson(
                                     game,
                                     4,
                                     home_team_q4,
@@ -754,18 +755,14 @@ def setPlayerGameStatsJSON(
 
                         if get_PlayerGameHalfStats and not skip_PlayerGameHalfStats:
                             if year > 1995:
-                                home_tgs1 = {}
-                                away_tgs1 = {}
-                                home_tgs2 = {}
-                                away_tgs2 = {}
-                                new_data += PlayerGameHalfStats.helper.setJSON(
+                                new_data += setPlayerGameHalfStatsJson(
                                     game,
                                     1,
                                     away_team_h1,
                                     home_team_h1,
                                     four_factors,
                                 )
-                                new_data += PlayerGameHalfStats.helper.setJSON(
+                                new_data += setPlayerGameHalfStatsJson(
                                     game,
                                     2,
                                     away_team_h2,
@@ -785,7 +782,10 @@ def setPlayerGameStatsJSON(
                                     )
                                 new_data = []
 
-                        if get_PlayerGameOvertimeStats and not skip_PlayerGameOvertimeStats:
+                        if (
+                            get_PlayerGameOvertimeStats
+                            and not skip_PlayerGameOvertimeStats
+                        ):
                             # Get array of all OTs for each team
                             home_team_OTs = soup.select(
                                 f'table[id*="box-{home_team_br_id}-ot"]'
@@ -795,8 +795,7 @@ def setPlayerGameStatsJSON(
                             )
                             data = []
                             for i in range(len(home_team_OTs)):
-                                
-                                data += PlayerGameOvertimeStats.helper.setJSON(
+                                data += setPlayerGameOvertimeStatsJson(
                                     game,
                                     i + 1,
                                     home_team_OTs[i],
@@ -964,7 +963,7 @@ def lsdb(
     :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
-    tables = ['games']
+    tables: List[TableLiteral] = ["games"]
     if get_TeamGameStats:
         tables += ["teamgamestats"]
     if get_TeamGameQuarterStats:
@@ -988,26 +987,27 @@ def lsdb(
     is_first_advancded_table = True
 
     for table in tables:
-        if table in ['games', "teamgamestats", "playergamestats"]:
+        game_br_id_col = "br_id" if table == "games" else "game_br_id"
+        if table in ["games", "teamgamestats", "playergamestats"]:
             if is_first_basic_table:
-                basic_table_sql = f"""select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}"""
+                basic_table_sql = f"""select "FIRST {table}" as "table", min({game_br_id_col}) as "{game_br_id_col}" from {table}
+                union select "LAST {table}" as "table", max({game_br_id_col}) as "{game_br_id_col}" from {table}"""
             else:
-                basic_table_sql += f"""\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}"""
+                basic_table_sql += f"""\nunion select "FIRST {table}" as "table", min({game_br_id_col}) as "{game_br_id_col}" from {table}
+                    union select "LAST {table}" as "table", max({game_br_id_col}) as "{game_br_id_col}" from {table}"""
             is_first_basic_table = False
         else:
             if is_first_advancded_table:
-                advanced_table_sql = f"""select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}"""
+                advanced_table_sql = f"""select "FIRST {table}" as "table", min({game_br_id_col}) as "{game_br_id_col}" from {table}
+                union select "LAST {table}" as "table", max({game_br_id_col}) as "{game_br_id_col}" from {table}"""
             else:
-                advanced_table_sql += f"""\nunion select "FIRST {table}" as "table", min(game_br_id) as "game_br_id" from {table}
-                    union select "LAST {table}" as "table", max(game_br_id) as "game_br_id" from {table}"""
+                advanced_table_sql += f"""\nunion select "FIRST {table}" as "table", min({game_br_id_col}) as "{game_br_id_col}" from {table}
+                    union select "LAST {table}" as "table", max({game_br_id_col}) as "{game_br_id_col}" from {table}"""
             is_first_advancded_table = False
     basic_table_sql += ";"
     with create_engine(conn_str).begin() as connection:
-        basic_df = pd.read_sql(sql=basic_table_sql, con=engine)
-        advanced_df = pd.read_sql(sql=advanced_table_sql, con=engine)
+        basic_df = df_from_sql(basic_table_sql, print_sql=True)
+        advanced_df = df_from_sql(advanced_table_sql, print_sql=True)
     print("\nBASIC DATA:")
     print(basic_df.to_string(index=False))
     print("\n\nADVANCED DATA:")
@@ -1044,7 +1044,6 @@ def loadJSONToDB(
 
     ###########################################################
     def clean_data(games):
-
         try:
             # Convert to boolean
             if "played" in games.columns:
@@ -1206,7 +1205,6 @@ def loadJSONToDB(
                 )
 
             if "three_pointer_percentage" in games.columns:
-
                 games.three_pointer_percentage = games.three_pointer_percentage.apply(
                     lambda val: 0 if val == ".000" else val
                 )
@@ -1287,7 +1285,6 @@ def loadJSONToDB(
 
     games = None
     try:
-
         begin_year = int(begin_year)
         stop_year = int(stop_year)
         year = begin_year
@@ -1350,7 +1347,6 @@ def rmdb(
     get_PlayerGameHalfStats=False,
     get_PlayerGameOvertimeStats=False,
 ):
-
     target_table_count = 0
     if get_TeamGameStats:
         TABLE_NAME = "TeamGameStats"

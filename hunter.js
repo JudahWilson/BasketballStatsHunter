@@ -41,7 +41,11 @@ function toMilitaryTime(time12) {
 function insert_json(data, filename) {
   // Get  json data
   const fs = require("fs");
-  fs.appendFileSync(filename, "\n" + JSON.stringify(data));
+  if (!fs.existsSync(filename)) {
+    fs.writeFileSync(filename, JSON.stringify(data));
+  } else {
+    fs.appendFileSync(filename, "\n" + JSON.stringify(data));
+  }
 }
 // #endregion
 
@@ -50,10 +54,6 @@ function insert_json(data, filename) {
  * @param {number} start_year start year of the one season we are processing
  */
 async function get_games(start_year) {
-  if (!fs.existsSync("games.jsonl")) {
-    fs.writeFileSync("games.jsonl", "");
-  }
-
   const season_url = `${base_url.slice(0, -1)}/leagues/NBA_${(
     start_year + 1
   ).toString()}_games.html`;
