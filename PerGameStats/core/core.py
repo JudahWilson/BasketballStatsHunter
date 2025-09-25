@@ -44,8 +44,8 @@ from PerGameStats.setJson import (
     setTeamGameQuarterStatsJson,
     setTeamGameStatsJson,
 )
-from schemas import TableLiteral
-from schemas.schemas import GameBrId
+from validation import TableLiteral
+from validation.schemas import GameBrId
 
 # from sqlalchemy.exc import RemovedIn20Warning
 warnings.filterwarnings("ignore", category=UserWarning)

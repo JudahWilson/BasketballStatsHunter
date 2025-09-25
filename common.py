@@ -7,22 +7,21 @@ The logger, database interface, and base url are all defined here so that they
 can be used in multiple places.
 """
 
-import sqlite3
 import os
 import traceback
 from datetime import datetime
 import requests
 import time
 import bs4
-import mysql.connector 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-WEBSCRAPE_DEBOUNCER = 4 # seconds to wait between web requests
+WEBSCRAPE_DEBOUNCER = 4  # seconds to wait between web requests
 
 # The website's base url
-base_url = 'https://www.basketball-reference.com'
+base_url = "https://www.basketball-reference.com"
+
 
 #################################################
 # Initialize the logger
@@ -31,7 +30,8 @@ class Log:
     """
     Official logger for the project. Logs are stored in the format of TIMESTAMP
     | MESSAGE in the logs/log.txt file.
-    """    
+    """
+
     def __init__(self, filename):
         pass
 
@@ -43,8 +43,8 @@ class Log:
         Returns:
             str: logs/log.txt
         """
-        return 'logs/log.txt'
-    
+        return "logs/log.txt"
+
     @staticmethod
     def log(message):
         """
@@ -53,9 +53,10 @@ class Log:
         Args:
             message (str): The information to log
         """
-        with open(Log.logpath, 'a+') as f:
-            f.write(message + ' | ' + str(datetime.now()))
-        
+        with open(Log.logpath, "a+") as f:
+            f.write(message + " | " + str(datetime.now()))
+
+
 def log(message):
     """
     The easy-to-access function to log a message to the log file. The log format
@@ -65,13 +66,14 @@ def log(message):
         message (str): The information to log
     """
     Log.log(message)
-        
+
+
 #####################################################
 # DB interface class
 #####################################################
 class DB:
     from sqlalchemy import create_engine
-    
+
     # conn = mysql.connector.connect(
     #     host=os.environ['BACKEND_DB_HOST'],
     #     user=os.environ['BACKEND_DB_USER'],
@@ -79,25 +81,16 @@ class DB:
     #     database=os.environ['BACKEND_DB_NAME'],
     # )
     # cursor = conn.cursor()
-    
+
     conn_str = f"mysql+mysqlconnector://{os.environ['BACKEND_DB_USER']}:{os.environ['BACKEND_DB_PASSWORD']}@{os.environ['BACKEND_DB_HOST']}/{os.environ['BACKEND_DB_NAME']}"
     _engine = create_engine(conn_str)
 
     @staticmethod
-    def simple_check_sql_injection(sql: str):
-        '''
-        Checks for SQL injection in a sql statement. 
-        '''
-        if '--' in sql or '/*' in sql or '*/' in sql or 'delete ' in sql.lower() \
-        or 'insert ' in sql.lower() or 'update ' in sql.lower() or 'union ' in sql.lower():
-            raise Exception('SQL statement could not be executed: SQL injection detected')
-
-    @staticmethod
     def select(sql: str):
         try:
-            assert 'update' not in sql.lower(), 'Use update() for update queries'
-            assert 'insert' not in sql.lower(), 'Use insert() for insert queries'
-            assert 'delete' not in sql.lower(), 'Use delete() for delete queries'
+            assert "update" not in sql.lower(), "Use update() for update queries"
+            assert "insert" not in sql.lower(), "Use insert() for insert queries"
+            assert "delete" not in sql.lower(), "Use delete() for delete queries"
 
             DB.cursor.execute(sql)
             data = DB.cursor.fetchall()
@@ -109,42 +102,41 @@ class DB:
             traceback.print_exc()
             print(str(e))
             return None
-    
-    @staticmethod 
+
+    @staticmethod
     def update(query):
         try:
-            assert 'select' not in query.lower(), 'Use select() for select queries'
-            assert 'insert' not in query.lower(), 'Use insert() for insert queries'
-            assert 'delete' not in query.lower(), 'Use delete() for delete queries'
+            assert "select" not in query.lower(), "Use select() for select queries"
+            assert "insert" not in query.lower(), "Use insert() for insert queries"
+            assert "delete" not in query.lower(), "Use delete() for delete queries"
 
             DB.cursor.execute(query)
             DB.conn.commit()
-            
+
             return DB.cursor.fetchall()
         except Exception as e:
             # display traceback including line #
             traceback.print_exc()
             print(str(e))
             return None
-    
-    @staticmethod    
+
+    @staticmethod
     def insert(query):
-        
         try:
-            assert 'select' not in query.lower(), 'Use select() for select queries'
-            assert 'update' not in query.lower(), 'Use update() for update queries'
-            assert 'delete' not in query.lower(), 'Use delete() for delete queries'
+            assert "select" not in query.lower(), "Use select() for select queries"
+            assert "update" not in query.lower(), "Use update() for update queries"
+            assert "delete" not in query.lower(), "Use delete() for delete queries"
 
             DB.cursor.execute(query)
             DB.conn.commit()
-            
+
             return DB.cursor.fetchall()
         except Exception as e:
             # display traceback including line #
             traceback.print_exc()
             print(str(e))
             return None
-        
+
     @staticmethod
     def close():
         # DB.conn.close()
@@ -171,31 +163,11 @@ def get_soup(url):
     response = requests.get(url)
     time.sleep(WEBSCRAPE_DEBOUNCER)
     if response.status_code < 200 or response.status_code > 299:
-        raise Exception(f'Error getting data from {url}. Status ' + str(response.status_code))
+        raise Exception(
+            f"Error getting data from {url}. Status " + str(response.status_code)
+        )
 
-    return bs4.BeautifulSoup(response.text, 'html.parser')
-
-
-def get_br_stats_tables():
-    """Generates a list of the symbols BR resembles quarters, halves, and
-    overtime in the html ids
-    
-    Yields:
-        'str': symbols BR resembles quarters, halves, and overtime in the
-                html ids
-    """
-    yield 'q1'
-    yield 'q2'
-    yield 'q3'
-    yield 'q4'
-    yield 'h1'
-    yield 'h2'
-    yield 'ot1'
-    yield 'ot2'
-    yield 'ot3'
-    yield 'ot4'
-    yield 'ot5'
-    yield 'ot6'
+    return bs4.BeautifulSoup(response.text, "html.parser")
 
 
 def error_response(func):
@@ -205,4 +177,8 @@ def error_response(func):
         except Exception as e:
             error_message = str(e)
             traceback_str = traceback.format_exc()
-            return {'status_code': 500, 'message': error_message, 'traceback': traceback_str}
+            return {
+                "status_code": 500,
+                "message": error_message,
+                "traceback": traceback_str,
+            }

@@ -1,4 +1,26 @@
-- 2024
 - get teams and franchises (as listed in website teams page--EASY)
+    - Schedule
 - play by plays
 - Must continually load new players, season, teams
+- schedule
+  - hunter.js to get games
+        - *Function to evaluate team involved and create entry in DB?
+        - Determine how to establish the franchise
+  - pgs
+    - html
+    - json (pgs, pgqs, pghs, pgos, tgs, tgqs, tghs, tgos)
+    - db
+  - pbp??
+  - teams?
+  - players?
+
+--------------------------------------
+WISHLIST
+- Tests
+  - parity checking data
+    - quarters + ot data add up to game total data
+    - pbp data add up to player game total data
+  - test table formats
+    - save format of tables and periodically check them to see if format changed
+      - some how track when format changed over the past games due to different data (it's not as simple as the format being the same all year round per season)
+- Typer to handle CLI with the gift of typing

@@ -1,5 +1,0 @@
-do comparisons between teams, players, seasons.
-do filters on any stat column
-do joins of different tables
-how will you reveal data on streaks?
-	stats related to streaks like sum of points, efficiency percentage, etc.

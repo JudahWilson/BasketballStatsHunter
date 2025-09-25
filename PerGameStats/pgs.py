@@ -580,7 +580,7 @@ def run_command(controls: Controls):
             )
 
 
-if __name__ == "__main__":
+def main():
     parser = build_parser()
 
     if len(sys.argv) == 1:
