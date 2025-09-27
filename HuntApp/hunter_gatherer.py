@@ -12,52 +12,6 @@ import bs4
 import re
 import time
 from sqlalchemy import text
-from base import BaseWebScrapeJob
-
-
-# TODO
-class WebScrapeTeams(BaseWebScrapeJob):
-    def __init__(self) -> None:
-        super().__init__("Teams data", ["teams", "team_locations"])
-        # Print context
-
-        """name 
-            br_id
-            nba
-            baa
-            aba
-            season_start_year
-            season_end_year
-            location
-        """
-
-    def download_html(self):
-        url = base_url + "/teams/"
-        soup = get_soup(url)
-        # Get franchise urls - one franchise has many teams
-        location_a_tag = soup.select("th[data-stat=franch_name] a")
-        for a in location_a_tag:
-            # Get the team overview html
-            team_url = base_url + str(a["href"])
-            get_soup(team_url)
-            breakpoint()
-            # TODO Store the individual team rows for the one franchise. There
-            # are separate team rows if
-            # - the franchise moved cities
-            # - the franchise changed from the ABA league to the NBA league
-
-            # NOTE: (BAA and NBA are counted as the same team br_id because they
-            # never coexisted. BAA merged with NBL to make NBA)
-        breakpoint()
-
-    def format_for_db(self):
-        pass
-
-    def import_to_db(self):
-        pass
-
-    def get_html_file(self, *args):
-        pass
 
 
 # from nameparser import HumanName
@@ -71,7 +25,7 @@ def download_teams1():
     url = "https://www.basketball-reference.com/teams/"
     soup = get_soup(url)
     teams_html = soup.find_all("tr", {"class": "full_table"})
-    with open("html/teams.html", "w") as f:
+    with open("HuntApp/teams.html", "w") as f:
         f.write("\n".join([str(t) for t in teams_html]))
 
 
@@ -426,5 +380,5 @@ def get_team_game_stats():
 
         year -= 1
 
-load_games('games.jsonl')
 
+load_games("games.jsonl")
