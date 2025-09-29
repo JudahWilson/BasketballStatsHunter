@@ -523,7 +523,9 @@ def is_same_season(game1: GameBrId | pd.Series, game2: GameBrId | pd.Series) -> 
     return get_season_from_br_id(game1_br_id) == get_season_from_br_id(game2_br_id)
 
 
-def is_game_processed(game_in_question: GameBrId, game_leftoff_at: GameBrId) -> bool:
+def is_game_processed(
+    game_in_question: GameBrId, game_leftoff_at: GameBrId | None
+) -> bool:
     """
     Has the game in question been processed already?
 

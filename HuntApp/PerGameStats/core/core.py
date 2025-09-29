@@ -11,7 +11,6 @@ r"""TODO
 
 # region IMPORTS and CONFIG
 import json
-from typing import List
 import pandas as pd
 import bs4
 import traceback
@@ -20,7 +19,7 @@ import os
 import re
 import warnings
 from sqlalchemy import create_engine, text
-from PerGameStats.core.utilities import (
+from HuntApp.PerGameStats.core.utilities import (
     df_from_sql,
     engine,
     get_last_processed_game,
@@ -34,7 +33,7 @@ from PerGameStats.core.utilities import (
     save_html,
     conn_str,
 )
-from PerGameStats.setJson import (
+from HuntApp.PerGameStats.setJson import (
     setPlayerGameHalfStatsJson,
     setPlayerGameOvertimeStatsJson,
     setPlayerGameQuarterStatsJson,
@@ -44,8 +43,12 @@ from PerGameStats.setJson import (
     setTeamGameQuarterStatsJson,
     setTeamGameStatsJson,
 )
-from validation import TableLiteral
-from validation.schemas import GameBrId
+from validation.schemas import (
+    GameBrId,
+    PerGamePlayerStatTableName,
+    PerGameStatTableName,
+    PerGameTeamStatTableName,
+)
 
 # from sqlalchemy.exc import RemovedIn20Warning
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -190,10 +193,7 @@ def writeTeamGameStatsHTML(
 def writeTeamGameStatsJSON(
     begin_year,
     stop_year=1946,
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
+    tables: list[PerGameTeamStatTableName] = [],
 ):
     begin_year = int(begin_year)
     stop_year = int(stop_year)
@@ -243,11 +243,15 @@ def writeTeamGameStatsJSON(
 
                 # If data should be skipped for all specified tables, continue to the next file
                 if (
-                    (get_TeamGameStats == False or skip_TeamGameStats)
-                    and (get_TeamGameQuarterStats == False or skip_TeamGameQuarterStats)
-                    and (get_TeamGameHalfStats == False or skip_TeamGameHalfStats)
+                    ("teamgamestats" not in tables or skip_TeamGameStats)
                     and (
-                        get_TeamGameOvertimeStats == False or skip_TeamGameOvertimeStats
+                        "teamgamequarterstats" not in tables
+                        or skip_TeamGameQuarterStats
+                    )
+                    and ("teamgamehalfstats" not in tables or skip_TeamGameHalfStats)
+                    and (
+                        "teamgameovertimestats" not in tables
+                        or skip_TeamGameOvertimeStats
                     )
                 ):
                     continue
@@ -328,7 +332,7 @@ def writeTeamGameStatsJSON(
 
                 try:
                     # region DATA SAVING
-                    if get_TeamGameStats and not skip_TeamGameStats:
+                    if "teamgamestats" in tables and not skip_TeamGameStats:
                         home_tgs = {}
                         away_tgs = {}
 
@@ -353,7 +357,10 @@ def writeTeamGameStatsJSON(
                             new_data=data,
                         )
 
-                    if get_TeamGameQuarterStats and not skip_TeamGameQuarterStats:
+                    if (
+                        "teamgamequarterstats" in tables
+                        and not skip_TeamGameQuarterStats
+                    ):
                         home_tgs1 = {}
                         away_tgs1 = {}
                         home_tgs2 = {}
@@ -424,7 +431,10 @@ def writeTeamGameStatsJSON(
                             new_data=data,
                         )
 
-                    if get_TeamGameOvertimeStats and not skip_TeamGameOvertimeStats:
+                    if (
+                        "teamgameovertimestats" in tables
+                        and not skip_TeamGameOvertimeStats
+                    ):
                         data = []
 
                         for i in range(len(home_team_OTs)):
@@ -450,7 +460,7 @@ def writeTeamGameStatsJSON(
                             new_data=data,
                         )
 
-                    if get_TeamGameHalfStats and not skip_TeamGameHalfStats:
+                    if "teamgamehalfstats" in tables and not skip_TeamGameHalfStats:
                         home_tgs1 = {}
                         away_tgs1 = {}
                         home_tgs2 = {}
@@ -505,10 +515,7 @@ def writeTeamGameStatsJSON(
 def writePlayerGameStatsJSON(
     begin_year,
     stop_year=1946,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
+    tables: list[PerGamePlayerStatTableName] = [],
     testQL: str | None = None,
 ):
     """
@@ -576,17 +583,17 @@ def writePlayerGameStatsJSON(
                         )
                         # If data should be skipped for all specified tables, continue to the next file
                         if (
-                            (get_PlayerGameStats == False or skip_PlayerGameStats)
+                            ("playergamestats" not in tables or skip_PlayerGameStats)
                             and (
-                                get_PlayerGameQuarterStats == False
+                                "playergamequarterstats" not in tables
                                 or skip_PlayerGameQuarterStats
                             )
                             and (
-                                get_PlayerGameHalfStats == False
+                                "playergamehalfstats" not in tables
                                 or skip_PlayerGameHalfStats
                             )
                             and (
-                                get_PlayerGameOvertimeStats == False
+                                "playergameovertimestats" not in tables
                                 or skip_PlayerGameOvertimeStats
                             )
                         ):
@@ -686,7 +693,7 @@ def writePlayerGameStatsJSON(
                     # endregion
                     try:
                         # region DATA SAVING
-                        if get_PlayerGameStats and not skip_PlayerGameStats:
+                        if "playergamestats" in tables and not skip_PlayerGameStats:
                             new_data += setPlayerGameStatsJson(
                                 game,
                                 away_team_basic,
@@ -708,7 +715,7 @@ def writePlayerGameStatsJSON(
                             new_data = []
 
                         if (
-                            get_PlayerGameQuarterStats
+                            "playergamequarterstats" in tables
                             and not skip_PlayerGameQuarterStats
                         ):
                             if year > 1995:
@@ -753,7 +760,10 @@ def writePlayerGameStatsJSON(
                                     )
                                 new_data = []
 
-                        if get_PlayerGameHalfStats and not skip_PlayerGameHalfStats:
+                        if (
+                            "playergamehalfstats" in tables
+                            and not skip_PlayerGameHalfStats
+                        ):
                             if year > 1995:
                                 new_data += setPlayerGameHalfStatsJson(
                                     game,
@@ -783,7 +793,7 @@ def writePlayerGameStatsJSON(
                                 new_data = []
 
                         if (
-                            get_PlayerGameOvertimeStats
+                            "playergameovertimestats" in tables
                             and not skip_PlayerGameOvertimeStats
                         ):
                             # Get array of all OTs for each team
@@ -829,45 +839,32 @@ def writePlayerGameStatsJSON(
 
 
 def lsJSON(
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
+    tables: list[PerGameStatTableName],
 ):
     """
     Process JSON files into the database reverse chronologically
     :param stop_year: int - The newest year to process
     :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
     :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
 
     tables = []
-    if get_TeamGameStats:
-        tables += ["TeamGameStats"]
-    if get_TeamGameQuarterStats:
-        tables += ["TeamGameQuarterStats"]
-    if get_TeamGameHalfStats:
-        tables += ["TeamGameHalfStats"]
-    if get_TeamGameOvertimeStats:
-        tables += ["TeamGameOvertimeStats"]
-    if get_PlayerGameStats:
-        tables += ["PlayerGameStats"]
-    if get_PlayerGameQuarterStats:
-        tables += ["PlayerGameQuarterStats"]
-    if get_PlayerGameHalfStats:
-        tables += ["PlayerGameHalfStats"]
-    if get_PlayerGameOvertimeStats:
-        tables += ["PlayerGameOvertimeStats"]
+    if "teamgamestats" in tables:
+        tables += ["teamgamestats"]
+    if "teamgamequarterstats" in tables:
+        tables += ["teamgamequarterstats"]
+    if "teamgamehalfstats" in tables:
+        tables += ["teamgamehalfstats"]
+    if "teamgameovertimestats" in tables:
+        tables += ["teamgameovertimestats"]
+    if "playergamestats" in tables:
+        tables += ["playergamestats"]
+    if "playergamequarterstats" in tables:
+        tables += ["playergamequarterstats"]
+    if "playergamehalfstats" in tables:
+        tables += ["playergamehalfstats"]
+    if "playergameovertimestats" in tables:
+        tables += ["playergameovertimestats"]
 
     data_file_pattern = re.compile(r"\d{4}.*.jsonl")
     str_output = ""
@@ -883,46 +880,31 @@ def lsJSON(
 def rmJSON(
     newest_year,
     oldest_year,
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
+    tables: list[PerGameStatTableName],
 ):
     """
     remove JSON files from the file system
     :param stop_year: int - The newest year to process
     :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
     """
 
     target_table_count = 0
     tables = []
-    if get_TeamGameStats:
+    if "teamgamestats" in tables:
         tables += ["TeamGameStats"]
-    if get_TeamGameQuarterStats:
+    if "teamgamequarterstats" in tables:
         tables += ["TeamGameQuarterStats"]
-    if get_TeamGameHalfStats:
+    if "teamgamehalfstats" in tables:
         tables += ["TeamGameHalfStats"]
-    if get_TeamGameOvertimeStats:
+    if "teamgameovertimestats" in tables:
         tables += ["TeamGameOvertimeStats"]
-    if get_PlayerGameStats:
+    if "playergamestats" in tables:
         tables += ["PlayerGameStats"]
-    if get_PlayerGameQuarterStats:
+    if "playergamequarterstats" in tables:
         tables += ["PlayerGameQuarterStats"]
-    if get_PlayerGameHalfStats:
+    if "playergamehalfstats" in tables:
         tables += ["PlayerGameHalfStats"]
-    if get_PlayerGameOvertimeStats:
+    if "playergameovertimestats" in tables:
         tables += ["PlayerGameOvertimeStats"]
 
     data_file_pattern = re.compile(r"\d{4}.*.jsonl")
@@ -940,47 +922,11 @@ def rmJSON(
 
 
 def lsdb(
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
+    tables: list[PerGameStatTableName],
 ):
     """
     show where progress was left off for importing data in the database
-    :param stop_year: int - The newest year to process
-    :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
-    tables: List[TableLiteral] = ["games"]
-    if get_TeamGameStats:
-        tables += ["teamgamestats"]
-    if get_TeamGameQuarterStats:
-        tables += ["teamgamequarterstats"]
-    if get_TeamGameHalfStats:
-        tables += ["teamgamehalfstats"]
-    if get_TeamGameOvertimeStats:
-        tables += ["teamgameovertimestats"]
-    if get_PlayerGameStats:
-        tables += ["playergamestats"]
-    if get_PlayerGameQuarterStats:
-        tables += ["playergamequarterstats"]
-    if get_PlayerGameHalfStats:
-        tables += ["playergamehalfstats"]
-    if get_PlayerGameOvertimeStats:
-        tables += ["playergameovertimestats"]
-
     basic_table_sql = ""
     advanced_table_sql = ""
     is_first_basic_table = True
@@ -1017,29 +963,12 @@ def lsdb(
 def loadJSONToDB(
     begin_year,
     stop_year,
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
-    debug=False,
+    tables: list[PerGameStatTableName],
 ):
     """
     Process JSON files into the database reverse chronologically
     :param stop_year: int - The newest year to process
     :param begin_year: int - The oldest year to process
-    :param get_TeamGameStats: bool - Load TeamGameStats
-    :param get_TeamGameQuarterStats: bool - Load TeamGameQuarterStats
-    :param get_TeamGameHalfStats: bool - Load TeamGameHalfStats
-    :param get_TeamGameOvertimeStats: bool - Load TeamGameOvertimeStats
-    :param get_PlayerGameStats: bool - Load PlayerGameStats
-    :param get_PlayerGameQuarterStats: bool - Load PlayerGameQuarterStats
-    :param get_PlayerGameHalfStats: bool - Load PlayerGameHalfStats
-    :param get_PlayerGameOvertimeStats: bool - Load PlayerGameOvertimeStats
-    :param debug: bool - Load data in table with '2' appended to the table name for testing purposes
     """
 
     ###########################################################
@@ -1051,7 +980,7 @@ def loadJSONToDB(
             if "started" in games.columns:
                 games["started"] = games["started"].astype(bool)
 
-            if get_TeamGameStats:
+            if "teamgamestats" in tables:
                 games.loc[games.offensive_rebounds == "", "offensive_rebounds"] = np.nan
                 games.loc[games.defensive_rebounds == "", "defensive_rebounds"] = np.nan
                 games.loc[games.pace_factor == "", "pace_factor"] = np.nan
@@ -1087,7 +1016,7 @@ def loadJSONToDB(
                     games.free_throw_percentage == "", "free_throw_percentage"
                 ] = np.nan
 
-            if get_PlayerGameStats:
+            if "playergamestats" in tables:
                 # region one-off fixes
                 # if '202103270LAC' in list(games.game_br_id):
                 #     # TODO this is sus
@@ -1223,10 +1152,10 @@ def loadJSONToDB(
                     lambda x: json.dumps(x)
                 )
             if "minutes_played" in games.columns and (
-                get_PlayerGameStats
-                or get_PlayerGameQuarterStats
-                or get_PlayerGameHalfStats
-                or get_PlayerGameOvertimeStats
+                "playergamestats" in tables
+                or "playergamequarterstats" in tables
+                or "playergamehalfstats" in tables
+                or "playergameovertimestats" in tables
             ):
 
                 def minutes_to_seconds(game_minutes):
@@ -1250,34 +1179,30 @@ def loadJSONToDB(
 
     ###########################################################
     target_table_count = 0
-    if get_TeamGameStats:
+    if "teamgamestats" in tables:
         TABLE_NAME = "TeamGameStats"
         target_table_count += 1
-    if get_TeamGameQuarterStats:
+    if "teamgamequarterstats" in tables:
         TABLE_NAME = "TeamGameQuarterStats"
         target_table_count += 1
-    if get_TeamGameHalfStats:
+    if "teamgamehalfstats" in tables:
         TABLE_NAME = "TeamGameHalfStats"
         target_table_count += 1
-    if get_TeamGameOvertimeStats:
+    if "teamgameovertimestats" in tables:
         TABLE_NAME = "TeamGameOvertimeStats"
         target_table_count += 1
-    if get_PlayerGameStats:
+    if "playergamestats" in tables:
         TABLE_NAME = "PlayerGameStats"
         target_table_count += 1
-    if get_PlayerGameQuarterStats:
+    if "playergamequarterstats" in tables:
         TABLE_NAME = "PlayerGameQuarterStats"
         target_table_count += 1
-    if get_PlayerGameHalfStats:
+    if "playergamehalfstats" in tables:
         TABLE_NAME = "PlayerGameHalfStats"
         target_table_count += 1
-    if get_PlayerGameOvertimeStats:
+    if "playergameovertimestats" in tables:
         TABLE_NAME = "PlayerGameOvertimeStats"
         target_table_count += 1
-
-    # Backup table in use
-    if debug:
-        TABLE_NAME += "2"
 
     if target_table_count > 1:
         print("Only one table can be loaded at a time")
@@ -1338,42 +1263,9 @@ def loadJSONToDB(
 def rmdb(
     oldest_year: int,
     newest_year: int,
-    get_TeamGameStats=False,
-    get_TeamGameQuarterStats=False,
-    get_TeamGameHalfStats=False,
-    get_TeamGameOvertimeStats=False,
-    get_PlayerGameStats=False,
-    get_PlayerGameQuarterStats=False,
-    get_PlayerGameHalfStats=False,
-    get_PlayerGameOvertimeStats=False,
+    tables: list[PerGameStatTableName],
 ):
-    target_table_count = 0
-    if get_TeamGameStats:
-        TABLE_NAME = "TeamGameStats"
-        target_table_count += 1
-    if get_TeamGameQuarterStats:
-        TABLE_NAME = "TeamGameQuarterStats"
-        target_table_count += 1
-    if get_TeamGameHalfStats:
-        TABLE_NAME = "TeamGameHalfStats"
-        target_table_count += 1
-    if get_TeamGameOvertimeStats:
-        TABLE_NAME = "TeamGameOvertimeStats"
-        target_table_count += 1
-    if get_PlayerGameStats:
-        TABLE_NAME = "PlayerGameStats"
-        target_table_count += 1
-    if get_PlayerGameQuarterStats:
-        TABLE_NAME = "PlayerGameQuarterStats"
-        target_table_count += 1
-    if get_PlayerGameHalfStats:
-        TABLE_NAME = "PlayerGameHalfStats"
-        target_table_count += 1
-    if get_PlayerGameOvertimeStats:
-        TABLE_NAME = "PlayerGameOvertimeStats"
-        target_table_count += 1
-
-    if target_table_count > 1:
+    if len(tables) > 1:
         print("Only one table can be loaded at a time")
         exit(1)
 
@@ -1382,7 +1274,7 @@ def rmdb(
         # between {oldest_year}0901 (Sept. 1) and {newest_year + 1}0901 are
         # deleted
         SQL = f"""
-            DELETE FROM {TABLE_NAME}
+            DELETE FROM {tables[0]}
             WHERE game_br_id > '{oldest_year}0901'
             AND game_br_id <= '{newest_year + 1}0901'
             """

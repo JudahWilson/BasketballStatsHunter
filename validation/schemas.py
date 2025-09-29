@@ -1,37 +1,47 @@
 """Custom types definitions"""
 
 from datetime import date
-from typing import Annotated
-from pydantic import BaseModel
+from typing import Annotated, Literal
+from pydantic import AfterValidator, BaseModel
 from enum import Enum
 
 
 ########################################
-# region enums
+# region custom primitive types
 ########################################
-class InputPerGameStatTable(str, Enum):
-    """CLI Input for table names and their abbreviations for per-game stats
-    scripts."""
+PerGameStatTableName = Literal[
+    "teamgamestats",
+    "teamgamequarterstats",
+    "teamgamehalfstats",
+    "teamgameovertimestats",
+    "playergamestats",
+    "playergamequarterstats",
+    "playergamehalfstats",
+    "playergameovertimestats",
+]
+"""table names for per-game stats scripts."""
 
-    teamgamestats = "teamgamestats"
-    tgs = "tgs"
-    teamgamequarterstats = "teamgamequarterstats"
-    tgqs = "tgqs"
-    teamgamehalfstats = "teamgamehalfstats"
-    tghs = "tghs"
-    teamgameovertimestats = "teamgameovertimestats"
-    tgos = "tgos"
-    playergamestats = "playergamestats"
-    pgs = "pgs"
-    playergamequarterstats = "playergamequarterstats"
-    pgqs = "pgqs"
-    playergamehalfstats = "playergamehalfstats"
-    pghs = "pghs"
-    playergameovertimestats = "playergameovertimestats"
-    pgos = "pgos"
+PerGameTeamStatTableName = Literal[
+    "teamgamestats",
+    "teamgamequarterstats",
+    "teamgamehalfstats",
+    "teamgameovertimestats",
+]
+"""table names for per-game stats scripts."""
+
+
+PerGamePlayerStatTableName = Literal[
+    "playergamestats",
+    "playergamequarterstats",
+    "playergamehalfstats",
+    "playergameovertimestats",
+]
+"""table names for per-game stats scripts."""
 
 
 class InputDataFormatTarget(str, Enum):
+    """CLI arg for action being performed on data"""
+
     json = "json"
     db = "db"
     html = "html"
@@ -41,14 +51,6 @@ class InputDataFormatTarget(str, Enum):
     rmdb = "rmdb"
 
 
-########################################
-# endregion
-########################################
-
-
-########################################
-# region custom primitive types
-########################################
 ### GameBrId
 def validate_game_br_id(value: str):
     year = value[0:4]
@@ -105,7 +107,6 @@ def validate_seasons_range_input(value: str):
         start_year, end_year = value.split("-")
         print(f"{start_year=}")
         print(f"{end_year=}")
-        1 / 0
         if not (start_year.isdigit() and end_year.isdigit()):
             raise ValueError(
                 "Both start year and end year must be digits in the format YYYY-YYYY"
@@ -125,7 +126,7 @@ def validate_seasons_range_input(value: str):
     return value
 
 
-SeasonsRangeInput = Annotated[str, validate_seasons_range_input]
+SeasonsRangeInput = Annotated[str, AfterValidator(validate_seasons_range_input)]
 
 ########################################
 # endregion custom primitive types

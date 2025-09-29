@@ -24,3 +24,4 @@ WISHLIST
     - save format of tables and periodically check them to see if format changed
       - some how track when format changed over the past games due to different data (it's not as simple as the format being the same all year round per season)
 - Typer to handle CLI with the gift of typing
+- ?Make coersian module switch-case like instead of one function for every coersian? or something to make it not just unique functions

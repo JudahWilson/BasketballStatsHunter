@@ -1,0 +1,2 @@
+wire HunterApp directly to pgs core
+    bring up core and remove previous interface--pgs.py
