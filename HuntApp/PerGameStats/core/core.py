@@ -48,6 +48,7 @@ from validation.schemas import (
     PerGamePlayerStatTableName,
     PerGameStatTableName,
     PerGameTeamStatTableName,
+    SeasonsRange,
 )
 
 # from sqlalchemy.exc import RemovedIn20Warning
@@ -58,8 +59,8 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 
 def writeTeamGameStatsHTML(
-    start_year: int | None = None,
-    stop_year: int | None = None,
+    newest_year_start: int | None = None,
+    oldest_year_start: int | None = None,
     singular_game_br_id: GameBrId | None = None,
     override_existing_html: bool = False,
 ) -> None:
@@ -131,14 +132,14 @@ def writeTeamGameStatsHTML(
             return
 
     else:
-        start_year = int(start_year)
-        if not stop_year:
-            stop_year = start_year
+        newest_year_start = int(newest_year_start)
+        if not oldest_year_start:
+            oldest_year_start = newest_year_start
         else:
-            stop_year = int(stop_year)
+            oldest_year_start = int(oldest_year_start)
 
-        year = start_year
-        while year >= stop_year:
+        year = newest_year_start
+        while year >= oldest_year_start:
             SQL = f"""SELECT * FROM Games 
             where date_time >= '{year}-09-01'
             and date_time < '{year + 1}-09-01'
@@ -191,14 +192,13 @@ def writeTeamGameStatsHTML(
 
 
 def writeTeamGameStatsJSON(
-    begin_year,
-    stop_year=1946,
+    season_range: SeasonsRange,
     tables: list[PerGameTeamStatTableName] = [],
 ):
-    begin_year = int(begin_year)
-    stop_year = int(stop_year)
+    season_range.newest_year_start = int(season_range.newest_year_start)
+    season_range.oldest_year_start = int(season_range.oldest_year_start)
 
-    year = begin_year
+    year = season_range.newest_year_start
 
     # Get the latest game data processed. The script will have left off at the game furthest in the past
     game_leftoff_at = get_last_processed_game("TeamGameStats")
@@ -206,7 +206,7 @@ def writeTeamGameStatsJSON(
     game_half_leftoff_at = get_last_processed_game("TeamGameHalfStats")
     game_overtime_leftoff_at = get_last_processed_game("TeamGameOvertimeStats")
 
-    while year >= stop_year:
+    while year >= season_range.oldest_year_start:
         # DB Games
         SQL = f"""SELECT * FROM Games 
                 where date_time >= '{year}-09-01'

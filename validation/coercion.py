@@ -27,10 +27,10 @@ def seasons_range_input_to_object(
         newest_year = int(seasons_range)
         oldest_year = newest_year
 
-    return SeasonsRange(season_start=newest_year, season_end=oldest_year)
+    return SeasonsRange(newest_year_start=newest_year, season_end=oldest_year)
 
 
-def tables_input_to_list(tables_csv: str) -> list[PerGameStatTableName]:
+def tables_input_to_list(tables_csv: str | None) -> list[PerGameStatTableName]:
     """Convert tables name input CSV to a list and unabbreviate the abbreviations
 
     Args:
@@ -39,6 +39,8 @@ def tables_input_to_list(tables_csv: str) -> list[PerGameStatTableName]:
     Returns:
         list[PerGameStatTableName]: A list of unabbreviated table names
     """
+    if not tables_csv:
+        return []
     pgs_table_name_type = TypeAdapter(PerGameStatTableName)
     tables = tables_csv.split(",")
     unabbreviated_tables = []

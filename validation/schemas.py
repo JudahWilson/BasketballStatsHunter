@@ -39,7 +39,7 @@ PerGamePlayerStatTableName = Literal[
 """table names for per-game stats scripts."""
 
 
-class InputDataFormatTarget(str, Enum):
+class InputDataAction(str, Enum):
     """CLI arg for action being performed on data"""
 
     json = "json"
@@ -137,9 +137,9 @@ SeasonsRangeInput = Annotated[str, AfterValidator(validate_seasons_range_input)]
 # region Pydantic models
 ########################################
 class SeasonsRange(BaseModel):
-    season_start: int
+    newest_year_start: int
     """Start year of the season (YYYY)."""
-    season_end: int
+    oldest_year_start: int
     """End year of the season (YYYY)."""
 
 

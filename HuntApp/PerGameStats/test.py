@@ -21,8 +21,8 @@ from core.core import (
 
 
 writeTeamGameStatsHTML(
-    start_year=2023,
-    stop_year=2023,
+    newest_season_start=2023,
+    oldest_season_start=2023,
     singular_game_br_id=None,
     override_existing_html=False,
 )

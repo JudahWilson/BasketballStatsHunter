@@ -7,7 +7,7 @@ from validation.coercion import (
     tables_input_to_list,
 )
 from validation.schemas import (
-    InputDataFormatTarget,
+    InputDataAction,
 )
 
 app = typer.Typer(
@@ -32,7 +32,7 @@ from HuntApp.PerGameStats.core import (
 
 @app.command("pgs")
 def pergamestats(
-    target: InputDataFormatTarget = typer.Argument(
+    data_action: InputDataAction = typer.Argument(
         None,
         case_sensitive=False,
     ),
@@ -51,7 +51,7 @@ def pergamestats(
 ):
     """Process per-game stats."""
     seasons_range = None
-    tables = None
+    tables = []
 
     if seasons_range_inp:
         seasons_range = seasons_range_input_to_object(seasons_range_inp)
@@ -59,19 +59,42 @@ def pergamestats(
         tables = tables_input_to_list(tables_inp)
 
     # Additional input requirements
-    if target in ["json", "db", "rmjson"] and not tables:
-        raise Exception(f"--tables (-t) is required for {target}")
-    if target not in ["lsjson", "lsdb"] and not seasons_range:
-        raise Exception(f"--seasons-range (-s) is required for {target}")
+    if data_action not in ["lsjson", "lsdb"] and not seasons_range:
+        raise Exception(f"--seasons-range (-s) is required for {data_action}")
 
     typer.echo("INPUT")
     typer.echo(
-        f"target={target}, seasons_range={seasons_range_inp}, tables={tables_inp}"
+        f"target={data_action}, seasons_range={seasons_range_inp}, tables={tables_inp}"
     )
     typer.echo("INPUT CONVERTED")
     typer.echo(
-        f"target={target}, seasons_range={seasons_range if seasons_range else None}, tables={tables if tables else None}"
+        f"target={data_action}, seasons_range={seasons_range if seasons_range else None}, tables={tables if tables else None}"
     )
+
+    match data_action:
+        case InputDataAction.lsdb:
+            lsdb(tables=tables)
+        case InputDataAction.html:
+            assert seasons_range is not None,f"--seasons-range (-s) is required for {data_action}"
+            writeTeamGameStatsHTML()
+        case InputDataAction.json:
+            assert tables, f"--tables (-t) is required for {data_action}"
+            assert seasons_range is not None,f"--seasons-range (-s) is required for {data_action}"
+            writeTeamGameStatsJSON(seasons_range, tables)
+            writePlayerGameStatsJSON()
+        case InputDataAction.lsjson:
+            lsJSON(tables=tables)
+        case InputDataAction.rmjson:
+            assert tables, f"--tables (-t) is required for {data_action}"
+            rmJSON()
+        case InputDataAction.db:
+            assert tables, f"--tables (-t) is required for {data_action}"
+            assert seasons_range is not None,f"--seasons-range (-s) is required for {data_action}"
+            loadJSONToDB()
+        case InputDataAction.rmdb:
+            rmdb()
+        case _:
+            raise Exception(f"Unknown parameter for data_action: {data_action}")
 
 
 # TODO play by play command
