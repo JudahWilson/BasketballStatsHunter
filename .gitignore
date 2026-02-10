@@ -1,23 +1,41 @@
-# Data
-*.json
-*.jsonl
-*.html
-
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Environments
 .env
-.venv
 
-# Other
-.pem
-.db
-.vscode
-node_modules
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Virtual environment
+.venv/
+
+# Sphinx
+docs/_build/
+*.rst
+!build/index.rst
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.log
+data/
+*.csv
+*.db
+*.txt
+*.json
+*.sql
+*.html
+html_cache/
+admin.sqlite3
+
+# Metabase
 metabase
-BB.session.sql
-log.txt
-HuntApp/PerGameStats/lastgamehtml.txt
+
+# sandbox
+sandbox/*
+node_modules

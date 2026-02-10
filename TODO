@@ -1,3 +1,4 @@
+- Fuck typer.. chill and use argparse instead
 - distinguish and get teams AND franchises (as listed in website teams page--EASY)
     - Schedule
 - play by plays
@@ -13,6 +14,12 @@
   - pbp??
   - teams?
   - players?
+
+IN REFACTORING:
+  functionality to easily transfer data between dbs
+    support filter of which data
+    would be nice to bring all related data over so staging can have related data sometimes
+  all tables have fallback col of object storage until db refined
 
 --------------------------------------
 WISHLIST
