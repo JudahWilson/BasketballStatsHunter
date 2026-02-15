@@ -874,7 +874,7 @@ def lsJSON(
             if data_file_pattern.match(file):
                 str_output += f"\n\t{file}"
 
-    print(str_output)
+    print(str_output if str_output else "No JSON files found")
 
 
 def rmJSON(

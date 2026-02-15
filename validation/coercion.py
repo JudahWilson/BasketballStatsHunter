@@ -27,7 +27,7 @@ def seasons_range_input_to_object(
         newest_year = int(seasons_range)
         oldest_year = newest_year
 
-    return SeasonsRange(newest_year_start=newest_year, season_end=oldest_year)
+    return SeasonsRange(newest_year_start=newest_year, oldest_year_start=oldest_year)
 
 
 def tables_input_to_list(tables_csv: str | None) -> list[PerGameStatTableName]:

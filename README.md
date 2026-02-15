@@ -19,3 +19,13 @@ Although this project has scraped millions of rows, it is being redesigned to op
 ## Note
 
 - Recently basketball-reference.com has added bot detection that necessitates the use of a browser engine (like playwright or selenium). The new codebase accommodates this change with playwright.
+
+## Usage (until refactored)
+### Download html for ot for teams between 2000-2005
+`python bucket.py hunt pgs html -s 2000-2005`
+
+### process html to json for ot for teams between 2000-2005
+`python bucket.py hunt pgs html -s 2000-2005`
+
+### django app
+Coming Soon: reference statbucketdj/README.md for migration of row data in addition to table schema migration

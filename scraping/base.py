@@ -6,9 +6,10 @@ from typing import Any
 from bs4 import BeautifulSoup, Tag
 from abc import ABC, abstractmethod
 import pandas as pd
-# from mother import engine, engine_staged
+from db import engine, engine_staged
 import warnings
 from playwright.sync_api import Page
+from sqlalchemy import text
 
 # Ignores any UserWarning that starts with this text
 warnings.filterwarnings(
