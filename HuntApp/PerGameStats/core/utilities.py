@@ -17,7 +17,17 @@ from validation import GameBrId
 WEBSCRAPE_DEBOUNCER = 4  # seconds to wait between web requests
 
 load_dotenv()
-conn_str = f"mysql+mysqlconnector://{os.environ['BACKEND_DB_USER']}:{os.environ['BACKEND_DB_PASSWORD']}@{os.environ['BACKEND_DB_HOST']}/{os.environ['BACKEND_DB_NAME']}"
+
+# Parse database URL using same method as bucket.py
+db_url = os.environ['PROD_DB_URL']
+# Pattern: scheme://user:password@host/database?query
+match = re.match(r'.*://([^:]+):([^@]+)@([^/]+)/([^?]+)', db_url)
+
+if not match:
+    raise Exception("Could not parse database URL")
+    
+username, password, hostname, database = match.groups()
+conn_str = f"mysql+mysqlconnector://{username}:{password}@{hostname}/{database}"
 engine = create_engine(conn_str)
 
 # The website's base url
