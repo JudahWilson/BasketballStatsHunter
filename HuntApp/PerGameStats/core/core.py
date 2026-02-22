@@ -922,16 +922,17 @@ def rmJSON(
 
 
 def lsdb(
-    tables: list[PerGameStatTableName],
+    tables: list[PerGameStatTableName] = [],
 ):
     """
     show where progress was left off for importing data in the database
     """
+    if tables == []:
+        tables = [e.value for e in PerGameStatTableName]
     basic_table_sql = ""
     advanced_table_sql = ""
     is_first_basic_table = True
     is_first_advancded_table = True
-
     for table in tables:
         game_br_id_col = "br_id" if table == "games" else "game_br_id"
         if table in ["games", "teamgamestats", "playergamestats"]:
@@ -951,6 +952,7 @@ def lsdb(
                     union select "LAST {table}" as "table", max({game_br_id_col}) as "{game_br_id_col}" from {table}"""
             is_first_advancded_table = False
     basic_table_sql += ";"
+    breakpoint()
     with create_engine(conn_str).begin() as connection:
         basic_df = df_from_sql(basic_table_sql, print_sql=True)
         advanced_df = df_from_sql(advanced_table_sql, print_sql=True)

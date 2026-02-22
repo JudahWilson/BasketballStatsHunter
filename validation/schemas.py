@@ -1,7 +1,7 @@
 """Custom types definitions"""
 
 from datetime import date
-from typing import Annotated, Literal
+from typing import Annotated
 from pydantic import AfterValidator, BaseModel
 from enum import Enum
 
@@ -9,34 +9,34 @@ from enum import Enum
 ########################################
 # region custom primitive types
 ########################################
-PerGameStatTableName = Literal[
-    "teamgamestats",
-    "teamgamequarterstats",
-    "teamgamehalfstats",
-    "teamgameovertimestats",
-    "playergamestats",
-    "playergamequarterstats",
-    "playergamehalfstats",
-    "playergameovertimestats",
-]
-"""table names for per-game stats scripts."""
+class PerGameStatTableName(str, Enum):
+    """table names for per-game stats scripts."""
+    
+    TEAM_GAME_STATS = "teamgamestats"
+    TEAM_GAME_QUARTER_STATS = "teamgamequarterstats"
+    TEAM_GAME_HALF_STATS = "teamgamehalfstats"
+    TEAM_GAME_OVERTIME_STATS = "teamgameovertimestats"
+    PLAYER_GAME_STATS = "playergamestats"
+    PLAYER_GAME_QUARTER_STATS = "playergamequarterstats"
+    PLAYER_GAME_HALF_STATS = "playergamehalfstats"
+    PLAYER_GAME_OVERTIME_STATS = "playergameovertimestats"
 
-PerGameTeamStatTableName = Literal[
-    "teamgamestats",
-    "teamgamequarterstats",
-    "teamgamehalfstats",
-    "teamgameovertimestats",
-]
-"""table names for per-game stats scripts."""
+class PerGameTeamStatTableName(str, Enum):
+    """table names for per-game stats scripts."""
+    
+    TEAM_GAME_STATS = "teamgamestats"
+    TEAM_GAME_QUARTER_STATS = "teamgamequarterstats"
+    TEAM_GAME_HALF_STATS = "teamgamehalfstats"
+    TEAM_GAME_OVERTIME_STATS = "teamgameovertimestats"
 
 
-PerGamePlayerStatTableName = Literal[
-    "playergamestats",
-    "playergamequarterstats",
-    "playergamehalfstats",
-    "playergameovertimestats",
-]
-"""table names for per-game stats scripts."""
+class PerGamePlayerStatTableName(str, Enum):
+    """table names for per-game stats scripts."""
+    
+    PLAYER_GAME_STATS = "playergamestats"
+    PLAYER_GAME_QUARTER_STATS = "playergamequarterstats"
+    PLAYER_GAME_HALF_STATS = "playergamehalfstats"
+    PLAYER_GAME_OVERTIME_STATS = "playergameovertimestats"
 
 
 class InputDataAction(str, Enum):
