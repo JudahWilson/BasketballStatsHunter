@@ -16,6 +16,12 @@ Although this project has scraped millions of rows, it is being redesigned to op
 - uv sync
 - uv run py main.py --install-completion
 
+Or with a virtual environment:
+- `python -m venv .venv`
+- `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` (macOS/Linux)
+- `pip install -r requirements.txt`
+- Run commands with the venv activated (e.g. `python bucket.py ...`).
+
 ## Note
 
 - Recently basketball-reference.com has added bot detection that necessitates the use of a browser engine (like playwright or selenium). The new codebase accommodates this change with playwright.

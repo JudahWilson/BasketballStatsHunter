@@ -5,7 +5,7 @@
 - schedule
   - hunter.js to get games
         - *Function to evaluate team involved and create entry in DB?
-        - Determine how to establish the franchise
+        - Determine how to establish the frbanchise
   - pgs
     - html
     - json (pgs, pgqs, pghs, pgos, tgs, tgqs, tghs, tgos)
